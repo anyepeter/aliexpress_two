@@ -1,0 +1,470 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  SELLER
+  BUYER
+}
+
+enum AccountStatus {
+  PENDING_VERIFICATION
+  PENDING_APPROVAL
+  ACTIVE
+  SUSPENDED
+  REJECTED
+}
+
+model User {
+  id        String        @id @default(cuid())
+  clerkId   String?       @unique
+  email     String        @unique
+  firstName String
+  lastName  String
+  phone     String?
+  role      Role          @default(BUYER)
+  status    AccountStatus @default(PENDING_VERIFICATION)
+  password  String        @default("no")
+  avatarUrl String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  store     Store?
+  addresses Address[]
+  orders    Order[]    @relation("BuyerOrders")
+  sellerLoans LoanRequest[] @relation("SellerLoans")
+
+  sentMessages         Message[]        @relation("SentMessages")
+  buyerConversations   Conversation[]   @relation("BuyerConversations")
+  sellerConversations  Conversation[]   @relation("SellerConversations")
+  adminConversations   Conversation[]   @relation("AdminConversations")
+  presence             UserPresence?
+
+  @@index([email])
+  @@index([clerkId])
+  @@index([role])
+}
+
+model Store {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  storeName      String    @unique
+  storeSlug      String    @unique
+  description    String?
+  logoUrl        String?
+  bannerUrl      String?
+  businessType   String?
+  businessRegNo  String?
+  idDocumentUrl  String?
+  taxDocumentUrl String?
+  country        String
+  city           String
+  state          String?
+  postalCode     String?
+  websiteUrl     String?
+  socialLinks    Json?
+  isVerified     Boolean   @default(false)
+  isPremium      Boolean   @default(false)
+  premiumOrder   Int       @default(0)
+  adminNotes     String?
+  approvedAt     DateTime?
+  approvedBy     String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sellerProducts SellerProduct[]
+  analytics      StoreAnalytics?
+  orders         Order[]
+  loanRequests   LoanRequest[]
+  orderAnalytics OrderAnalytics[]
+  withdrawals    Withdrawal[]
+
+  @@index([storeName])
+  @@index([storeSlug])
+}
+
+enum SellerProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model SellerProduct {
+  id              String              @id @default(cuid())
+  storeId         String
+  dummyProductId  Int
+  title           String
+  description     String?
+  images          Json                // string[]
+  category        String
+  brand           String?
+  basePrice       Float               // original DummyJSON price
+  marginPercent   Float               @default(20) // 15-25
+  sellingPrice    Float               // basePrice * (1 + marginPercent/100)
+  discountPct     Float               @default(0) // DummyJSON discount percentage
+  stock           Int                 @default(0)
+  status          SellerProductStatus @default(DRAFT)
+  sortOrder       Int                 @default(0)
+  tags            Json?               // string[]
+  rating          Float?
+  ratingCount     Int?
+  publishedAt     DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  store    Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  views    ProductView[]
+
+  @@unique([storeId, dummyProductId])
+  @@index([storeId])
+  @@index([status])
+  @@index([category])
+}
+
+model StoreAnalytics {
+  id            String   @id @default(cuid())
+  storeId       String   @unique
+  totalViews    Int      @default(0)
+  totalOrders   Int      @default(0)
+  totalRevenue  Float    @default(0)
+  totalProfit   Float    @default(0)
+  updatedAt     DateTime @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+}
+
+model ProductView {
+  id        String   @id @default(cuid())
+  productId String
+  viewedAt  DateTime @default(now())
+
+  product SellerProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String
+  label      String
+  street     String
+  city       String
+  state      String?
+  country    String
+  postalCode String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+}
+
+// ─── Order System ──────────────────────────────────────────────────
+
+enum OrderStatus {
+  PENDING            // Buyer placed order, awaiting seller action
+  CONTACTED_ADMIN    // Seller contacted admin to process payment
+  SHIPPING           // Admin verified payment — order is being shipped
+  COMPLETED          // Order delivered / completed
+  REJECTED           // Admin rejected / cancelled
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  BITCOIN
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique // human-readable: MH-20260224-XXXX
+  buyerId         String
+  storeId         String?
+  addressId       String
+  paymentMethod   PaymentMethod
+  status          OrderStatus   @default(PENDING)
+  subtotal        Float         // sum of item totals (sellingPrice × qty)
+  totalAmount     Float         // final amount buyer pays (= subtotal)
+  baseCost        Float         @default(0) // sum of base prices — what seller pays admin
+  profit          Float         @default(0) // totalAmount - baseCost — seller's margin
+  sellerRevenue   Float         @default(0) // = totalAmount, credited after admin approval
+  adminNote       String?       // admin can leave a note on approval/rejection
+  contactedAt     DateTime?     // when seller clicked "Contact Admin"
+  shippingAt      DateTime?     // when admin moved to shipping
+  completedAt     DateTime?     // when admin marked as completed
+  rejectedAt      DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  buyer   User      @relation("BuyerOrders", fields: [buyerId], references: [id], onDelete: Cascade)
+  store   Store?    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  address Address   @relation(fields: [addressId], references: [id])
+  items   OrderItem[]
+
+  @@index([buyerId])
+  @@index([storeId])
+  @@index([status])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id             String @id @default(cuid())
+  orderId        String
+  productId      String  // SellerProduct.id or "dummy-{id}"
+  dummyProductId Int
+  title          String
+  thumbnail      String
+  price          Float   // selling price at time of purchase (after discount)
+  basePrice      Float   @default(0) // cost price per unit (after same discount applied)
+  discountPct    Float   @default(0) // discount percentage from base product
+  quantity       Int
+  total          Float   // price * quantity (after discount)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+// ─── Messaging System ─────────────────────────────────────────────
+
+enum ConversationType {
+  BUYER_SELLER
+  SELLER_ADMIN
+  BUYER_ADMIN
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  VOICE
+  SYSTEM
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
+model Conversation {
+  id            String             @id @default(cuid())
+  type          ConversationType
+  buyerId       String?
+  buyer         User?              @relation("BuyerConversations", fields: [buyerId], references: [id])
+  sellerId      String?
+  seller        User?              @relation("SellerConversations", fields: [sellerId], references: [id])
+  adminId       String?
+  admin         User?              @relation("AdminConversations", fields: [adminId], references: [id])
+  orderId       String?
+  subject       String?
+  messages      Message[]
+  lastMessage   String?
+  lastMessageAt DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@unique([buyerId, sellerId])
+  @@unique([sellerId, adminId])
+  @@unique([buyerId, adminId])
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([adminId])
+}
+
+model Message {
+  id             String        @id @default(cuid())
+  conversationId String
+  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User          @relation("SentMessages", fields: [senderId], references: [id])
+  type           MessageType   @default(TEXT)
+  content        String?
+  fileUrl        String?
+  fileName       String?
+  fileSize       Int?
+  audioDuration  Int?
+  status         MessageStatus @default(SENT)
+  readAt         DateTime?
+  createdAt      DateTime      @default(now())
+
+  @@index([conversationId])
+  @@index([senderId])
+}
+
+model UserPresence {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isOnline   Boolean  @default(false)
+  lastSeenAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ─── Withdrawal System ───────────────────────────────────────────
+
+enum WithdrawalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Withdrawal {
+  id                String           @id @default(cuid())
+  storeId           String
+  amount            Float
+  status            WithdrawalStatus @default(PENDING)
+  method            PaymentMethod    @default(BANK_TRANSFER)
+  bankName          String?
+  accountNumber     String?
+  accountHolderName String?
+  walletAddress     String?
+  sellerNote        String?
+  adminNote         String?
+  requestedAt       DateTime         @default(now())
+  reviewedAt        DateTime?
+  reviewedBy        String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([storeId])
+  @@index([status])
+}
+
+// ─── Loan System ─────────────────────────────────────────────────
+
+enum LoanStatus {
+  PENDING    // submitted, awaiting admin review
+  APPROVED   // admin approved — balance available
+  REJECTED   // admin rejected
+  REPAID     // fully repaid (balanceRemaining = 0)
+  CANCELLED  // seller cancelled before approval
+}
+
+enum RepaymentStatus {
+  PENDING   // seller submitted repayment, awaiting admin approval
+  APPROVED  // admin approved repayment
+  REJECTED  // admin rejected repayment
+}
+
+model LoanRequest {
+  id               String        @id @default(cuid())
+  storeId          String
+  store            Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  sellerId         String
+  seller           User          @relation("SellerLoans", fields: [sellerId], references: [id])
+  amount           Float
+  reason           String
+  status           LoanStatus    @default(PENDING)
+  approvedAmount   Float?
+  adminNote        String?
+  approvedAt       DateTime?
+  rejectedAt       DateTime?
+  balanceRemaining Float         @default(0)
+  totalRepaid      Float         @default(0)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  transactions     LoanTransaction[]
+  repayments       LoanRepayment[]
+
+  @@index([storeId])
+  @@index([sellerId])
+}
+
+model LoanTransaction {
+  id             String         @id @default(cuid())
+  loanId         String
+  loan           LoanRequest    @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  orderId        String
+  amountDeducted Float
+  balanceAfter   Float
+  createdAt      DateTime       @default(now())
+
+  @@index([loanId])
+  @@index([orderId])
+}
+
+model LoanRepayment {
+  id            String          @id @default(cuid())
+  loanId        String
+  loan          LoanRequest     @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  storeId       String
+  sellerId      String
+  amount        Float
+  paymentMethod PaymentMethod
+  status        RepaymentStatus @default(PENDING)
+  adminNote     String?
+  approvedAt    DateTime?
+  rejectedAt    DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([loanId])
+  @@index([storeId])
+  @@index([status])
+}
+
+// ─── Today's Deals (Dollar Express + SuperDeals) ────────────────
+
+enum DealSectionType {
+  DOLLAR_EXPRESS
+  SUPER_DEALS
+}
+
+model DealSection {
+  id          String          @id @default(cuid())
+  type        DealSectionType @unique
+  title       String          // "Dollar Express" or "SuperDeals"
+  subtitle    String?         // e.g. "3 from $0.99"
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  items DealSectionItem[]
+}
+
+model DealSectionItem {
+  id             String   @id @default(cuid())
+  sectionId      String
+  productId      String?  // SellerProduct.id (nullable for demo)
+  dummyProductId Int      // DummyJSON product ID
+  customTitle    String?  // override title
+  customPrice    Float?   // override display price
+  customOldPrice Float?   // strikethrough price
+  customBadge    String?  // e.g. "New shoppers only", "-80%"
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  section DealSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@index([sectionId])
+  @@index([sortOrder])
+}
+
+// ─── Order Analytics ─────────────────────────────────────────────
+
+model OrderAnalytics {
+  id             String   @id @default(cuid())
+  storeId        String
+  store          Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  orderId        String   @unique
+  basePrice      Float
+  sellingPrice   Float
+  profit         Float
+  category       String
+  productTitle   String
+  completedAt    DateTime
+  createdAt      DateTime @default(now())
+
+  @@index([storeId])
+  @@index([completedAt])
+}
