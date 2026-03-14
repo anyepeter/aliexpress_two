@@ -1,20 +1,15 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import {
   Search,
   Store,
-  Star,
-  StarOff,
   Archive,
   RotateCcw,
   ChevronDown,
   ChevronUp,
   Loader2,
-  GripVertical,
-  Crown,
   ExternalLink,
   Package,
   DollarSign,
@@ -59,25 +54,12 @@ interface Props {
 type FilterTab = "ALL" | "ACTIVE" | "SUSPENDED" | "PENDING_APPROVAL" | "REJECTED";
 
 export default function AdminSellersClient({ sellers: initialSellers }: Props) {
-  const router = useRouter();
   const [sellers, setSellers] = useState(initialSellers);
   const [filter, setFilter] = useState<FilterTab>("ALL");
   const [search, setSearch] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [viewSellerId, setViewSellerId] = useState<string | null>(null);
-  const [showPremiumPanel, setShowPremiumPanel] = useState(false);
-  const [premiumLoading, setPremiumLoading] = useState(false);
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
-
-  // Premium sellers list (sorted by premiumOrder)
-  const premiumSellers = useMemo(
-    () =>
-      sellers
-        .filter((s) => s.store?.isPremium && s.status === "ACTIVE")
-        .sort((a, b) => (a.store?.premiumOrder ?? 0) - (b.store?.premiumOrder ?? 0)),
-    [sellers]
-  );
 
   const filtered = useMemo(() => {
     return sellers.filter((s) => {
@@ -123,78 +105,6 @@ export default function AdminSellersClient({ sellers: initialSellers }: Props) {
     }
   };
 
-  const handleTogglePremium = async (storeId: string, isPremium: boolean) => {
-    setActionLoading(storeId);
-    try {
-      const res = await fetch("/api/admin/sellers", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "togglePremium", storeId, isPremium }),
-      });
-      if (res.ok) {
-        setSellers((prev) =>
-          prev.map((s) =>
-            s.store?.id === storeId
-              ? { ...s, store: { ...s.store!, isPremium, premiumOrder: isPremium ? 999 : 0 } }
-              : s
-          )
-        );
-      }
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
-  const handleSavePremiumOrder = async () => {
-    setPremiumLoading(true);
-    try {
-      const order = premiumSellers.map((s, i) => ({
-        storeId: s.store!.id,
-        premiumOrder: i,
-      }));
-      const res = await fetch("/api/admin/sellers", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "reorderPremium", order }),
-      });
-      if (res.ok) {
-        setSellers((prev) =>
-          prev.map((s) => {
-            const match = order.find((o) => o.storeId === s.store?.id);
-            if (match) {
-              return { ...s, store: { ...s.store!, premiumOrder: match.premiumOrder } };
-            }
-            return s;
-          })
-        );
-        router.refresh();
-      }
-    } finally {
-      setPremiumLoading(false);
-    }
-  };
-
-  const movePremium = (fromIdx: number, toIdx: number) => {
-    if (toIdx < 0 || toIdx >= premiumSellers.length) return;
-    setSellers((prev) => {
-      const updated = [...prev];
-      const premiumIds = premiumSellers.map((s) => s.id);
-      const fromSellerId = premiumIds[fromIdx];
-      const toSellerId = premiumIds[toIdx];
-
-      // Swap premiumOrder values
-      return updated.map((s) => {
-        if (s.id === fromSellerId) {
-          return { ...s, store: { ...s.store!, premiumOrder: toIdx } };
-        }
-        if (s.id === toSellerId) {
-          return { ...s, store: { ...s.store!, premiumOrder: fromIdx } };
-        }
-        return s;
-      });
-    });
-  };
-
   const statusConfig: Record<string, { label: string; bg: string; text: string }> = {
     ACTIVE: { label: "Active", bg: "bg-green-50", text: "text-green-700" },
     SUSPENDED: { label: "Archived", bg: "bg-gray-100", text: "text-gray-600" },
@@ -214,118 +124,12 @@ export default function AdminSellersClient({ sellers: initialSellers }: Props) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Manage Sellers</h1>
-          <p className="text-gray-500 mt-1">
-            {sellers.length} seller{sellers.length !== 1 ? "s" : ""} total
-          </p>
-        </div>
-        <button
-          onClick={() => setShowPremiumPanel(!showPremiumPanel)}
-          className="flex items-center gap-2 px-4 py-2 bg-[#E53935] text-white rounded-xl text-sm font-semibold hover:bg-[#C62828] transition-colors"
-        >
-          <Crown className="w-4 h-4" />
-          Premium Sellers ({premiumSellers.length})
-        </button>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Manage Sellers</h1>
+        <p className="text-gray-500 mt-1">
+          {sellers.length} seller{sellers.length !== 1 ? "s" : ""} total
+        </p>
       </div>
-
-      {/* Premium Sellers Panel */}
-      {showPremiumPanel && (
-        <Card className="p-5 border-2 border-[#E53935]/30">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-              <Crown className="w-5 h-5 text-[#E53935]" />
-              Premium Sellers Order
-            </h2>
-            <button
-              onClick={handleSavePremiumOrder}
-              disabled={premiumLoading}
-              className="flex items-center gap-2 px-4 py-2 bg-[#E53935] text-white rounded-xl text-sm font-semibold hover:bg-[#C62828] transition-colors disabled:opacity-50"
-            >
-              {premiumLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-              Save Order
-            </button>
-          </div>
-
-          {premiumSellers.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-4">
-              No premium sellers yet. Use the star icon below to add sellers to the premium strip.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              <p className="text-xs text-gray-500 mb-2">
-                Drag or use arrows to reorder. This controls the order on the landing page Premium Verified Sellers strip.
-              </p>
-              {premiumSellers.map((seller, idx) => (
-                <div
-                  key={seller.id}
-                  draggable
-                  onDragStart={() => setDragIndex(idx)}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={() => {
-                    if (dragIndex !== null && dragIndex !== idx) {
-                      movePremium(dragIndex, idx);
-                    }
-                    setDragIndex(null);
-                  }}
-                  className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
-                    dragIndex === idx ? "bg-[#E53935]/10 border-[#E53935]" : "bg-white border-gray-200 hover:bg-gray-50"
-                  }`}
-                >
-                  <GripVertical className="w-4 h-4 text-gray-400 cursor-grab shrink-0" />
-                  <span className="text-sm font-bold text-[#E53935] w-6">{idx + 1}</span>
-                  {seller.store?.logoUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={seller.store.logoUrl}
-                      alt={seller.store.storeName}
-                      className="w-8 h-8 rounded-full object-cover shrink-0"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-[#E53935] flex items-center justify-center shrink-0">
-                      <span className="text-white text-xs font-bold">
-                        {seller.store?.storeName[0]?.toUpperCase() ?? "?"}
-                      </span>
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
-                      {seller.store?.storeName}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {seller.firstName} {seller.lastName}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button
-                      onClick={() => movePremium(idx, idx - 1)}
-                      disabled={idx === 0}
-                      className="p-1 rounded hover:bg-gray-200 disabled:opacity-30 transition-colors"
-                    >
-                      <ChevronUp className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => movePremium(idx, idx + 1)}
-                      disabled={idx === premiumSellers.length - 1}
-                      className="p-1 rounded hover:bg-gray-200 disabled:opacity-30 transition-colors"
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleTogglePremium(seller.store!.id, false)}
-                      className="p-1 rounded text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors ml-1"
-                      title="Remove from premium"
-                    >
-                      <StarOff className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </Card>
-      )}
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
@@ -434,29 +238,6 @@ export default function AdminSellersClient({ sellers: initialSellers }: Props) {
                         >
                           <Eye className="w-4 h-4" />
                         </button>
-
-                        {/* Premium toggle (only for active, verified sellers) */}
-                        {seller.store && seller.status === "ACTIVE" && seller.store.isVerified && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleTogglePremium(seller.store!.id, !seller.store!.isPremium);
-                            }}
-                            disabled={!!isLoading}
-                            className={`p-1.5 rounded-lg transition-colors ${
-                              seller.store.isPremium
-                                ? "text-[#E53935] bg-[#E53935]/10 hover:bg-[#C62828]/20"
-                                : "text-gray-400 hover:text-[#E53935] hover:bg-[#C62828]/10"
-                            }`}
-                            title={seller.store.isPremium ? "Remove from premium" : "Add to premium"}
-                          >
-                            {seller.store.isPremium ? (
-                              <Star className="w-4 h-4 fill-current" />
-                            ) : (
-                              <Star className="w-4 h-4" />
-                            )}
-                          </button>
-                        )}
 
                         {/* Archive / Activate */}
                         {seller.status === "ACTIVE" && (
