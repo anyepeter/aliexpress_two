@@ -23,6 +23,7 @@ import {
   ChevronDown,
   UserCircle,
   Eye,
+  Star,
 } from "lucide-react";
 import { useUnreadCount } from "@/lib/hooks/useUnreadCount";
 
@@ -46,8 +47,8 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { label: "Messages", href: "/messages", icon: MessageSquare },
     { label: "Loans", href: "/admin/loans", icon: CreditCard },
     { label: "Visitors", href: "/admin/visitors", icon: Eye },
+    { label: "Premium", href: "/admin/premium", icon: Star },
     { label: "Analytics", href: "/admin/analytics", icon: BarChart2 },
-    { label: "Settings", href: "/admin/settings", icon: Settings },
   ],
   SELLER: [
     { label: "Dashboard", href: "/seller/dashboard", icon: LayoutDashboard },
