@@ -1,6 +1,5 @@
+import { prisma } from "@/lib/prisma";
 import type { Product, ProductsResponse, Category } from "@/lib/types/product";
-
-const BASE_URL = "https://dummyjson.com";
 
 export async function getProducts(
   limit = 20,
@@ -8,13 +7,23 @@ export async function getProducts(
   category?: string
 ): Promise<ProductsResponse> {
   try {
-    const url = category
-      ? `${BASE_URL}/products/category/${category}?limit=${limit}&skip=${skip}`
-      : `${BASE_URL}/products?limit=${limit}&skip=${skip}`;
+    const where = category ? { category } : {};
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { id: "asc" },
+      }),
+      prisma.product.count({ where }),
+    ]);
 
-    const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (!res.ok) throw new Error("Failed to fetch products");
-    return res.json() as Promise<ProductsResponse>;
+    return {
+      products: products.map(dbToProduct),
+      total,
+      skip,
+      limit,
+    };
   } catch (error) {
     console.error("Error fetching products:", error);
     return { products: [], total: 0, skip: 0, limit };
@@ -23,11 +32,19 @@ export async function getProducts(
 
 export async function getCategories(): Promise<Category[]> {
   try {
-    const res = await fetch(`${BASE_URL}/products/categories`, {
-      next: { revalidate: 86400 },
+    const cats = await prisma.product.findMany({
+      distinct: ["category"],
+      select: { category: true },
+      orderBy: { category: "asc" },
     });
-    if (!res.ok) throw new Error("Failed to fetch categories");
-    return res.json() as Promise<Category[]>;
+    return cats.map((c) => ({
+      slug: c.category,
+      name: c.category
+        .split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" "),
+      url: `/shop?category=${c.category}`,
+    }));
   } catch (error) {
     console.error("Error fetching categories:", error);
     return [];
@@ -36,12 +53,11 @@ export async function getCategories(): Promise<Category[]> {
 
 export async function getFlashDeals(): Promise<Product[]> {
   try {
-    const res = await fetch(`${BASE_URL}/products?limit=8&skip=0`, {
-      next: { revalidate: 1800 },
+    const products = await prisma.product.findMany({
+      take: 8,
+      orderBy: { rating: "desc" },
     });
-    if (!res.ok) throw new Error("Failed to fetch flash deals");
-    const data = (await res.json()) as ProductsResponse;
-    return data.products;
+    return products.map(dbToProduct);
   } catch (error) {
     console.error("Error fetching flash deals:", error);
     return [];
@@ -50,12 +66,12 @@ export async function getFlashDeals(): Promise<Product[]> {
 
 export async function getFeaturedProducts(): Promise<Product[]> {
   try {
-    const res = await fetch(`${BASE_URL}/products?limit=20&skip=8`, {
-      next: { revalidate: 3600 },
+    const products = await prisma.product.findMany({
+      take: 20,
+      skip: 8,
+      orderBy: { rating: "desc" },
     });
-    if (!res.ok) throw new Error("Failed to fetch featured products");
-    const data = (await res.json()) as ProductsResponse;
-    return data.products;
+    return products.map(dbToProduct);
   } catch (error) {
     console.error("Error fetching featured products:", error);
     return [];
@@ -65,27 +81,63 @@ export async function getFeaturedProducts(): Promise<Product[]> {
 /** Fetch every available product for client-side shop filtering */
 export async function getAllShopProducts(): Promise<Product[]> {
   try {
-    // DummyJSON supports limit=0 to get all products
-    const res = await fetch(`${BASE_URL}/products?limit=0`, {
-      next: { revalidate: 3600 },
+    const products = await prisma.product.findMany({
+      orderBy: { id: "asc" },
     });
-    if (!res.ok) throw new Error("Failed to fetch all products");
-    const data = (await res.json()) as ProductsResponse;
-    // If limit=0 returned nothing, fallback to two paginated requests
-    if (data.products.length === 0) {
-      const [a, b] = await Promise.all([
-        fetch(`${BASE_URL}/products?limit=100&skip=0`).then((r) =>
-          r.json() as Promise<ProductsResponse>
-        ),
-        fetch(`${BASE_URL}/products?limit=100&skip=100`).then((r) =>
-          r.json() as Promise<ProductsResponse>
-        ),
-      ]);
-      return [...a.products, ...b.products];
-    }
-    return data.products;
+    return products.map(dbToProduct);
   } catch (error) {
     console.error("Error fetching all shop products:", error);
     return [];
   }
+}
+
+/** Convert a Prisma Product to the legacy Product type */
+function dbToProduct(p: {
+  id: number;
+  title: string;
+  description: string;
+  shortDescription: string | null;
+  keyFeatures: string | null;
+  price: number;
+  discountPercentage: number | null;
+  rating: number | null;
+  stock: number | null;
+  brand: string | null;
+  category: string;
+  thumbnail: string | null;
+  images: string[];
+  tags: string[];
+  sku: string | null;
+  weight: number | null;
+  warrantyInformation: string | null;
+  shippingInformation: string | null;
+  availabilityStatus: string | null;
+  returnPolicy: string | null;
+  minimumOrderQuantity: number | null;
+  reviews: unknown;
+  meta: unknown;
+}): Product {
+  return {
+    id: p.id,
+    title: p.title,
+    description: p.description,
+    price: p.price,
+    discountPercentage: p.discountPercentage ?? 0,
+    rating: p.rating ?? 0,
+    stock: p.stock ?? 0,
+    brand: p.brand ?? undefined,
+    category: p.category,
+    thumbnail: p.thumbnail ?? "",
+    images: p.images ?? [],
+    tags: p.tags ?? [],
+    sku: p.sku ?? undefined,
+    weight: p.weight ?? undefined,
+    warrantyInformation: p.warrantyInformation ?? undefined,
+    shippingInformation: p.shippingInformation ?? undefined,
+    availabilityStatus: p.availabilityStatus ?? undefined,
+    returnPolicy: p.returnPolicy ?? undefined,
+    minimumOrderQuantity: p.minimumOrderQuantity ?? undefined,
+    reviews: (p.reviews as Product["reviews"]) ?? undefined,
+    meta: (p.meta as Product["meta"]) ?? undefined,
+  };
 }

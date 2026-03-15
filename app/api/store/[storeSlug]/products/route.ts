@@ -3,31 +3,6 @@ import { prisma } from "@/lib/prisma";
 import type { MarketplaceProduct, StoreInfo } from "@/lib/types/marketplace";
 import type { Prisma } from "@prisma/client";
 
-type DummyProduct = {
-  id: number;
-  title: string;
-  thumbnail: string;
-  images: string[];
-  brand?: string;
-  category: string;
-  price: number;
-  rating: number;
-  discountPercentage: number;
-  stock: number;
-  description: string;
-};
-
-async function fetchDummy(id: number): Promise<DummyProduct | null> {
-  try {
-    const r = await fetch(`https://dummyjson.com/products/${id}`, {
-      next: { revalidate: 3600 },
-    });
-    return r.ok ? (r.json() as Promise<DummyProduct>) : null;
-  } catch {
-    return null;
-  }
-}
-
 // GET /api/store/[storeSlug]/products?category=&sort=&page=1&limit=12&exclude=
 export async function GET(
   req: NextRequest,
@@ -79,48 +54,54 @@ export async function GET(
   });
   const categories = [...new Set(allPublished.map((p) => p.category))].sort();
 
-  // Enrich with DummyJSON
-  const enriched = await Promise.all(
-    sellerProducts.map(async (p) => {
-      const dummy = await fetchDummy(p.dummyProductId);
-      if (!dummy) return null;
+  // Batch fetch product data from local DB
+  const dummyIds = sellerProducts.map((p) => p.dummyProductId);
+  const productRecords = await prisma.product.findMany({
+    where: { id: { in: dummyIds } },
+  });
+  const productMap = new Map(productRecords.map((p) => [p.id, p]));
 
-      const storeInfo: StoreInfo = {
-        id: store.id,
-        userId: store.userId,
-        storeName: store.storeName,
-        storeSlug: store.storeSlug,
-        logoUrl: store.logoUrl,
-        bannerUrl: store.bannerUrl,
-        description: store.description,
-        isVerified: store.isVerified,
-        createdAt: store.createdAt.toISOString(),
-        ownerEmail: store.user?.email ?? null,
-        ownerPhone: store.user?.phone ?? null,
-        country: store.country ?? null,
-        city: store.city ?? null,
-        socialLinks: (store.socialLinks as Record<string, string>) ?? null,
-      };
+  const enriched = sellerProducts.map((p) => {
+    const prodData = productMap.get(p.dummyProductId);
+    if (!prodData) return null;
 
-      const product: MarketplaceProduct = {
-        id: p.id,
-        dummyProductId: p.dummyProductId,
-        title: p.title,
-        thumbnail: dummy.thumbnail,
-        images: dummy.images ?? [],
-        brand: p.brand ?? dummy.brand ?? "Unknown",
-        category: p.category,
-        sellingPrice: p.sellingPrice,
-        rating: dummy.rating,
-        discountPercentage: dummy.discountPercentage,
-        stock: dummy.stock,
-        description: p.description ?? dummy.description,
-        store: storeInfo,
-        isPremium: store.isVerified,
-      };
-      return product;
-    })
-  );
+    const storeInfo: StoreInfo = {
+      id: store.id,
+      userId: store.userId,
+      storeName: store.storeName,
+      storeSlug: store.storeSlug,
+      logoUrl: store.logoUrl,
+      bannerUrl: store.bannerUrl,
+      description: store.description,
+      isVerified: store.isVerified,
+      createdAt: store.createdAt.toISOString(),
+      ownerEmail: store.user?.email ?? null,
+      ownerPhone: store.user?.phone ?? null,
+      country: store.country ?? null,
+      city: store.city ?? null,
+      socialLinks: (store.socialLinks as Record<string, string>) ?? null,
+    };
+
+    const product: MarketplaceProduct = {
+      id: p.id,
+      dummyProductId: p.dummyProductId,
+      title: p.title,
+      thumbnail: prodData.thumbnail ?? "",
+      images: prodData.images ?? [],
+      brand: p.brand ?? prodData.brand ?? "Unknown",
+      category: p.category,
+      sellingPrice: p.sellingPrice,
+      rating: prodData.rating ?? 0,
+      discountPercentage: prodData.discountPercentage ?? 0,
+      stock: prodData.stock ?? 0,
+      description: p.description ?? prodData.description,
+      shortDescription: prodData.shortDescription,
+      keyFeatures: prodData.keyFeatures,
+      store: storeInfo,
+      isPremium: store.isVerified,
+    };
+    return product;
+  });
 
   const products = enriched.filter((p): p is MarketplaceProduct => p !== null);
   const hasMore = skip + limit < total;

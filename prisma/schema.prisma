@@ -412,6 +412,40 @@ model LoanRepayment {
   @@index([status])
 }
 
+// ─── Product Catalog (migrated from DummyJSON) ──────────────────
+
+model Product {
+  id                   Int      @id
+  title                String
+  description          String
+  shortDescription     String?
+  keyFeatures          String?
+  originalDescription  String?
+  price                Float
+  discountPercentage   Float?
+  rating               Float?
+  stock                Int?
+  brand                String?
+  category             String
+  thumbnail            String?
+  images               String[]
+  tags                 String[]
+  sku                  String?
+  weight               Float?
+  warrantyInformation  String?
+  shippingInformation  String?
+  availabilityStatus   String?
+  returnPolicy         String?
+  minimumOrderQuantity Int?
+  reviews              Json?
+  meta                 Json?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([category])
+  @@index([brand])
+}
+
 // ─── Today's Deals (Dollar Express + SuperDeals) ────────────────
 
 enum DealSectionType {

@@ -125,10 +125,25 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         </p>
       )}
 
+      {/* Key Features */}
+      {product.keyFeatures && (
+        <div className="bg-gray-50 rounded-xl p-4">
+          <h3 className="text-sm font-bold text-[#1A1A1A] mb-2">Key Features</h3>
+          <ul className="space-y-1.5">
+            {product.keyFeatures.split("\n").filter(Boolean).map((line, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-[#E53935] mt-0.5 flex-shrink-0">✓</span>
+                <span>{line.replace(/^•\s*/, "")}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* Description */}
       <div>
         <p
-          className={`text-sm text-gray-600 leading-relaxed ${
+          className={`text-sm text-gray-600 leading-relaxed whitespace-pre-line ${
             descExpanded ? "" : "line-clamp-3"
           }`}
         >

@@ -14,31 +14,6 @@ interface PageProps {
   params: Promise<{ storeSlug: string }>;
 }
 
-type DummyProduct = {
-  id: number;
-  title: string;
-  thumbnail: string;
-  images: string[];
-  brand?: string;
-  category: string;
-  price: number;
-  rating: number;
-  discountPercentage: number;
-  stock: number;
-  description: string;
-};
-
-async function fetchDummy(id: number): Promise<DummyProduct | null> {
-  try {
-    const r = await fetch(`https://dummyjson.com/products/${id}`, {
-      next: { revalidate: 3600 },
-    });
-    return r.ok ? (r.json() as Promise<DummyProduct>) : null;
-  } catch {
-    return null;
-  }
-}
-
 async function getStoreData(storeSlug: string) {
   const store = await prisma.store.findUnique({
     where: { storeSlug },
@@ -80,28 +55,35 @@ async function getStoreData(storeSlug: string) {
   });
   const categories = [...new Set(allPublished.map((p) => p.category))].sort();
 
-  const enriched = await Promise.all(
-    sellerProducts.map(async (p) => {
-      const dummy = await fetchDummy(p.dummyProductId);
-      if (!dummy) return null;
-      return {
-        id: p.id,
-        dummyProductId: p.dummyProductId,
-        title: p.title,
-        thumbnail: dummy.thumbnail,
-        images: dummy.images ?? [],
-        brand: p.brand ?? dummy.brand ?? "Unknown",
-        category: p.category,
-        sellingPrice: p.sellingPrice,
-        rating: dummy.rating,
-        discountPercentage: dummy.discountPercentage,
-        stock: dummy.stock,
-        description: p.description ?? dummy.description,
-        store: storeInfo,
-        isPremium: store.isVerified,
-      } as MarketplaceProduct;
-    })
-  );
+  // Batch fetch product data from local DB
+  const dummyIds = sellerProducts.map((p) => p.dummyProductId);
+  const productRecords = await prisma.product.findMany({
+    where: { id: { in: dummyIds } },
+  });
+  const productMap = new Map(productRecords.map((p) => [p.id, p]));
+
+  const enriched = sellerProducts.map((p) => {
+    const prodData = productMap.get(p.dummyProductId);
+    if (!prodData) return null;
+    return {
+      id: p.id,
+      dummyProductId: p.dummyProductId,
+      title: p.title,
+      thumbnail: prodData.thumbnail ?? "",
+      images: prodData.images ?? [],
+      brand: p.brand ?? prodData.brand ?? "Unknown",
+      category: p.category,
+      sellingPrice: p.sellingPrice,
+      rating: prodData.rating ?? 0,
+      discountPercentage: prodData.discountPercentage ?? 0,
+      stock: prodData.stock ?? 0,
+      description: p.description ?? prodData.description,
+      shortDescription: prodData.shortDescription,
+      keyFeatures: prodData.keyFeatures,
+      store: storeInfo,
+      isPremium: store.isVerified,
+    } as MarketplaceProduct;
+  });
 
   const products = enriched.filter((p): p is MarketplaceProduct => p !== null);
   const hasMore = 12 < total;

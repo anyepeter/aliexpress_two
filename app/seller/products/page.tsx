@@ -58,30 +58,26 @@ export default async function SellerProductsPage() {
   const needsBackfill = user.store.sellerProducts.filter((p) => p.discountPct === 0);
   if (needsBackfill.length > 0) {
     try {
-      const dummyRes = await fetch(
-        `https://dummyjson.com/products?limit=0&select=id,discountPercentage`,
-        { next: { revalidate: 3600 } }
+      const dummyIds = needsBackfill.map((p) => p.dummyProductId);
+      const productRecords = await prisma.product.findMany({
+        where: { id: { in: dummyIds } },
+        select: { id: true, discountPercentage: true },
+      });
+      const discountMap = new Map(productRecords.map((p) => [p.id, p.discountPercentage ?? 0]));
+      await Promise.all(
+        needsBackfill
+          .filter((p) => (discountMap.get(p.dummyProductId) ?? 0) > 0)
+          .map((p) =>
+            prisma.sellerProduct.update({
+              where: { id: p.id },
+              data: { discountPct: discountMap.get(p.dummyProductId)! },
+            })
+          )
       );
-      if (dummyRes.ok) {
-        const data = (await dummyRes.json()) as {
-          products: Array<{ id: number; discountPercentage: number }>;
-        };
-        const discountMap = new Map(data.products.map((p) => [p.id, p.discountPercentage]));
-        await Promise.all(
-          needsBackfill
-            .filter((p) => (discountMap.get(p.dummyProductId) ?? 0) > 0)
-            .map((p) =>
-              prisma.sellerProduct.update({
-                where: { id: p.id },
-                data: { discountPct: discountMap.get(p.dummyProductId)! },
-              })
-            )
-        );
-        // Refresh the products in memory
-        for (const p of user.store.sellerProducts) {
-          const dp = discountMap.get(p.dummyProductId);
-          if (dp && dp > 0) p.discountPct = dp;
-        }
+      // Refresh the products in memory
+      for (const p of user.store.sellerProducts) {
+        const dp = discountMap.get(p.dummyProductId);
+        if (dp && dp > 0) p.discountPct = dp;
       }
     } catch {
       // Silent fail — discount will show as 0 until next page load

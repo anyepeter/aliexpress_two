@@ -17,53 +17,30 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-type DummyProduct = {
-  id: number;
-  title: string;
-  thumbnail: string;
-  images: string[];
-  brand?: string;
-  category: string;
-  price: number;
-  rating: number;
-  discountPercentage: number;
-  stock: number;
-  description: string;
-};
-
-async function fetchDummy(dummyId: number): Promise<DummyProduct | null> {
-  try {
-    const r = await fetch(`https://dummyjson.com/products/${dummyId}`, {
-      next: { revalidate: 3600 },
-    });
-    return r.ok ? (r.json() as Promise<DummyProduct>) : null;
-  } catch {
-    return null;
-  }
-}
-
 async function getProduct(id: string): Promise<MarketplaceProduct | null> {
   const isDummy = id.startsWith("dummy-");
 
-  // ── DummyJSON fallback product ───────────────────────────────────────────
+  // ── Product from local DB ───────────────────────────────────────────
   if (isDummy) {
     const dummyId = parseInt(id.replace("dummy-", ""), 10);
     if (isNaN(dummyId)) return null;
-    const dummy = await fetchDummy(dummyId);
-    if (!dummy) return null;
+    const prodData = await prisma.product.findUnique({ where: { id: dummyId } });
+    if (!prodData) return null;
     return {
-      id: `dummy-${dummy.id}`,
-      dummyProductId: dummy.id,
-      title: dummy.title,
-      thumbnail: dummy.thumbnail,
-      images: dummy.images ?? [],
-      brand: dummy.brand ?? "Unknown",
-      category: dummy.category,
-      sellingPrice: dummy.price,
-      rating: dummy.rating,
-      discountPercentage: dummy.discountPercentage,
-      stock: dummy.stock,
-      description: dummy.description,
+      id: `dummy-${prodData.id}`,
+      dummyProductId: prodData.id,
+      title: prodData.title,
+      thumbnail: prodData.thumbnail ?? "",
+      images: prodData.images ?? [],
+      brand: prodData.brand ?? "Unknown",
+      category: prodData.category,
+      sellingPrice: prodData.price,
+      rating: prodData.rating ?? 0,
+      discountPercentage: prodData.discountPercentage ?? 0,
+      stock: prodData.stock ?? 0,
+      description: prodData.description,
+      shortDescription: prodData.shortDescription,
+      keyFeatures: prodData.keyFeatures,
       store: null,
       isPremium: false,
     };
@@ -98,8 +75,8 @@ async function getProduct(id: string): Promise<MarketplaceProduct | null> {
 
   if (!sellerProduct) return null;
 
-  const dummy = await fetchDummy(sellerProduct.dummyProductId);
-  if (!dummy) return null;
+  const prodData = await prisma.product.findUnique({ where: { id: sellerProduct.dummyProductId } });
+  if (!prodData) return null;
 
   const storeInfo: StoreInfo = {
     id: sellerProduct.store.id,
@@ -122,15 +99,17 @@ async function getProduct(id: string): Promise<MarketplaceProduct | null> {
     id: sellerProduct.id,
     dummyProductId: sellerProduct.dummyProductId,
     title: sellerProduct.title,
-    thumbnail: dummy.thumbnail,
-    images: dummy.images ?? [],
-    brand: sellerProduct.brand ?? dummy.brand ?? "Unknown",
+    thumbnail: prodData.thumbnail ?? "",
+    images: prodData.images ?? [],
+    brand: sellerProduct.brand ?? prodData.brand ?? "Unknown",
     category: sellerProduct.category,
     sellingPrice: sellerProduct.sellingPrice,
-    rating: dummy.rating,
-    discountPercentage: dummy.discountPercentage,
-    stock: dummy.stock,
-    description: sellerProduct.description ?? dummy.description,
+    rating: prodData.rating ?? 0,
+    discountPercentage: prodData.discountPercentage ?? 0,
+    stock: prodData.stock ?? 0,
+    description: sellerProduct.description ?? prodData.description,
+    shortDescription: prodData.shortDescription,
+    keyFeatures: prodData.keyFeatures,
     store: storeInfo,
     isPremium: sellerProduct.store.isVerified,
   };

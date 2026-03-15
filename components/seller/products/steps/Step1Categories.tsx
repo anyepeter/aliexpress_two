@@ -14,7 +14,7 @@ export default function Step1Categories({ selected, onNext }: Step1CategoriesPro
   const [picked, setPicked] = useState<Set<string>>(new Set(selected));
 
   useEffect(() => {
-    fetch("https://dummyjson.com/products/categories")
+    fetch("/api/products/categories")
       .then((r) => r.json())
       .then((data: Array<{ slug: string; name: string } | string>) => {
         const slugs = data.map((c) => (typeof c === "string" ? c : c.slug));

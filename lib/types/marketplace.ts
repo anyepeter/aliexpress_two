@@ -28,6 +28,8 @@ export interface MarketplaceProduct {
   discountPercentage: number;
   stock: number;
   description: string;
+  shortDescription?: string | null;
+  keyFeatures?: string | null;
   store: StoreInfo | null; // null = MarketHub fallback (DummyJSON product)
   isPremium: boolean;      // true if store.isVerified
 }

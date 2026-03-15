@@ -3,59 +3,6 @@ import { prisma } from "@/lib/prisma";
 import type { MarketplaceProduct, StoreInfo } from "@/lib/types/marketplace";
 import type { Prisma } from "@prisma/client";
 
-type DummyProduct = {
-  id: number;
-  title: string;
-  thumbnail: string;
-  images: string[];
-  brand?: string;
-  category: string;
-  price: number;
-  rating: number;
-  discountPercentage: number;
-  stock: number;
-  description: string;
-};
-
-async function fetchDummy(id: number): Promise<DummyProduct | null> {
-  try {
-    const r = await fetch(`https://dummyjson.com/products/${id}`, {
-      next: { revalidate: 3600 },
-    });
-    return r.ok ? (r.json() as Promise<DummyProduct>) : null;
-  } catch {
-    return null;
-  }
-}
-
-async function fetchDummyList(limit: number, skip: number): Promise<DummyProduct[]> {
-  try {
-    const r = await fetch(
-      `https://dummyjson.com/products?limit=${limit}&skip=${skip}`,
-      { next: { revalidate: 3600 } }
-    );
-    if (!r.ok) return [];
-    const data = (await r.json()) as { products: DummyProduct[] };
-    return data.products ?? [];
-  } catch {
-    return [];
-  }
-}
-
-async function fetchDummyByCategory(category: string, limit: number): Promise<DummyProduct[]> {
-  try {
-    const r = await fetch(
-      `https://dummyjson.com/products/category/${encodeURIComponent(category)}?limit=${limit}`,
-      { next: { revalidate: 3600 } }
-    );
-    if (!r.ok) return [];
-    const data = (await r.json()) as { products: DummyProduct[] };
-    return data.products ?? [];
-  } catch {
-    return [];
-  }
-}
-
 // GET /api/products/marketplace?category=&search=&sort=&minPrice=&maxPrice=&verifiedOnly=&page=1&limit=20&exclude=
 export async function GET(req: NextRequest) {
   const sp = new URL(req.url).searchParams;
@@ -122,52 +69,59 @@ export async function GET(req: NextRequest) {
     prisma.sellerProduct.count({ where }),
   ]);
 
-  const enriched = await Promise.all(
-    dbProducts.map(async (p) => {
-      const dummy = await fetchDummy(p.dummyProductId);
-      if (!dummy) return null;
+  // Batch fetch product data from local DB
+  const dummyIds = dbProducts.map((p) => p.dummyProductId);
+  const productRecords = await prisma.product.findMany({
+    where: { id: { in: dummyIds } },
+  });
+  const productMap = new Map(productRecords.map((p) => [p.id, p]));
 
-      const storeInfo: StoreInfo = {
-        id: p.store.id,
-        userId: p.store.userId,
-        storeName: p.store.storeName,
-        storeSlug: p.store.storeSlug,
-        logoUrl: p.store.logoUrl,
-        bannerUrl: p.store.bannerUrl,
-        description: p.store.description,
-        isVerified: p.store.isVerified,
-        createdAt: p.store.createdAt.toISOString(),
-        ownerEmail: p.store.user?.email ?? null,
-        ownerPhone: p.store.user?.phone ?? null,
-        country: p.store.country ?? null,
-        city: p.store.city ?? null,
-        socialLinks: (p.store.socialLinks as Record<string, string>) ?? null,
-      };
+  const enriched = dbProducts.map((p) => {
+    const prodData = productMap.get(p.dummyProductId);
+    if (!prodData) return null;
 
-      const product: MarketplaceProduct = {
-        id: p.id,
-        dummyProductId: p.dummyProductId,
-        title: p.title,
-        thumbnail: dummy.thumbnail,
-        images: dummy.images ?? [],
-        brand: p.brand ?? dummy.brand ?? "Unknown",
-        category: p.category,
-        sellingPrice: p.sellingPrice,
-        rating: dummy.rating,
-        discountPercentage: dummy.discountPercentage,
-        stock: dummy.stock,
-        description: p.description ?? dummy.description,
-        store: storeInfo,
-        isPremium: p.store.isVerified,
-      };
-      return product;
-    })
-  );
+    const storeInfo: StoreInfo = {
+      id: p.store.id,
+      userId: p.store.userId,
+      storeName: p.store.storeName,
+      storeSlug: p.store.storeSlug,
+      logoUrl: p.store.logoUrl,
+      bannerUrl: p.store.bannerUrl,
+      description: p.store.description,
+      isVerified: p.store.isVerified,
+      createdAt: p.store.createdAt.toISOString(),
+      ownerEmail: p.store.user?.email ?? null,
+      ownerPhone: p.store.user?.phone ?? null,
+      country: p.store.country ?? null,
+      city: p.store.city ?? null,
+      socialLinks: (p.store.socialLinks as Record<string, string>) ?? null,
+    };
+
+    const product: MarketplaceProduct = {
+      id: p.id,
+      dummyProductId: p.dummyProductId,
+      title: p.title,
+      thumbnail: prodData.thumbnail ?? "",
+      images: prodData.images ?? [],
+      brand: p.brand ?? prodData.brand ?? "Unknown",
+      category: p.category,
+      sellingPrice: p.sellingPrice,
+      rating: prodData.rating ?? 0,
+      discountPercentage: prodData.discountPercentage ?? 0,
+      stock: prodData.stock ?? 0,
+      description: p.description ?? prodData.description,
+      shortDescription: prodData.shortDescription,
+      keyFeatures: prodData.keyFeatures,
+      store: storeInfo,
+      isPremium: p.store.isVerified,
+    };
+    return product;
+  });
 
   const validDb = enriched.filter((p): p is MarketplaceProduct => p !== null);
   const hasMore = skip + limit < total;
 
-  // Fill with DummyJSON fallback if not enough DB products
+  // Fill with local DB fallback if not enough seller products
   let products: MarketplaceProduct[] = validDb;
   if (validDb.length < limit && !verifiedOnly && !search) {
     const usedIds = new Set(dbProducts.map((p) => p.dummyProductId));
@@ -175,30 +129,35 @@ export async function GET(req: NextRequest) {
       usedIds.add(parseInt(exclude.replace("dummy-", ""), 10));
     }
 
-    // If category filter is active, fetch DummyJSON by category; otherwise general list
-    const extra = category
-      ? await fetchDummyByCategory(category, limit - validDb.length + 10)
-      : await fetchDummyList(limit - validDb.length + 10, 0);
+    const extraWhere: Prisma.ProductWhereInput = {
+      id: { notIn: Array.from(usedIds) },
+      ...(category ? { category } : {}),
+    };
 
-    const fallback = extra
-      .filter((p) => !usedIds.has(p.id))
-      .slice(0, limit - validDb.length)
-      .map((p): MarketplaceProduct => ({
-        id: `dummy-${p.id}`,
-        dummyProductId: p.id,
-        title: p.title,
-        thumbnail: p.thumbnail,
-        images: p.images ?? [],
-        brand: p.brand ?? "Unknown",
-        category: p.category,
-        sellingPrice: p.price,
-        rating: p.rating,
-        discountPercentage: p.discountPercentage,
-        stock: p.stock,
-        description: p.description,
-        store: null,
-        isPremium: false,
-      }));
+    const extra = await prisma.product.findMany({
+      where: extraWhere,
+      take: limit - validDb.length,
+      orderBy: { id: "asc" },
+    });
+
+    const fallback = extra.map((p): MarketplaceProduct => ({
+      id: `dummy-${p.id}`,
+      dummyProductId: p.id,
+      title: p.title,
+      thumbnail: p.thumbnail ?? "",
+      images: p.images ?? [],
+      brand: p.brand ?? "Unknown",
+      category: p.category,
+      sellingPrice: p.price,
+      rating: p.rating ?? 0,
+      discountPercentage: p.discountPercentage ?? 0,
+      stock: p.stock ?? 0,
+      description: p.description,
+      shortDescription: p.shortDescription,
+      keyFeatures: p.keyFeatures,
+      store: null,
+      isPremium: false,
+    }));
     products = [...validDb, ...fallback];
   }
 

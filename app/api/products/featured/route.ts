@@ -2,31 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import type { MarketplaceProduct, StoreInfo } from "@/lib/types/marketplace";
 
-type DummyProduct = {
-  id: number;
-  title: string;
-  thumbnail: string;
-  images: string[];
-  brand?: string;
-  category: string;
-  price: number;
-  rating: number;
-  discountPercentage: number;
-  stock: number;
-  description: string;
-};
-
-async function fetchDummy(dummyProductId: number): Promise<DummyProduct | null> {
-  try {
-    const r = await fetch(`https://dummyjson.com/products/${dummyProductId}`, {
-      next: { revalidate: 3600 },
-    });
-    return r.ok ? (r.json() as Promise<DummyProduct>) : null;
-  } catch {
-    return null;
-  }
-}
-
 const HOT_CATEGORIES = [
   "smartphones",
   "laptops",
@@ -45,24 +20,6 @@ const HOT_CATEGORIES = [
   "mobile-accessories",
   "sports-accessories",
 ];
-
-async function fetchHotProducts(needed: number): Promise<DummyProduct[]> {
-  try {
-    const fetches = HOT_CATEGORIES.map((cat) =>
-      fetch(`https://dummyjson.com/products/category/${cat}?limit=5`, {
-        next: { revalidate: 3600 },
-      })
-        .then((r) => (r.ok ? r.json() : { products: [] }))
-        .then((d: { products: DummyProduct[] }) => d.products)
-        .catch(() => [] as DummyProduct[])
-    );
-    const all = (await Promise.all(fetches)).flat();
-    // Shuffle for variety
-    return all.sort(() => Math.random() - 0.5).slice(0, needed);
-  } catch {
-    return [];
-  }
-}
 
 // GET /api/products/featured?limit=20&page=1&verifiedOnly=false
 export async function GET(req: NextRequest) {
@@ -107,48 +64,54 @@ export async function GET(req: NextRequest) {
     ],
   });
 
-  // ── 2. Enrich each DB product with DummyJSON data ──────────────────────────
-  const enriched = await Promise.all(
-    dbProducts.map(async (p) => {
-      const dummy = await fetchDummy(p.dummyProductId);
-      if (!dummy) return null;
+  // ── 2. Batch fetch product data from local DB ──────────────────────────
+  const dummyIds = dbProducts.map((p) => p.dummyProductId);
+  const productRecords = await prisma.product.findMany({
+    where: { id: { in: dummyIds } },
+  });
+  const productMap = new Map(productRecords.map((p) => [p.id, p]));
 
-      const storeInfo: StoreInfo = {
-        id: p.store.id,
-        userId: p.store.userId,
-        storeName: p.store.storeName,
-        storeSlug: p.store.storeSlug,
-        logoUrl: p.store.logoUrl,
-        bannerUrl: p.store.bannerUrl,
-        description: p.store.description,
-        isVerified: p.store.isVerified,
-        createdAt: p.store.createdAt.toISOString(),
-        ownerEmail: p.store.user?.email ?? null,
-        ownerPhone: p.store.user?.phone ?? null,
-        country: p.store.country ?? null,
-        city: p.store.city ?? null,
-        socialLinks: (p.store.socialLinks as Record<string, string>) ?? null,
-      };
+  const enriched = dbProducts.map((p) => {
+    const prodData = productMap.get(p.dummyProductId);
+    if (!prodData) return null;
 
-      const product: MarketplaceProduct = {
-        id: p.id,
-        dummyProductId: p.dummyProductId,
-        title: p.title,
-        thumbnail: dummy.thumbnail,
-        images: dummy.images ?? [],
-        brand: p.brand ?? dummy.brand ?? "Unknown",
-        category: p.category,
-        sellingPrice: p.sellingPrice,  // NEVER expose basePrice/marginPercent
-        rating: dummy.rating,
-        discountPercentage: dummy.discountPercentage,
-        stock: dummy.stock,
-        description: p.description ?? dummy.description,
-        store: storeInfo,
-        isPremium: p.store.isVerified,
-      };
-      return product;
-    })
-  );
+    const storeInfo: StoreInfo = {
+      id: p.store.id,
+      userId: p.store.userId,
+      storeName: p.store.storeName,
+      storeSlug: p.store.storeSlug,
+      logoUrl: p.store.logoUrl,
+      bannerUrl: p.store.bannerUrl,
+      description: p.store.description,
+      isVerified: p.store.isVerified,
+      createdAt: p.store.createdAt.toISOString(),
+      ownerEmail: p.store.user?.email ?? null,
+      ownerPhone: p.store.user?.phone ?? null,
+      country: p.store.country ?? null,
+      city: p.store.city ?? null,
+      socialLinks: (p.store.socialLinks as Record<string, string>) ?? null,
+    };
+
+    const product: MarketplaceProduct = {
+      id: p.id,
+      dummyProductId: p.dummyProductId,
+      title: p.title,
+      thumbnail: prodData.thumbnail ?? "",
+      images: prodData.images ?? [],
+      brand: p.brand ?? prodData.brand ?? "Unknown",
+      category: p.category,
+      sellingPrice: p.sellingPrice,
+      rating: prodData.rating ?? 0,
+      discountPercentage: prodData.discountPercentage ?? 0,
+      stock: prodData.stock ?? 0,
+      description: p.description ?? prodData.description,
+      shortDescription: prodData.shortDescription,
+      keyFeatures: prodData.keyFeatures,
+      store: storeInfo,
+      isPremium: p.store.isVerified,
+    };
+    return product;
+  });
 
   const validDbProducts = enriched.filter((p): p is MarketplaceProduct => p !== null);
 
@@ -156,28 +119,37 @@ export async function GET(req: NextRequest) {
   const paginatedDb = validDbProducts.slice(skip, skip + limit);
   let products: MarketplaceProduct[] = paginatedDb;
 
-  // ── 4. Fill remaining slots with DummyJSON fallback if needed ──────────────
+  // ── 4. Fill remaining slots with local DB fallback products ──────────────
   const usedDummyIds = new Set(dbProducts.map((p) => p.dummyProductId));
   const remaining = limit - paginatedDb.length;
 
   if (remaining > 0 && !verifiedOnly) {
-    const fallbackRaw = await fetchHotProducts(remaining + usedDummyIds.size);
-    const fallback = fallbackRaw
-      .filter((p) => !usedDummyIds.has(p.id))
+    const fallbackRaw = await prisma.product.findMany({
+      where: {
+        category: { in: HOT_CATEGORIES },
+        id: { notIn: Array.from(usedDummyIds) },
+      },
+      take: remaining + 10,
+    });
+
+    const shuffled = fallbackRaw.sort(() => Math.random() - 0.5);
+    const fallback = shuffled
       .slice(0, remaining)
       .map((p): MarketplaceProduct => ({
         id: `dummy-${p.id}`,
         dummyProductId: p.id,
         title: p.title,
-        thumbnail: p.thumbnail,
+        thumbnail: p.thumbnail ?? "",
         images: p.images ?? [],
         brand: p.brand ?? "Unknown",
         category: p.category,
         sellingPrice: p.price,
-        rating: p.rating,
-        discountPercentage: p.discountPercentage,
-        stock: p.stock,
+        rating: p.rating ?? 0,
+        discountPercentage: p.discountPercentage ?? 0,
+        stock: p.stock ?? 0,
         description: p.description,
+        shortDescription: p.shortDescription,
+        keyFeatures: p.keyFeatures,
         store: null,
         isPremium: false,
       }));

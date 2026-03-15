@@ -30,16 +30,11 @@ export default function Step2SelectProducts({
     if (categories.length === 0) return;
     setLoading(true);
 
-    Promise.all(
-      categories.map((cat) =>
-        fetch(`https://dummyjson.com/products/category/${cat}?limit=100`)
-          .then((r) => r.json() as Promise<DummyProductsResponse>)
-          .then((d) => d.products)
-          .catch(() => [] as DummyProduct[])
-      )
-    )
-      .then((results) => {
-        const flat = results.flat();
+    fetch(`/api/products/by-category?categories=${categories.join(",")}&limit=500`)
+      .then((r) => r.json() as Promise<DummyProductsResponse>)
+      .then((data) => data.products ?? [])
+      .catch(() => [] as DummyProduct[])
+      .then((flat) => {
         // Dedupe by id
         const seen = new Set<number>();
         const deduped = flat.filter((p) => {

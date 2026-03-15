@@ -1,28 +1,25 @@
 import { prisma } from "@/lib/prisma";
 import type { MarketplaceProduct, StoreInfo } from "@/lib/types/marketplace";
+import type { Product } from "@prisma/client";
 
-type DummyProduct = {
-  id: number;
-  title: string;
-  thumbnail: string;
-  images: string[];
-  brand?: string;
-  category: string;
-  price: number;
-  rating: number;
-  discountPercentage: number;
-  stock: number;
-  description: string;
-};
-
-async function fetchDummy(id: number): Promise<DummyProduct | null> {
+/** Fetch product data from our local NeonDB Product table (replaces DummyJSON API). */
+async function fetchProductData(id: number): Promise<Product | null> {
   try {
-    const r = await fetch(`https://dummyjson.com/products/${id}`, {
-      next: { revalidate: 3600 },
-    });
-    return r.ok ? (r.json() as Promise<DummyProduct>) : null;
+    return await prisma.product.findUnique({ where: { id } });
   } catch {
     return null;
+  }
+}
+
+/** Fetch multiple products by IDs from local DB. */
+async function fetchProductsByIds(ids: number[]): Promise<Map<number, Product>> {
+  try {
+    const products = await prisma.product.findMany({
+      where: { id: { in: ids } },
+    });
+    return new Map(products.map((p) => [p.id, p]));
+  } catch {
+    return new Map();
   }
 }
 
@@ -44,46 +41,50 @@ export async function getFeaturedMarketplaceProducts(
       take: limit,
     });
 
-    const enriched = await Promise.all(
-      sellerProducts.map(async (p) => {
-        const dummy = await fetchDummy(p.dummyProductId);
-        if (!dummy) return null;
+    // Batch fetch all product data from local DB
+    const dummyIds = sellerProducts.map((p) => p.dummyProductId);
+    const productDataMap = await fetchProductsByIds(dummyIds);
 
-        const storeInfo: StoreInfo = {
-          id: p.store.id,
-          userId: p.store.userId,
-          storeName: p.store.storeName,
-          storeSlug: p.store.storeSlug,
-          logoUrl: p.store.logoUrl,
-          bannerUrl: p.store.bannerUrl,
-          description: p.store.description,
-          isVerified: p.store.isVerified,
-          createdAt: p.store.createdAt.toISOString(),
-          ownerEmail: p.store.user?.email ?? null,
-          ownerPhone: p.store.user?.phone ?? null,
-          country: p.store.country ?? null,
-          city: p.store.city ?? null,
-          socialLinks: (p.store.socialLinks as Record<string, string>) ?? null,
-        };
+    const enriched = sellerProducts.map((p) => {
+      const prodData = productDataMap.get(p.dummyProductId);
+      if (!prodData) return null;
 
-        return {
-          id: p.id,
-          dummyProductId: p.dummyProductId,
-          title: p.title,
-          thumbnail: dummy.thumbnail,
-          images: dummy.images ?? [],
-          brand: p.brand ?? dummy.brand ?? "Unknown",
-          category: p.category,
-          sellingPrice: p.sellingPrice,
-          rating: dummy.rating,
-          discountPercentage: dummy.discountPercentage,
-          stock: dummy.stock,
-          description: p.description ?? dummy.description,
-          store: storeInfo,
-          isPremium: p.store.isVerified,
-        } as MarketplaceProduct;
-      })
-    );
+      const storeInfo: StoreInfo = {
+        id: p.store.id,
+        userId: p.store.userId,
+        storeName: p.store.storeName,
+        storeSlug: p.store.storeSlug,
+        logoUrl: p.store.logoUrl,
+        bannerUrl: p.store.bannerUrl,
+        description: p.store.description,
+        isVerified: p.store.isVerified,
+        createdAt: p.store.createdAt.toISOString(),
+        ownerEmail: p.store.user?.email ?? null,
+        ownerPhone: p.store.user?.phone ?? null,
+        country: p.store.country ?? null,
+        city: p.store.city ?? null,
+        socialLinks: (p.store.socialLinks as Record<string, string>) ?? null,
+      };
+
+      return {
+        id: p.id,
+        dummyProductId: p.dummyProductId,
+        title: p.title,
+        thumbnail: prodData.thumbnail ?? "",
+        images: prodData.images ?? [],
+        brand: p.brand ?? prodData.brand ?? "Unknown",
+        category: p.category,
+        sellingPrice: p.sellingPrice,
+        rating: prodData.rating ?? 0,
+        discountPercentage: prodData.discountPercentage ?? 0,
+        stock: prodData.stock ?? 0,
+        description: p.description ?? prodData.description,
+        shortDescription: prodData.shortDescription,
+        keyFeatures: prodData.keyFeatures,
+        store: storeInfo,
+        isPremium: p.store.isVerified,
+      } as MarketplaceProduct;
+    });
 
     const dbProducts = enriched.filter(
       (p): p is MarketplaceProduct => p !== null
@@ -91,7 +92,7 @@ export async function getFeaturedMarketplaceProducts(
 
     if (dbProducts.length >= limit) return dbProducts;
 
-    // Fill remaining slots with high-converting DummyJSON categories
+    // Fill remaining slots from local Product table (high-converting categories)
     const usedIds = new Set(dbProducts.map((p) => p.dummyProductId));
     const needed = limit - dbProducts.length;
 
@@ -114,21 +115,16 @@ export async function getFeaturedMarketplaceProducts(
       "sports-accessories",
     ];
 
-    const categoryFetches = hotCategories.map((cat) =>
-      fetch(`https://dummyjson.com/products/category/${cat}?limit=5`, {
-        next: { revalidate: 3600 },
-      })
-        .then((r) => (r.ok ? r.json() : { products: [] }))
-        .then((d: { products: DummyProduct[] }) => d.products)
-        .catch(() => [] as DummyProduct[])
-    );
+    const fallbackProducts = await prisma.product.findMany({
+      where: {
+        category: { in: hotCategories },
+        id: { notIn: Array.from(usedIds) },
+      },
+      take: needed + 10,
+    });
 
-    const allCategoryProducts = (await Promise.all(categoryFetches)).flat();
-
-    // Shuffle for variety, filter used IDs, pick what we need
-    const shuffled = allCategoryProducts
-      .filter((p) => !usedIds.has(p.id))
-      .sort(() => Math.random() - 0.5);
+    // Shuffle for variety
+    const shuffled = fallbackProducts.sort(() => Math.random() - 0.5);
 
     const fallbacks: MarketplaceProduct[] = shuffled
       .slice(0, needed)
@@ -136,15 +132,17 @@ export async function getFeaturedMarketplaceProducts(
         id: `dummy-${p.id}`,
         dummyProductId: p.id,
         title: p.title,
-        thumbnail: p.thumbnail,
+        thumbnail: p.thumbnail ?? "",
         images: p.images ?? [],
         brand: p.brand ?? "Unknown",
         category: p.category,
         sellingPrice: p.price,
-        rating: p.rating,
-        discountPercentage: p.discountPercentage,
-        stock: p.stock,
+        rating: p.rating ?? 0,
+        discountPercentage: p.discountPercentage ?? 0,
+        stock: p.stock ?? 0,
         description: p.description,
+        shortDescription: p.shortDescription,
+        keyFeatures: p.keyFeatures,
         store: null,
         isPremium: false,
       }));
@@ -213,28 +211,32 @@ export async function getFlashDealProducts(limit = 10): Promise<{
       take: limit,
     });
 
-    const enriched = await Promise.all(
-      sellerProducts.map(async (p) => {
-        const dummy = await fetchDummy(p.dummyProductId);
-        if (!dummy) return null;
-        return {
-          id: p.id,
-          dummyProductId: p.dummyProductId,
-          title: p.title,
-          thumbnail: dummy.thumbnail,
-          images: dummy.images ?? [],
-          brand: p.brand ?? dummy.brand ?? "Unknown",
-          category: p.category,
-          sellingPrice: p.sellingPrice,
-          rating: dummy.rating,
-          discountPercentage: dummy.discountPercentage,
-          stock: dummy.stock,
-          description: p.description ?? dummy.description,
-          store: storeInfo,
-          isPremium: store.isVerified,
-        } as MarketplaceProduct;
-      })
-    );
+    // Batch fetch product data from local DB
+    const flashDummyIds = sellerProducts.map((p) => p.dummyProductId);
+    const flashProductMap = await fetchProductsByIds(flashDummyIds);
+
+    const enriched = sellerProducts.map((p) => {
+      const prodData = flashProductMap.get(p.dummyProductId);
+      if (!prodData) return null;
+      return {
+        id: p.id,
+        dummyProductId: p.dummyProductId,
+        title: p.title,
+        thumbnail: prodData.thumbnail ?? "",
+        images: prodData.images ?? [],
+        brand: p.brand ?? prodData.brand ?? "Unknown",
+        category: p.category,
+        sellingPrice: p.sellingPrice,
+        rating: prodData.rating ?? 0,
+        discountPercentage: prodData.discountPercentage ?? 0,
+        stock: prodData.stock ?? 0,
+        description: p.description ?? prodData.description,
+        shortDescription: prodData.shortDescription,
+        keyFeatures: prodData.keyFeatures,
+        store: storeInfo,
+        isPremium: store.isVerified,
+      } as MarketplaceProduct;
+    });
 
     return {
       products: enriched.filter((p): p is MarketplaceProduct => p !== null),
@@ -292,28 +294,30 @@ export async function getTodaysDeals(): Promise<{
     };
 
     for (const section of sections) {
-      const products = await Promise.all(
-        section.items.map(async (item) => {
-          const dummy = await fetchDummy(item.dummyProductId);
-          return {
-            id: item.id,
-            dummyProductId: item.dummyProductId,
-            title: item.customTitle ?? dummy?.title ?? "Product",
-            thumbnail: dummy?.thumbnail ?? "",
-            price: item.customPrice ?? dummy?.price ?? 0,
-            oldPrice: item.customOldPrice ?? null,
-            discountPercentage: dummy?.discountPercentage ?? 0,
-            badge: item.customBadge ?? null,
-            href: item.productId ? `/products/${item.productId}` : `/products/dummy-${item.dummyProductId}`,
-            brand: dummy?.brand ?? "Unknown",
-            category: dummy?.category ?? "general",
-            description: dummy?.description ?? "",
-            stock: dummy?.stock ?? 100,
-            rating: dummy?.rating ?? 4.0,
-            images: dummy?.images ?? [],
-          };
-        })
-      );
+      // Batch fetch product data from local DB
+      const dealDummyIds = section.items.map((item) => item.dummyProductId);
+      const dealProductMap = await fetchProductsByIds(dealDummyIds);
+
+      const products = section.items.map((item) => {
+        const prodData = dealProductMap.get(item.dummyProductId);
+        return {
+          id: item.id,
+          dummyProductId: item.dummyProductId,
+          title: item.customTitle ?? prodData?.title ?? "Product",
+          thumbnail: prodData?.thumbnail ?? "",
+          price: item.customPrice ?? prodData?.price ?? 0,
+          oldPrice: item.customOldPrice ?? null,
+          discountPercentage: prodData?.discountPercentage ?? 0,
+          badge: item.customBadge ?? null,
+          href: item.productId ? `/products/${item.productId}` : `/products/dummy-${item.dummyProductId}`,
+          brand: prodData?.brand ?? "Unknown",
+          category: prodData?.category ?? "general",
+          description: prodData?.description ?? "",
+          stock: prodData?.stock ?? 100,
+          rating: prodData?.rating ?? 4.0,
+          images: prodData?.images ?? [],
+        };
+      });
 
       const sectionData = {
         title: section.title,
