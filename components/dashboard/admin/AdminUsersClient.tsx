@@ -252,7 +252,7 @@ export default function AdminUsersClient({ initialUsers }: Props) {
           </div>
         ) : (
           <div className="divide-y divide-gray-50">
-            {filtered.map((user) => {
+            {filtered.map((user, index) => {
               const isExpanded = expandedId === user.id;
               const roleConf = ROLE_CONFIG[user.role];
               const statusConf = STATUS_CONFIG[user.status];
@@ -270,21 +270,11 @@ export default function AdminUsersClient({ initialUsers }: Props) {
                   >
                     {/* User info */}
                     <div className="flex items-center gap-3">
-                      {user.avatarUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={user.avatarUrl}
-                          alt={`${user.firstName} ${user.lastName}`}
-                          className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center flex-shrink-0">
-                          <span className="text-sm font-bold text-gray-600">
-                            {user.firstName[0]?.toUpperCase()}
-                            {user.lastName[0]?.toUpperCase()}
-                          </span>
-                        </div>
-                      )}
+                      <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+                        <span className="text-sm font-bold text-white">
+                          {index + 1}
+                        </span>
+                      </div>
                       <div className="min-w-0">
                         <p className="text-sm font-semibold text-gray-900 truncate flex items-center gap-1.5">
                           {user.firstName} {user.lastName}

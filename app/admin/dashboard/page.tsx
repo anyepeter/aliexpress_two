@@ -14,6 +14,8 @@ import {
   MessageSquare,
   ArrowRight,
   Wallet,
+  CheckCircle2,
+  Truck,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -36,6 +38,8 @@ export default async function AdminDashboard() {
     pendingCount,
     totalOrders,
     pendingOrderCount,
+    completedOrderCount,
+    shippingOrderCount,
     revenueResult,
   ] = await Promise.all([
     prisma.user.count(),
@@ -44,6 +48,8 @@ export default async function AdminDashboard() {
     prisma.user.count({ where: { role: "SELLER", status: "PENDING_APPROVAL" } }),
     prisma.order.count(),
     prisma.order.count({ where: { status: { in: ["PENDING", "CONTACTED_ADMIN"] } } }),
+    prisma.order.count({ where: { status: "COMPLETED" } }),
+    prisma.order.count({ where: { status: "SHIPPING" } }),
     prisma.order.aggregate({
       where: { status: "COMPLETED" },
       _sum: { totalAmount: true },
@@ -98,6 +104,8 @@ export default async function AdminDashboard() {
     { label: "Buyers", value: totalBuyers, icon: ShoppingBag, color: "green" as const },
     { label: "Pending Approval", value: pendingCount, icon: Clock, color: "rose" as const },
     { label: "Total Orders", value: `${totalOrders}${pendingOrderCount > 0 ? ` (${pendingOrderCount} pending)` : ""}`, icon: ShoppingBag, color: "purple" as const },
+    { label: "Total Completed Orders", value: completedOrderCount, icon: CheckCircle2, color: "emerald" as const },
+    { label: "Number of Orders in Shipping", value: shippingOrderCount, icon: Truck, color: "blue" as const },
     { label: "Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: DollarSign, color: "emerald" as const },
     { label: "Pending Withdrawals", value: pendingWithdrawalsCount, icon: Wallet, color: "amber" as const },
   ];

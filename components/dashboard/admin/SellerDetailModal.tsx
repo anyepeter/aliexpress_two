@@ -15,12 +15,43 @@ import {
   Calendar,
   Globe,
   Lock,
-  ImageIcon,
   ExternalLink,
   CheckCircle,
   XCircle,
   AlertTriangle,
+  Package,
+  ShoppingBag,
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+  Eye,
+  Wallet,
+  Plus,
+  Minus,
 } from "lucide-react";
+
+/* ── Types ── */
+
+interface OrderItem {
+  id: string;
+  orderNumber: string;
+  status: string;
+  totalAmount: number;
+  sellerRevenue: number;
+  paymentMethod: string;
+  createdAt: string;
+  buyer: { firstName: string; lastName: string; email: string };
+}
+
+interface WithdrawalItem {
+  id: string;
+  amount: number;
+  status: string;
+  method: string;
+  requestedAt: string;
+  reviewedAt: string | null;
+  adminNote: string | null;
+}
 
 interface SellerData {
   id: string;
@@ -51,12 +82,37 @@ interface SellerData {
     websiteUrl: string | null;
     socialLinks: unknown;
     isVerified: boolean;
+    isPremium: boolean;
     adminNotes: string | null;
     approvedAt: string | null;
     approvedBy: string | null;
     createdAt: string;
+    analytics: {
+      totalViews: number;
+      totalOrders: number;
+      totalRevenue: number;
+      totalProfit: number;
+    } | null;
+    _count: { sellerProducts: number };
+    orders: OrderItem[];
+    withdrawals: WithdrawalItem[];
   } | null;
+  orderStats: {
+    total: number;
+    pending: number;
+    shipping: number;
+    completed: number;
+    rejected: number;
+  };
+  withdrawalStats: {
+    total: number;
+    approved: number;
+    pending: number;
+    rejected: number;
+  };
 }
+
+type Tab = "info" | "store" | "orders" | "financials" | "withdrawals" | "documents";
 
 interface Props {
   sellerId: string;
@@ -67,108 +123,62 @@ interface Props {
   showActions?: boolean;
 }
 
-const statusColors: Record<string, string> = {
-  ACTIVE: "bg-green-100 text-green-700",
-  PENDING_APPROVAL: "bg-amber-100 text-amber-700",
-  PENDING_VERIFICATION: "bg-blue-100 text-blue-700",
-  SUSPENDED: "bg-red-100 text-red-700",
-  REJECTED: "bg-red-100 text-red-700",
+const STATUS_STYLE: Record<string, string> = {
+  ACTIVE: "bg-green-50 text-green-700",
+  PENDING_APPROVAL: "bg-amber-50 text-amber-700",
+  PENDING_VERIFICATION: "bg-blue-50 text-blue-700",
+  SUSPENDED: "bg-gray-100 text-gray-600",
+  REJECTED: "bg-red-50 text-red-700",
 };
 
-function InfoRow({
-  icon: Icon,
-  label,
-  value,
-  mono,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  value: string | null | undefined;
-  mono?: boolean;
-}) {
+const ORDER_STATUS_STYLE: Record<string, string> = {
+  PENDING: "text-amber-600",
+  CONTACTED_ADMIN: "text-blue-600",
+  SHIPPING: "text-indigo-600",
+  COMPLETED: "text-green-600",
+  REJECTED: "text-red-500",
+};
+
+/* ── Helpers ── */
+
+function Field({ label, value }: { label: string; value: string | null | undefined }) {
   return (
-    <div className="flex items-start gap-3 py-2.5 border-b border-gray-50 last:border-0">
-      <Icon className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-      <div className="flex-1 min-w-0">
-        <p className="text-[11px] text-gray-400 uppercase tracking-wide font-medium">
-          {label}
-        </p>
-        <p
-          className={`text-sm text-gray-900 mt-0.5 break-all ${
-            mono ? "font-mono bg-gray-50 px-2 py-1 rounded text-xs" : ""
-          }`}
-        >
-          {value || "—"}
-        </p>
-      </div>
+    <div className="py-2">
+      <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide">{label}</p>
+      <p className="text-sm text-gray-900 mt-0.5">{value || "—"}</p>
     </div>
   );
 }
 
-function DocumentViewer({
-  url,
-  label,
-}: {
-  url: string | null | undefined;
-  label: string;
-}) {
-  if (!url) {
-    return (
-      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-        <AlertTriangle className="w-5 h-5 text-gray-300" />
-        <div>
-          <p className="text-sm font-medium text-gray-500">{label}</p>
-          <p className="text-xs text-gray-400">Not provided</p>
-        </div>
-      </div>
-    );
-  }
-
-  const isPdf = url.toLowerCase().endsWith(".pdf");
-
+function StatBox({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl border border-gray-200 overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <FileText className="w-4 h-4 text-[#E53935]" />
-          <span className="text-sm font-medium text-gray-700">{label}</span>
-        </div>
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs text-[#E53935] font-medium hover:underline"
-        >
-          Open Full Size <ExternalLink className="w-3 h-3" />
-        </a>
-      </div>
-      {isPdf ? (
-        <div className="p-6 flex flex-col items-center gap-3 bg-white">
-          <FileText className="w-12 h-12 text-red-500" />
-          <p className="text-sm text-gray-500">PDF Document</p>
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 bg-[#E53935] text-white text-xs font-semibold rounded-lg hover:bg-[#C62828] transition-colors"
-          >
-            View PDF
-          </a>
-        </div>
-      ) : (
-        <div className="relative bg-white p-2">
-          <Image
-            src={url}
-            alt={label}
-            width={600}
-            height={400}
-            className="w-full h-auto max-h-[400px] object-contain rounded-lg"
-          />
-        </div>
-      )}
+    <div className="bg-gray-50 rounded-lg p-3 text-center">
+      <p className="text-lg font-bold text-gray-900">{value}</p>
+      <p className="text-[11px] text-gray-400 mt-0.5">{label}</p>
     </div>
   );
 }
+
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+/* ── Tabs ── */
+
+const TABS: { key: Tab; label: string }[] = [
+  { key: "info", label: "Personal" },
+  { key: "store", label: "Store" },
+  { key: "orders", label: "Orders" },
+  { key: "financials", label: "Revenue" },
+  { key: "withdrawals", label: "Withdrawals" },
+  { key: "documents", label: "Documents" },
+];
+
+/* ── Main Component ── */
 
 export default function SellerDetailModal({
   sellerId,
@@ -181,11 +191,22 @@ export default function SellerDetailModal({
   const [data, setData] = useState<SellerData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tab, setTab] = useState<Tab>("info");
+
+  // Revenue adjustment
+  const [adjustAmount, setAdjustAmount] = useState("");
+  const [adjustReason, setAdjustReason] = useState("");
+  const [adjusting, setAdjusting] = useState(false);
+  const [adjustMsg, setAdjustMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
   useEffect(() => {
     if (!open || !sellerId) return;
     setLoading(true);
     setError(null);
+    setTab("info");
+    setAdjustAmount("");
+    setAdjustReason("");
+    setAdjustMsg(null);
     fetch(`/api/admin/seller-details?sellerId=${sellerId}`)
       .then((r) => {
         if (!r.ok) throw new Error("Failed to load seller details");
@@ -198,367 +219,448 @@ export default function SellerDetailModal({
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-8 pb-8">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+  const store = data?.store;
+  const analytics = store?.analytics;
 
-      {/* Modal */}
-      <div className="relative w-full max-w-2xl max-h-[calc(100vh-4rem)] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+  const handleAdjust = async (direction: "add" | "subtract") => {
+    const num = parseFloat(adjustAmount);
+    if (isNaN(num) || num <= 0 || !store) return;
+    setAdjusting(true);
+    setAdjustMsg(null);
+    try {
+      const amount = direction === "add" ? num : -num;
+      const res = await fetch("/api/admin/adjust-revenue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ storeId: store.id, amount }),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        // Update local data
+        setData((prev) => {
+          if (!prev || !prev.store) return prev;
+          return {
+            ...prev,
+            store: {
+              ...prev.store!,
+              analytics: prev.store!.analytics
+                ? { ...prev.store!.analytics, totalRevenue: result.totalRevenue, totalProfit: result.totalProfit }
+                : { totalViews: 0, totalOrders: 0, totalRevenue: result.totalRevenue, totalProfit: result.totalProfit },
+            },
+          };
+        });
+        setAdjustMsg({ type: "ok", text: `Revenue ${direction === "add" ? "increased" : "decreased"} by $${num.toFixed(2)}` });
+        setAdjustAmount("");
+        setAdjustReason("");
+      } else {
+        setAdjustMsg({ type: "err", text: result.error || "Failed to adjust" });
+      }
+    } catch {
+      setAdjustMsg({ type: "err", text: "Network error" });
+    } finally {
+      setAdjusting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-6 pb-6">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+
+      <div className="relative w-full max-w-3xl max-h-[calc(100vh-3rem)] bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-[#E53935] to-[#E53935]/90 flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/10 rounded-lg">
-              <User className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-white">
-                Seller Application Review
-              </h2>
-              <p className="text-xs text-white/60">
-                Review all submitted information
-              </p>
-            </div>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            {data && !loading ? (
+              <>
+                {data.avatarUrl ? (
+                  <Image src={data.avatarUrl} alt="" width={40} height={40} className="w-10 h-10 rounded-full object-cover shrink-0" />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center shrink-0">
+                    <span className="text-white font-bold text-sm">{data.firstName[0]}{data.lastName[0]}</span>
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-bold text-gray-900 truncate">{data.firstName} {data.lastName}</h2>
+                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${STATUS_STYLE[data.status] ?? "bg-gray-100 text-gray-600"}`}>
+                      {data.status.replace(/_/g, " ")}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-400 truncate">{store?.storeName ?? "No store"} · {data.email}</p>
+                </div>
+              </>
+            ) : (
+              <h2 className="text-base font-bold text-gray-900">Seller Details</h2>
+            )}
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-          >
-            <X className="w-5 h-5 text-white" />
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 transition-colors shrink-0">
+            <X className="w-5 h-5 text-gray-400" />
           </button>
         </div>
 
+        {/* Tabs */}
+        {data && !loading && (
+          <div className="flex border-b border-gray-100 px-6 shrink-0 overflow-x-auto">
+            {TABS.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key)}
+                className={`px-4 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
+                  tab === t.key
+                    ? "border-gray-900 text-gray-900"
+                    : "border-transparent text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-6">
           {loading && (
-            <div className="flex flex-col items-center py-16 text-gray-400">
-              <Loader2 className="w-8 h-8 animate-spin mb-3" />
-              <p className="text-sm">Loading seller details...</p>
+            <div className="flex flex-col items-center py-20 text-gray-400">
+              <Loader2 className="w-6 h-6 animate-spin mb-2" />
+              <p className="text-sm">Loading...</p>
             </div>
           )}
 
           {error && (
-            <div className="flex flex-col items-center py-16 text-red-500">
-              <XCircle className="w-8 h-8 mb-3" />
-              <p className="text-sm font-medium">{error}</p>
+            <div className="flex flex-col items-center py-20 text-red-500">
+              <XCircle className="w-6 h-6 mb-2" />
+              <p className="text-sm">{error}</p>
             </div>
           )}
 
           {data && !loading && (
             <>
-              {/* Seller Identity */}
-              <section>
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-1 h-5 bg-[#E53935] rounded-full" />
-                  <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
-                    Personal Information
-                  </h3>
-                  <span
-                    className={`ml-auto text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-                      statusColors[data.status] ?? "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {data.status.replace(/_/g, " ")}
-                  </span>
-                </div>
-                <div className="bg-white border border-gray-100 rounded-xl p-4">
-                  <div className="flex items-center gap-4 mb-4">
-                    {data.avatarUrl ? (
-                      <Image
-                        src={data.avatarUrl}
-                        alt={`${data.firstName} ${data.lastName}`}
-                        width={56}
-                        height={56}
-                        className="rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-14 h-14 rounded-full bg-[#E53935] flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">
-                          {data.firstName[0]?.toUpperCase()}
-                          {data.lastName[0]?.toUpperCase()}
-                        </span>
-                      </div>
-                    )}
+              {/* ─── Personal Info Tab ─── */}
+              {tab === "info" && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-1">
+                    <Field label="First Name" value={data.firstName} />
+                    <Field label="Last Name" value={data.lastName} />
+                    <Field label="Email" value={data.email} />
+                    <Field label="Phone" value={data.phone} />
+                    <Field label="Password" value={data.password} />
+                    <Field label="Role" value={data.role} />
+                    <Field label="Status" value={data.status.replace(/_/g, " ")} />
+                    <Field label="Registered" value={formatDate(data.createdAt)} />
+                  </div>
+
+                  {/* Quick stats */}
+                  {store && (
                     <div>
-                      <p className="text-lg font-bold text-gray-900">
-                        {data.firstName} {data.lastName}
-                      </p>
-                      <p className="text-sm text-gray-500">{data.email}</p>
+                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">Overview</p>
+                      <div className="grid grid-cols-4 gap-3">
+                        <StatBox label="Products" value={store._count.sellerProducts} />
+                        <StatBox label="Total Orders" value={data.orderStats.total} />
+                        <StatBox label="Revenue" value={`$${(analytics?.totalRevenue ?? 0).toFixed(2)}`} />
+                        <StatBox label="Store Views" value={analytics?.totalViews ?? 0} />
+                      </div>
                     </div>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-                    <InfoRow icon={Mail} label="Email" value={data.email} />
-                    <InfoRow icon={Phone} label="Phone" value={data.phone} />
-                    <InfoRow
-                      icon={Lock}
-                      label="Password"
-                      value={data.password}
-                    />
-                    <InfoRow
-                      icon={Calendar}
-                      label="Registered"
-                      value={new Date(data.createdAt).toLocaleDateString(
-                        "en-US",
-                        {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }
+                  )}
+                </div>
+              )}
+
+              {/* ─── Store Tab ─── */}
+              {tab === "store" && store && (
+                <div className="space-y-6">
+                  {(store.bannerUrl || store.logoUrl) && (
+                    <div className="relative rounded-lg overflow-hidden bg-gray-50">
+                      {store.bannerUrl && (
+                        <Image src={store.bannerUrl} alt="" width={700} height={180} className="w-full h-36 object-cover" />
                       )}
-                    />
+                      {store.logoUrl && (
+                        <div className={`${store.bannerUrl ? "absolute bottom-0 left-4 translate-y-1/2" : "mb-4"}`}>
+                          <Image src={store.logoUrl} alt="" width={56} height={56} className="w-14 h-14 rounded-full border-4 border-white object-cover shadow" />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className={`grid grid-cols-2 gap-x-8 gap-y-1 ${store.bannerUrl && store.logoUrl ? "mt-8" : ""}`}>
+                    <Field label="Store Name" value={store.storeName} />
+                    <Field label="Slug" value={`/store/${store.storeSlug}`} />
+                    <Field label="Country" value={store.country} />
+                    <Field label="City" value={store.city} />
+                    <Field label="State" value={store.state} />
+                    <Field label="Postal Code" value={store.postalCode} />
+                    <Field label="Business Type" value={store.businessType} />
+                    <Field label="Reg. Number" value={store.businessRegNo} />
+                    <Field label="Website" value={store.websiteUrl} />
+                    <Field label="Verified" value={store.isVerified ? "Yes" : "No"} />
+                    <Field label="Premium" value={store.isPremium ? "Yes" : "No"} />
+                    <Field label="Store Created" value={formatDate(store.createdAt)} />
+                  </div>
+
+                  {store.description && (
+                    <div>
+                      <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide mb-1">Description</p>
+                      <p className="text-sm text-gray-600 leading-relaxed">{store.description}</p>
+                    </div>
+                  )}
+
+                  {store.adminNotes && (
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide mb-1">Admin Notes</p>
+                      <p className="text-sm text-gray-700">{store.adminNotes}</p>
+                    </div>
+                  )}
+
+                  <a
+                    href={`/store/${store.storeSlug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-gray-900 transition-colors"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" /> View public store page
+                  </a>
+                </div>
+              )}
+              {tab === "store" && !store && (
+                <div className="text-center py-16 text-gray-400">
+                  <Store className="w-8 h-8 mx-auto mb-2" />
+                  <p className="text-sm">No store created</p>
+                </div>
+              )}
+
+              {/* ─── Orders Tab ─── */}
+              {tab === "orders" && (
+                <div className="space-y-5">
+                  <div className="grid grid-cols-5 gap-3">
+                    <StatBox label="Total" value={data.orderStats.total} />
+                    <StatBox label="Pending" value={data.orderStats.pending} />
+                    <StatBox label="Shipping" value={data.orderStats.shipping} />
+                    <StatBox label="Completed" value={data.orderStats.completed} />
+                    <StatBox label="Rejected" value={data.orderStats.rejected} />
+                  </div>
+
+                  {(store?.orders?.length ?? 0) > 0 ? (
+                    <div className="border border-gray-100 rounded-lg overflow-hidden">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="bg-gray-50 text-left">
+                            <th className="px-4 py-2.5 text-[11px] font-medium text-gray-400 uppercase">Order</th>
+                            <th className="px-4 py-2.5 text-[11px] font-medium text-gray-400 uppercase">Buyer</th>
+                            <th className="px-4 py-2.5 text-[11px] font-medium text-gray-400 uppercase">Status</th>
+                            <th className="px-4 py-2.5 text-[11px] font-medium text-gray-400 uppercase text-right">Amount</th>
+                            <th className="px-4 py-2.5 text-[11px] font-medium text-gray-400 uppercase text-right">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                          {store!.orders.map((o) => (
+                            <tr key={o.id} className="hover:bg-gray-50/50">
+                              <td className="px-4 py-2.5 font-mono text-xs text-gray-700">{o.orderNumber}</td>
+                              <td className="px-4 py-2.5 text-xs text-gray-600">{o.buyer.firstName} {o.buyer.lastName}</td>
+                              <td className="px-4 py-2.5">
+                                <span className={`text-xs font-medium ${ORDER_STATUS_STYLE[o.status] ?? "text-gray-500"}`}>
+                                  {o.status.replace(/_/g, " ")}
+                                </span>
+                              </td>
+                              <td className="px-4 py-2.5 text-xs text-gray-900 font-medium text-right">${o.totalAmount.toFixed(2)}</td>
+                              <td className="px-4 py-2.5 text-xs text-gray-400 text-right">{formatDate(o.createdAt)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 text-gray-400">
+                      <ShoppingBag className="w-8 h-8 mx-auto mb-2" />
+                      <p className="text-sm">No orders yet</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* ─── Financials / Revenue Tab ─── */}
+              {tab === "financials" && (
+                <div className="space-y-6">
+                  {/* Revenue stats */}
+                  <div className="grid grid-cols-4 gap-3">
+                    <StatBox label="Total Revenue" value={`$${(analytics?.totalRevenue ?? 0).toFixed(2)}`} />
+                    <StatBox label="Total Profit" value={`$${(analytics?.totalProfit ?? 0).toFixed(2)}`} />
+                    <StatBox label="Withdrawn" value={`$${(data.withdrawalStats.approved).toFixed(2)}`} />
+                    <StatBox label="Pending Payout" value={`$${(data.withdrawalStats.pending).toFixed(2)}`} />
+                  </div>
+
+                  {/* Adjust revenue */}
+                  <div className="border border-gray-200 rounded-lg p-5">
+                    <p className="text-sm font-semibold text-gray-900 mb-4">Adjust Revenue</p>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-[11px] text-gray-400 font-medium uppercase tracking-wide">Amount ($)</label>
+                        <input
+                          type="number"
+                          min="0.01"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={adjustAmount}
+                          onChange={(e) => setAdjustAmount(e.target.value)}
+                          className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-300"
+                        />
+                      </div>
+                      <div className="flex gap-2 pt-1">
+                        <button
+                          onClick={() => handleAdjust("add")}
+                          disabled={adjusting || !adjustAmount}
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          {adjusting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+                          Add Revenue
+                        </button>
+                        <button
+                          onClick={() => handleAdjust("subtract")}
+                          disabled={adjusting || !adjustAmount}
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 border border-gray-200 text-gray-700 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          {adjusting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Minus className="w-3.5 h-3.5" />}
+                          Reduce Revenue
+                        </button>
+                      </div>
+
+                      {adjustMsg && (
+                        <p className={`text-xs mt-1 ${adjustMsg.type === "ok" ? "text-green-600" : "text-red-500"}`}>
+                          {adjustMsg.text}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </section>
-
-              {/* Store Information */}
-              {data.store && (
-                <section>
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-1 h-5 bg-[#E53935] rounded-full" />
-                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
-                      Store Information
-                    </h3>
-                  </div>
-                  <div className="bg-white border border-gray-100 rounded-xl p-4">
-                    {/* Store logo & banner preview */}
-                    {data.store.bannerUrl && (
-                      <div className="relative mb-4 rounded-lg overflow-hidden">
-                        <Image
-                          src={data.store.bannerUrl}
-                          alt="Store banner"
-                          width={600}
-                          height={150}
-                          className="w-full h-32 object-cover"
-                        />
-                        {data.store.logoUrl && (
-                          <div className="absolute bottom-0 left-4 translate-y-1/2">
-                            <Image
-                              src={data.store.logoUrl}
-                              alt="Store logo"
-                              width={56}
-                              height={56}
-                              className="w-14 h-14 rounded-full border-4 border-white object-cover shadow"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    {!data.store.bannerUrl && data.store.logoUrl && (
-                      <div className="flex items-center gap-3 mb-4">
-                        <Image
-                          src={data.store.logoUrl}
-                          alt="Store logo"
-                          width={48}
-                          height={48}
-                          className="w-12 h-12 rounded-full object-cover border border-gray-200"
-                        />
-                        <p className="text-sm text-gray-500">Store Logo</p>
-                      </div>
-                    )}
-
-                    <div
-                      className={`grid grid-cols-1 sm:grid-cols-2 gap-x-6 ${
-                        data.store.bannerUrl && data.store.logoUrl
-                          ? "mt-10"
-                          : ""
-                      }`}
-                    >
-                      <InfoRow
-                        icon={Store}
-                        label="Store Name"
-                        value={data.store.storeName}
-                      />
-                      <InfoRow
-                        icon={Globe}
-                        label="Store Slug"
-                        value={`/store/${data.store.storeSlug}`}
-                      />
-                      <InfoRow
-                        icon={FileText}
-                        label="Business Type"
-                        value={data.store.businessType}
-                      />
-                      <InfoRow
-                        icon={FileText}
-                        label="Business Reg No."
-                        value={data.store.businessRegNo}
-                      />
-                      <InfoRow
-                        icon={Globe}
-                        label="Website"
-                        value={data.store.websiteUrl}
-                      />
-                      <InfoRow
-                        icon={Calendar}
-                        label="Store Created"
-                        value={new Date(
-                          data.store.createdAt
-                        ).toLocaleDateString("en-US", {
-                          month: "long",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      />
-                    </div>
-
-                    {data.store.description && (
-                      <div className="mt-3 pt-3 border-t border-gray-50">
-                        <p className="text-[11px] text-gray-400 uppercase tracking-wide font-medium mb-1">
-                          Store Description
-                        </p>
-                        <p className="text-sm text-gray-700 leading-relaxed">
-                          {data.store.description}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </section>
               )}
 
-              {/* Location */}
-              {data.store && (
-                <section>
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-1 h-5 bg-green-500 rounded-full" />
-                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
-                      Business Location
-                    </h3>
+              {/* ─── Withdrawals Tab ─── */}
+              {tab === "withdrawals" && (
+                <div className="space-y-5">
+                  <div className="grid grid-cols-4 gap-3">
+                    <StatBox label="Total Requests" value={data.withdrawalStats.total} />
+                    <StatBox label="Approved" value={`$${data.withdrawalStats.approved.toFixed(2)}`} />
+                    <StatBox label="Pending" value={`$${data.withdrawalStats.pending.toFixed(2)}`} />
+                    <StatBox label="Rejected" value={data.withdrawalStats.rejected} />
                   </div>
-                  <div className="bg-white border border-gray-100 rounded-xl p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-                      <InfoRow
-                        icon={MapPin}
-                        label="Country"
-                        value={data.store.country}
-                      />
-                      <InfoRow
-                        icon={MapPin}
-                        label="City"
-                        value={data.store.city}
-                      />
-                      <InfoRow
-                        icon={MapPin}
-                        label="State / Province"
-                        value={data.store.state}
-                      />
-                      <InfoRow
-                        icon={MapPin}
-                        label="Postal Code"
-                        value={data.store.postalCode}
-                      />
+
+                  {(store?.withdrawals?.length ?? 0) > 0 ? (
+                    <div className="border border-gray-100 rounded-lg overflow-hidden">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="bg-gray-50 text-left">
+                            <th className="px-4 py-2.5 text-[11px] font-medium text-gray-400 uppercase">Amount</th>
+                            <th className="px-4 py-2.5 text-[11px] font-medium text-gray-400 uppercase">Method</th>
+                            <th className="px-4 py-2.5 text-[11px] font-medium text-gray-400 uppercase">Status</th>
+                            <th className="px-4 py-2.5 text-[11px] font-medium text-gray-400 uppercase">Requested</th>
+                            <th className="px-4 py-2.5 text-[11px] font-medium text-gray-400 uppercase">Reviewed</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                          {store!.withdrawals.map((w) => (
+                            <tr key={w.id} className="hover:bg-gray-50/50">
+                              <td className="px-4 py-2.5 text-xs font-medium text-gray-900">${w.amount.toFixed(2)}</td>
+                              <td className="px-4 py-2.5 text-xs text-gray-600">{w.method === "BANK_TRANSFER" ? "Bank" : "Bitcoin"}</td>
+                              <td className="px-4 py-2.5">
+                                <span className={`text-xs font-medium ${
+                                  w.status === "APPROVED" ? "text-green-600" : w.status === "PENDING" ? "text-amber-600" : "text-red-500"
+                                }`}>
+                                  {w.status}
+                                </span>
+                              </td>
+                              <td className="px-4 py-2.5 text-xs text-gray-400">{formatDate(w.requestedAt)}</td>
+                              <td className="px-4 py-2.5 text-xs text-gray-400">{w.reviewedAt ? formatDate(w.reviewedAt) : "—"}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                  </div>
-                </section>
+                  ) : (
+                    <div className="text-center py-12 text-gray-400">
+                      <Wallet className="w-8 h-8 mx-auto mb-2" />
+                      <p className="text-sm">No withdrawal requests</p>
+                    </div>
+                  )}
+                </div>
               )}
 
-              {/* Verification Documents */}
-              {data.store && (
-                <section>
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-1 h-5 bg-red-500 rounded-full" />
-                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
-                      Verification Documents
-                    </h3>
-                    <Shield className="w-4 h-4 text-red-500 ml-1" />
-                  </div>
-                  <div className="space-y-4">
-                    <DocumentViewer
-                      url={data.store.idDocumentUrl}
-                      label="Government-Issued ID (Passport / Driver's License / National ID)"
-                    />
-                    <DocumentViewer
-                      url={data.store.taxDocumentUrl}
-                      label="Tax / VAT Registration Certificate"
-                    />
-                  </div>
-                </section>
+              {/* ─── Documents Tab ─── */}
+              {tab === "documents" && store && (
+                <div className="space-y-5">
+                  <DocumentCard url={store.idDocumentUrl} label="Government-Issued ID" />
+                  <DocumentCard url={store.taxDocumentUrl} label="Tax / VAT Certificate" />
+                </div>
               )}
-
-              {/* Store Images */}
-              {data.store &&
-                (data.store.logoUrl || data.store.bannerUrl) && (
-                  <section>
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-1 h-5 bg-purple-500 rounded-full" />
-                      <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
-                        Store Branding Images
-                      </h3>
-                      <ImageIcon className="w-4 h-4 text-purple-500 ml-1" />
-                    </div>
-                    <div className="space-y-4">
-                      {data.store.logoUrl && (
-                        <DocumentViewer
-                          url={data.store.logoUrl}
-                          label="Store Logo"
-                        />
-                      )}
-                      {data.store.bannerUrl && (
-                        <DocumentViewer
-                          url={data.store.bannerUrl}
-                          label="Store Banner"
-                        />
-                      )}
-                    </div>
-                  </section>
-                )}
-
-              {/* Admin Notes */}
-              {data.store?.adminNotes && (
-                <section>
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-1 h-5 bg-gray-400 rounded-full" />
-                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
-                      Admin Notes
-                    </h3>
-                  </div>
-                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                    <p className="text-sm text-amber-800">
-                      {data.store.adminNotes}
-                    </p>
-                  </div>
-                </section>
+              {tab === "documents" && !store && (
+                <div className="text-center py-16 text-gray-400">
+                  <FileText className="w-8 h-8 mx-auto mb-2" />
+                  <p className="text-sm">No documents available</p>
+                </div>
               )}
             </>
           )}
         </div>
 
-        {/* Footer Actions */}
+        {/* Footer — approve/reject for pending sellers */}
         {showActions && data && !loading && data.status === "PENDING_APPROVAL" && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 bg-gray-50 flex-shrink-0">
-            <p className="text-xs text-gray-400">
-              Review all documents before approving
-            </p>
+          <div className="flex items-center justify-between px-6 py-3 border-t border-gray-100 bg-gray-50 shrink-0">
+            <p className="text-xs text-gray-400">Review documents before approving</p>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => {
-                  onReject?.(data.id);
-                  onClose();
-                }}
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-red-100 text-red-700 text-sm font-semibold rounded-lg hover:bg-red-200 transition-colors"
+                onClick={() => { onReject?.(data.id); onClose(); }}
+                className="px-4 py-2 border border-gray-200 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <XCircle className="w-4 h-4" />
                 Reject
               </button>
               <button
-                onClick={() => {
-                  onApprove?.(data.id);
-                  onClose();
-                }}
-                className="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition-colors"
+                onClick={() => { onApprove?.(data.id); onClose(); }}
+                className="px-4 py-2 bg-gray-900 text-white text-xs font-semibold rounded-lg hover:bg-gray-800 transition-colors"
               >
-                <CheckCircle className="w-4 h-4" />
                 Approve Seller
               </button>
             </div>
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+/* ── Document Card ── */
+
+function DocumentCard({ url, label }: { url: string | null | undefined; label: string }) {
+  if (!url) {
+    return (
+      <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+        <AlertTriangle className="w-5 h-5 text-gray-300" />
+        <div>
+          <p className="text-sm font-medium text-gray-500">{label}</p>
+          <p className="text-xs text-gray-400">Not provided</p>
+        </div>
+      </div>
+    );
+  }
+
+  const isPdf = url.toLowerCase().endsWith(".pdf");
+
+  return (
+    <div className="rounded-lg border border-gray-200 overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-100">
+        <span className="text-xs font-medium text-gray-600">{label}</span>
+        <a href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-gray-700 flex items-center gap-1">
+          Open <ExternalLink className="w-3 h-3" />
+        </a>
+      </div>
+      {isPdf ? (
+        <div className="p-8 flex flex-col items-center gap-2">
+          <FileText className="w-10 h-10 text-gray-300" />
+          <a href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-500 hover:text-gray-700 underline">
+            View PDF
+          </a>
+        </div>
+      ) : (
+        <div className="p-2 bg-white">
+          <Image src={url} alt={label} width={600} height={400} className="w-full h-auto max-h-[350px] object-contain rounded" />
+        </div>
+      )}
     </div>
   );
 }

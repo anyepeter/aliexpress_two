@@ -110,7 +110,7 @@ export default function DashboardLayout({ role, user, children }: DashboardLayou
       <div className="flex items-center gap-2 px-5 py-5 border-b border-white/10">
         <ShieldCheck className="w-6 h-6 text-white" />
         <span className="font-bold text-lg">
-          Market<span className="text-white/80">Hub</span>
+          Ali<span className="text-white/80">Express</span>
         </span>
       </div>
 

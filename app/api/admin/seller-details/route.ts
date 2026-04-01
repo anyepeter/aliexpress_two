@@ -46,10 +46,53 @@ export async function GET(req: NextRequest) {
           websiteUrl: true,
           socialLinks: true,
           isVerified: true,
+          isPremium: true,
           adminNotes: true,
           approvedAt: true,
           approvedBy: true,
           createdAt: true,
+          analytics: {
+            select: {
+              totalViews: true,
+              totalOrders: true,
+              totalRevenue: true,
+              totalProfit: true,
+            },
+          },
+          _count: {
+            select: {
+              sellerProducts: { where: { status: "PUBLISHED" } },
+            },
+          },
+          orders: {
+            select: {
+              id: true,
+              orderNumber: true,
+              status: true,
+              totalAmount: true,
+              sellerRevenue: true,
+              paymentMethod: true,
+              createdAt: true,
+              buyer: {
+                select: { firstName: true, lastName: true, email: true },
+              },
+            },
+            orderBy: { createdAt: "desc" },
+            take: 50,
+          },
+          withdrawals: {
+            select: {
+              id: true,
+              amount: true,
+              status: true,
+              method: true,
+              requestedAt: true,
+              reviewedAt: true,
+              adminNote: true,
+            },
+            orderBy: { requestedAt: "desc" },
+            take: 30,
+          },
         },
       },
     },
@@ -58,5 +101,28 @@ export async function GET(req: NextRequest) {
   if (!seller)
     return NextResponse.json({ error: "Seller not found" }, { status: 404 });
 
-  return NextResponse.json(seller);
+  // Compute order stats
+  const orders = seller.store?.orders ?? [];
+  const orderStats = {
+    total: orders.length,
+    pending: orders.filter((o) => o.status === "PENDING" || o.status === "CONTACTED_ADMIN").length,
+    shipping: orders.filter((o) => o.status === "SHIPPING").length,
+    completed: orders.filter((o) => o.status === "COMPLETED").length,
+    rejected: orders.filter((o) => o.status === "REJECTED").length,
+  };
+
+  // Compute withdrawal stats
+  const withdrawals = seller.store?.withdrawals ?? [];
+  const withdrawalStats = {
+    total: withdrawals.length,
+    approved: withdrawals.filter((w) => w.status === "APPROVED").reduce((s, w) => s + w.amount, 0),
+    pending: withdrawals.filter((w) => w.status === "PENDING").reduce((s, w) => s + w.amount, 0),
+    rejected: withdrawals.filter((w) => w.status === "REJECTED").length,
+  };
+
+  return NextResponse.json({
+    ...seller,
+    orderStats,
+    withdrawalStats,
+  });
 }
