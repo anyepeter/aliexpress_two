@@ -49,7 +49,7 @@ export default function VerifyEmailPage() {
         <Link href="/" className="flex items-center gap-2 w-fit">
           <Store className="w-7 h-7 text-[#E53935]" />
           <span className="text-xl font-extrabold text-[#E53935]">
-            Market<span className="text-[#E53935]">Hub</span>
+            Ali<span className="text-[#E53935]">Express</span>
           </span>
         </Link>
       </header>

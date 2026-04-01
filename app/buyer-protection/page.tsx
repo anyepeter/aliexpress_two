@@ -21,9 +21,9 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Buyer Protection — MarketHub Express",
+  title: "Buyer Protection — AliExpress",
   description:
-    "Shop with complete confidence. Every purchase on MarketHub Express is backed by our comprehensive buyer protection program.",
+    "Shop with complete confidence. Every purchase on AliExpress is backed by our comprehensive buyer protection program.",
 };
 
 export default function BuyerProtectionPage() {
@@ -150,7 +150,7 @@ export default function BuyerProtectionPage() {
               </span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
-              MarketHub{" "}
+              AliExpress{" "}
               <span className="text-[#E53935]">Buyer Protection</span>
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
@@ -172,7 +172,7 @@ export default function BuyerProtectionPage() {
                 You&apos;re Protected
               </h2>
               <p className="text-white/90 text-lg">
-                Every single purchase you make on MarketHub Express is covered by
+                Every single purchase you make on AliExpress is covered by
                 our Buyer Protection program — no exceptions.
               </p>
             </div>
@@ -346,7 +346,7 @@ export default function BuyerProtectionPage() {
               </h2>
               <p className="text-white/80 text-lg max-w-xl mx-auto mb-8">
                 Every purchase is protected. Browse our marketplace and enjoy
-                the peace of mind that comes with MarketHub Buyer Protection.
+                the peace of mind that comes with AliExpress Buyer Protection.
               </p>
               <Link
                 href="/shop"

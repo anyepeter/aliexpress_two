@@ -538,7 +538,7 @@ export default function UserProfileClient({ user, store }: UserProfileClientProp
             <div>
               <p className="text-sm font-semibold text-gray-800">{store.storeName}</p>
               <p className="text-xs text-gray-400">
-                markethub.com/store/{store.storeSlug}
+                aliexpress.com/store/{store.storeSlug}
               </p>
             </div>
           </div>

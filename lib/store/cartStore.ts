@@ -54,7 +54,7 @@ export const useCartStore = create<CartState>()(
             price: product.price,
             discountPercentage: product.discountPercentage,
             thumbnail: product.thumbnail,
-            brand: product.brand ?? "MarketHub",
+            brand: product.brand ?? "AliExpress",
             category: product.category,
             quantity: 1,
             storeId: null,
@@ -132,7 +132,7 @@ export const useCartStore = create<CartState>()(
           if (!map.has(key)) {
             map.set(key, {
               storeId: item.storeId,
-              storeName: item.storeName ?? "MarketHub Official Store",
+              storeName: item.storeName ?? "AliExpress Official Store",
               storeSlug: item.storeSlug,
               logoUrl: item.storeLogoUrl,
               isVerified: item.isVerifiedStore,
@@ -155,7 +155,7 @@ export const useCartStore = create<CartState>()(
       },
     }),
     {
-      name: "markethub-cart",
+      name: "aliexpress-cart",
       partialize: (state) => ({ items: state.items }),
       version: 1,
       migrate: (persistedState: unknown, version: number) => {

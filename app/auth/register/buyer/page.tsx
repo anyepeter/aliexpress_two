@@ -3,7 +3,7 @@ import { Store, ArrowLeft, ShoppingBag, Shield, Zap } from "lucide-react";
 import BuyerRegisterForm from "@/components/auth/BuyerRegisterForm";
 
 export const metadata = {
-  title: "Create Buyer Account — MarketHub",
+  title: "Create Buyer Account — AliExpress",
 };
 
 const BENEFITS = [
@@ -41,7 +41,7 @@ export default async function BuyerRegisterPage({ searchParams }: PageProps) {
         <Link href="/" className="flex items-center gap-3 relative z-10">
           <Store className="w-9 h-9 text-[#E53935]" />
           <span className="text-2xl font-extrabold text-white tracking-tight">
-            Market<span className="text-[#E53935]">Hub</span>
+            Ali<span className="text-[#E53935]">Express</span>
           </span>
         </Link>
 
@@ -73,7 +73,7 @@ export default async function BuyerRegisterPage({ searchParams }: PageProps) {
         </div>
 
         <p className="text-blue-300/60 text-xs relative z-10">
-          © {new Date().getFullYear()} MarketHub. All rights reserved.
+          © {new Date().getFullYear()} AliExpress. All rights reserved.
         </p>
       </div>
 
@@ -85,7 +85,7 @@ export default async function BuyerRegisterPage({ searchParams }: PageProps) {
           <Link href="/" className="flex items-center gap-2 lg:hidden">
             <Store className="w-6 h-6 text-[#E53935]" />
             <span className="text-lg font-extrabold text-[#E53935]">
-              Market<span className="text-[#E53935]">Hub</span>
+              Ali<span className="text-[#E53935]">Express</span>
             </span>
           </Link>
           <div className="hidden lg:block" />

@@ -3,7 +3,7 @@ import { Store } from "lucide-react";
 import RegisterRouter from "@/components/auth/RegisterRouter";
 
 export const metadata = {
-  title: "Create Account — MarketHub",
+  title: "Create Account — AliExpress",
 };
 
 export default function RegisterPage() {
@@ -14,7 +14,7 @@ export default function RegisterPage() {
         <Link href="/" className="flex items-center gap-2">
           <Store className="w-7 h-7 text-[#E53935]" />
           <span className="text-xl font-extrabold text-[#E53935]">
-            Market<span className="text-[#E53935]">Hub</span>
+            Ali<span className="text-[#E53935]">Express</span>
           </span>
         </Link>
         <Link

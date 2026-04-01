@@ -164,7 +164,7 @@ export default function BuyerOrdersList({ orders }: { orders: SerializedOrder[] 
                       </span>
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      {order.store?.storeName ?? "MarketHub"}
+                      {order.store?.storeName ?? "AliExpress"}
                       {order.store?.isVerified && " ✓"} · {new Date(order.createdAt).toLocaleDateString()}
                     </p>
                   </div>

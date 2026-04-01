@@ -21,7 +21,7 @@ export default function AuthRoute() {
           {/* Logo */}
           <div className="flex items-center justify-center gap-3 mb-8">
             <ShoppingBag size={48} className="text-[#E53935]" />
-            <span className="text-4xl font-bold">MarketHub</span>
+            <span className="text-4xl font-bold">AliExpress</span>
           </div>
 
           <p className="text-xl text-white/80 mb-10">
@@ -47,7 +47,7 @@ export default function AuthRoute() {
           <div className="lg:hidden flex items-center justify-center gap-2 mb-8">
             <ShoppingBag className="text-[#E53935]" size={32} />
             <span className="text-2xl font-bold text-[#E53935]">
-              Market<span className="text-[#E53935]">Hub</span>
+              Ali<span className="text-[#E53935]">Express</span>
             </span>
           </div>
 

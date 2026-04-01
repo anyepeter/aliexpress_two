@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = "https://markethubexpress.com";
+const BASE_URL = "https://aliexpressexpress.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [

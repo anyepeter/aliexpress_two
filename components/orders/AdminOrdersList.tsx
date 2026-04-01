@@ -271,7 +271,7 @@ export default function AdminOrdersList({ orders: initialOrders }: { orders: Ser
                       )}
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      <span className="font-medium">{order.store?.storeName ?? "MarketHub"}</span>
+                      <span className="font-medium">{order.store?.storeName ?? "AliExpress"}</span>
                       {order.store?.isVerified && " ✓"} · {order.buyer.firstName} {order.buyer.lastName} ·{" "}
                       {new Date(order.createdAt).toLocaleDateString()}
                     </p>
@@ -328,7 +328,7 @@ export default function AdminOrdersList({ orders: initialOrders }: { orders: Ser
                           <Store className="w-3.5 h-3.5" /> Store
                         </p>
                         <p className="text-xs text-gray-600 font-medium">
-                          {order.store?.storeName ?? "MarketHub (No Store)"}
+                          {order.store?.storeName ?? "AliExpress (No Store)"}
                           {order.store?.isVerified && (
                             <span className="text-[#E53935] ml-1">✓</span>
                           )}

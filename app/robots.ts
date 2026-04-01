@@ -18,6 +18,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: "https://markethubexpress.com/sitemap.xml",
+    sitemap: "https://aliexpressexpress.com/sitemap.xml",
   };
 }

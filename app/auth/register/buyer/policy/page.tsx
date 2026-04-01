@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Store, ArrowLeft, ArrowRight, Check } from "lucide-react";
 
 export const metadata = {
-  title: "Buyer Policy — MarketHub Express",
+  title: "Buyer Policy — AliExpress",
   description:
-    "Important purchasing policy information for MarketHub Express buyers. Minimum 10 items per order.",
+    "Important purchasing policy information for AliExpress buyers. Minimum 10 items per order.",
 };
 
 interface PageProps {
@@ -24,7 +24,7 @@ export default async function BuyerPolicyPage({ searchParams }: PageProps) {
         <Link href="/" className="flex items-center gap-2">
           <Store className="w-6 h-6 text-[#E53935]" />
           <span className="text-lg font-extrabold text-[#1A1A1A]">
-            Market<span className="text-[#E53935]">Hub</span>
+            Ali<span className="text-[#E53935]">Express</span>
           </span>
         </Link>
         <Link
@@ -48,7 +48,7 @@ export default async function BuyerPolicyPage({ searchParams }: PageProps) {
               Purchasing Policy
             </h1>
             <p className="text-sm text-gray-500 leading-relaxed">
-              MarketHub Express uses a bulk-purchase model. Please review the
+              AliExpress uses a bulk-purchase model. Please review the
               policy below before creating your account.
             </p>
           </div>

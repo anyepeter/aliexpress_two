@@ -16,10 +16,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     where: { storeSlug },
     select: { storeName: true, description: true },
   });
-  if (!store) return { title: "Store not found — MarketHub" };
+  if (!store) return { title: "Store not found — AliExpress" };
   return {
-    title: `${store.storeName} — MarketHub`,
-    description: store.description ?? `Shop at ${store.storeName} on MarketHub`,
+    title: `${store.storeName} — AliExpress`,
+    description: store.description ?? `Shop at ${store.storeName} on AliExpress`,
   };
 }
 

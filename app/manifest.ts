@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "MarketHub Express — Global Marketplace",
-    short_name: "MarketHub",
+    name: "AliExpress — Global Marketplace",
+    short_name: "AliExpress",
     description:
       "Shop millions of products from 50,000+ verified sellers in 190+ countries.",
     start_url: "/",

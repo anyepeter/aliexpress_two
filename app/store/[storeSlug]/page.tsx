@@ -98,9 +98,9 @@ export async function generateMetadata({
   const data = await getStoreData(storeSlug);
   if (!data) return { title: "Store Not Found" };
   return {
-    title: `${data.store.storeName} | MarketHub`,
+    title: `${data.store.storeName} | AliExpress`,
     description:
-      data.store.description ?? `Shop at ${data.store.storeName} on MarketHub`,
+      data.store.description ?? `Shop at ${data.store.storeName} on AliExpress`,
   };
 }
 

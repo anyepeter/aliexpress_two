@@ -10,7 +10,7 @@ import {
 import SellerRegisterForm from "@/components/auth/SellerRegisterForm";
 
 export const metadata = {
-  title: "Become a Seller — MarketHub",
+  title: "Become a Seller — AliExpress",
 };
 
 const BENEFITS = [
@@ -44,7 +44,7 @@ export default function SellerRegisterPage() {
         <Link href="/" className="flex items-center gap-3 relative z-10">
           <ShoppingBag className="w-9 h-9 text-[#E53935]" />
           <span className="text-2xl font-extrabold text-white tracking-tight">
-            Market<span className="text-[#E53935]">Hub</span>
+            Ali<span className="text-[#E53935]">Express</span>
           </span>
         </Link>
 
@@ -55,7 +55,7 @@ export default function SellerRegisterPage() {
               Start selling to millions
             </h2>
             <p className="text-blue-200 text-lg leading-relaxed">
-              Join thousands of sellers already growing their business on MarketHub. Your
+              Join thousands of sellers already growing their business on AliExpress. Your
               application is reviewed within 2–3 business days.
             </p>
           </div>
@@ -77,7 +77,7 @@ export default function SellerRegisterPage() {
 
         {/* Footer */}
         <p className="text-blue-300/60 text-xs relative z-10">
-          © {new Date().getFullYear()} MarketHub. All rights reserved.
+          © {new Date().getFullYear()} AliExpress. All rights reserved.
         </p>
       </div>
 
@@ -89,7 +89,7 @@ export default function SellerRegisterPage() {
           <Link href="/" className="flex items-center gap-2 lg:hidden">
             <Store className="w-6 h-6 text-[#E53935]" />
             <span className="text-lg font-extrabold text-[#E53935]">
-              Market<span className="text-[#E53935]">Hub</span>
+              Ali<span className="text-[#E53935]">Express</span>
             </span>
           </Link>
 

@@ -115,7 +115,7 @@ export default function Step2StoreInfo({ initialData, onNext, onBack }: Step2Pro
           <p className="text-xs text-gray-500">
             Your store URL:{" "}
             <span className="font-medium text-[#E53935]">
-              markethub.com/store/{storeSlug}
+              aliexpress.com/store/{storeSlug}
             </span>
           </p>
         )}

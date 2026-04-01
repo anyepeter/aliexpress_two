@@ -8,8 +8,8 @@ import ShopContent from "@/components/shop/ShopContent";
 export const metadata: Metadata = {
   title: "Shop All Products",
   description:
-    "Browse thousands of products from verified sellers on MarketHub Express. Electronics, Fashion, Beauty, Home & more with powerful filtering, sorting, and buyer protection.",
-  alternates: { canonical: "https://markethubexpress.com/shop" },
+    "Browse thousands of products from verified sellers on AliExpress. Electronics, Fashion, Beauty, Home & more with powerful filtering, sorting, and buyer protection.",
+  alternates: { canonical: "https://aliexpressexpress.com/shop" },
 };
 
 interface ShopPageProps {

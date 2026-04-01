@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { X, ShoppingBag, Trash2, AlertTriangle } from "lucide-react";
+import { X, ShoppingBag, Trash2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -174,11 +174,11 @@ export default function CartDrawer() {
 
                 {/* Savings */}
                 {hasSavings && (
-                  <div className="flex items-center justify-between bg-green-50 rounded-lg px-3 py-2">
-                    <span className="text-xs font-medium text-green-700">
-                      🎉 You save
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-400">
+                      You save
                     </span>
-                    <span className="text-xs font-bold text-green-700">
+                    <span className="text-xs font-semibold text-gray-500">
                       -${savings.toFixed(2)}
                     </span>
                   </div>
@@ -187,19 +187,15 @@ export default function CartDrawer() {
                 <div className="pt-1 space-y-2.5">
                   <button
                     onClick={closeCart}
-                    className="w-full py-2.5 border-2 border-[#E53935] text-[#E53935] text-sm font-semibold rounded-xl hover:bg-[#C62828]/5 transition-colors"
+                    className="w-full py-2.5 border-2 border-gray-500 text-gray-500 text-sm font-semibold rounded-xl hover:border-[#E53935] hover:text-[#E53935] transition-colors"
                   >
                     Continue Shopping
                   </button>
 
                   {totalItems < 10 && (
-                    <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5">
-                      <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
-                      <p className="text-[11px] text-amber-700 leading-snug">
-                        <span className="font-semibold">Minimum 10 items required.</span>{" "}
-                        Add {10 - totalItems} more item{10 - totalItems !== 1 ? "s" : ""} to checkout.
-                      </p>
-                    </div>
+                    <p className="text-[11px] text-gray-400 text-center leading-snug">
+                      Minimum 10 items required. Add {10 - totalItems} more to checkout.
+                    </p>
                   )}
 
                   <button
@@ -213,19 +209,19 @@ export default function CartDrawer() {
                       }
                     }}
                     disabled={totalItems < 10}
-                    className={`w-full py-3 text-sm font-bold rounded-xl transition-colors ${
+                    className={`w-full py-3 text-sm font-semibold rounded-xl transition-colors ${
                       totalItems < 10
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-[#E53935] text-white hover:bg-[#C62828]"
                     }`}
                   >
                     {isSignedIn
-                      ? `Proceed to Checkout${totalItems < 10 ? ` (${totalItems}/10 items)` : ""}`
+                      ? totalItems < 10 ? `Checkout (${totalItems}/10 items)` : "Proceed to Checkout"
                       : "Sign In to Checkout"}
                   </button>
 
-                  <p className="text-center text-[11px] text-gray-400 pt-0.5">
-                    🔒 Secure checkout &nbsp;•&nbsp; Min. 10 items per order
+                  <p className="text-center text-[11px] text-gray-300 pt-0.5">
+                    Secure checkout · Min. 10 items per order
                   </p>
                 </div>
               </div>

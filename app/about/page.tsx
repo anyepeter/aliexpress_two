@@ -14,9 +14,9 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About Us | MarketHub Express",
+  title: "About Us | AliExpress",
   description:
-    "Learn about MarketHub Express — the global multi-vendor marketplace connecting buyers and sellers across 190+ countries.",
+    "Learn about AliExpress — the global multi-vendor marketplace connecting buyers and sellers across 190+ countries.",
 };
 
 const stats = [
@@ -67,7 +67,7 @@ export default function AboutPage() {
               Connecting Buyers &amp; Sellers Worldwide
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              MarketHub Express is a global multi-vendor marketplace built to
+              AliExpress is a global multi-vendor marketplace built to
               make cross-border commerce effortless. We bring together
               thousands of trusted sellers and millions of products so that
               buyers everywhere can discover, compare, and purchase with
@@ -127,7 +127,7 @@ export default function AboutPage() {
               </h2>
               <div className="space-y-4 text-gray-600 text-lg leading-relaxed">
                 <p>
-                  MarketHub Express was founded in 2023 with a simple but
+                  AliExpress was founded in 2023 with a simple but
                   ambitious idea: bridge the gap between quality sellers and
                   global buyers. We saw that small and mid-size businesses had
                   incredible products but lacked the infrastructure to reach
@@ -189,7 +189,7 @@ export default function AboutPage() {
               Our Team
             </h2>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto leading-relaxed">
-              Behind MarketHub Express is a diverse, globally distributed team
+              Behind AliExpress is a diverse, globally distributed team
               of engineers, designers, marketers, and commerce specialists
               united by a shared passion for democratizing trade. Our
               leadership brings decades of combined experience from top
@@ -210,7 +210,7 @@ export default function AboutPage() {
             <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto">
               Whether you are looking to discover products from around the
               world or grow your business by reaching millions of customers,
-              MarketHub Express is the platform for you.
+              AliExpress is the platform for you.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a

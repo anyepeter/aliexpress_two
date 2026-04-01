@@ -9,13 +9,13 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const SITE_URL = "https://markethubexpress.com";
+const SITE_URL = "https://aliexpressexpress.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "MarketHub Express — Global Multi-Vendor Marketplace",
-    template: "%s | MarketHub Express",
+    default: "AliExpress — Global Multi-Vendor Marketplace",
+    template: "%s | AliExpress",
   },
   description:
     "Shop millions of products from 50,000+ verified sellers in 190+ countries. Electronics, Fashion, Beauty, Home & more — with buyer protection and free shipping on orders over $50.",
@@ -32,12 +32,12 @@ export const metadata: Metadata = {
     "global shopping",
     "verified sellers",
     "buyer protection",
-    "MarketHub",
-    "MarketHub Express",
+    "AliExpress",
+    "AliExpress",
   ],
-  authors: [{ name: "MarketHub Express" }],
-  creator: "MarketHub Express",
-  publisher: "MarketHub Express Inc.",
+  authors: [{ name: "AliExpress" }],
+  creator: "AliExpress",
+  publisher: "AliExpress Inc.",
   formatDetection: {
     email: false,
     telephone: false,
@@ -46,8 +46,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    siteName: "MarketHub Express",
-    title: "MarketHub Express — Shop from 50,000+ Verified Sellers Worldwide",
+    siteName: "AliExpress",
+    title: "AliExpress — Shop from 50,000+ Verified Sellers Worldwide",
     description:
       "Discover millions of products at unbeatable prices. Trusted by 10M+ customers across 190+ countries. Free shipping, buyer protection & secure checkout.",
     images: [
@@ -55,13 +55,13 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "MarketHub Express — Global Multi-Vendor Marketplace",
+        alt: "AliExpress — Global Multi-Vendor Marketplace",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MarketHub Express — Global Multi-Vendor Marketplace",
+    title: "AliExpress — Global Multi-Vendor Marketplace",
     description:
       "Shop millions of products from verified sellers worldwide. Buyer protection, free shipping & secure checkout.",
     images: ["/opengraph-image"],
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "MarketHub Express",
+  name: "AliExpress",
   url: SITE_URL,
   logo: `${SITE_URL}/opengraph-image`,
   sameAs: [],
@@ -100,7 +100,7 @@ const jsonLd = {
 const searchJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "MarketHub Express",
+  name: "AliExpress",
   url: SITE_URL,
   potentialAction: {
     "@type": "SearchAction",

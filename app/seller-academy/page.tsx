@@ -26,9 +26,9 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Seller Academy | MarketHub Express",
+  title: "Seller Academy | AliExpress",
   description:
-    "Learn how to succeed on MarketHub Express with our Seller Academy. Access guides, tips, and strategies to grow your online business.",
+    "Learn how to succeed on AliExpress with our Seller Academy. Access guides, tips, and strategies to grow your online business.",
 };
 
 export default function SellerAcademyPage() {
@@ -46,7 +46,7 @@ export default function SellerAcademyPage() {
         "Making your first sale and processing orders",
       ],
       description:
-        "Start your selling journey with the essentials. Learn how to set up your store, create compelling listings, and land your first sale on MarketHub Express.",
+        "Start your selling journey with the essentials. Learn how to set up your store, create compelling listings, and land your first sale on AliExpress.",
     },
     {
       level: "Intermediate",
@@ -124,7 +124,7 @@ export default function SellerAcademyPage() {
       name: "Sarah Mitchell",
       store: "Artisan Home Goods",
       quote:
-        "MarketHub Express changed my life. I started selling handmade candles from my kitchen, and within a year I had a full team and a warehouse. The Seller Academy guides on photography and descriptions made all the difference.",
+        "AliExpress changed my life. I started selling handmade candles from my kitchen, and within a year I had a full team and a warehouse. The Seller Academy guides on photography and descriptions made all the difference.",
       metric: "From 0 to 2,000+ sales in 12 months",
     },
     {
@@ -138,7 +138,7 @@ export default function SellerAcademyPage() {
       name: "Amara Okafor",
       store: "Lagos Fashion Co.",
       quote:
-        "Selling internationally seemed impossible until I found the shipping best practices guide. Now I ship to over 30 countries, and my brand is recognized globally. MarketHub gave me the tools to dream bigger.",
+        "Selling internationally seemed impossible until I found the shipping best practices guide. Now I ship to over 30 countries, and my brand is recognized globally. AliExpress gave me the tools to dream bigger.",
       metric: "Shipping to 30+ countries worldwide",
     },
   ];
@@ -154,7 +154,7 @@ export default function SellerAcademyPage() {
           <div className="max-w-5xl mx-auto px-4 text-center">
             <GraduationCap className="w-16 h-16 mx-auto mb-6 text-[#E53935]" />
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              MarketHub Seller Academy
+              AliExpress Seller Academy
             </h1>
             <p className="text-2xl font-semibold text-[#E53935] mb-4">
               Learn, Grow, Succeed
@@ -300,7 +300,7 @@ export default function SellerAcademyPage() {
             </h2>
             <p className="text-gray-600 mb-10">
               Hear from real sellers who transformed their businesses using the
-              strategies and tools available on MarketHub Express.
+              strategies and tools available on AliExpress.
             </p>
             <div className="grid md:grid-cols-3 gap-6">
               {successStories.map((story) => (
@@ -333,7 +333,7 @@ export default function SellerAcademyPage() {
             </h2>
             <p className="text-gray-300 mb-8">
               Put your knowledge into action. Create your seller account and
-              start building a successful business on MarketHub Express. Our
+              start building a successful business on AliExpress. Our
               tools and community are here to support you every step of the way.
             </p>
             <Link

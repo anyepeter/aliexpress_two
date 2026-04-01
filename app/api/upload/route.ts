@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     }>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: `markethub/${folder}`,
+          folder: `aliexpress/${folder}`,
           transformation: config?.transformation ?? [
             { quality: "auto", fetch_format: "auto" },
           ],

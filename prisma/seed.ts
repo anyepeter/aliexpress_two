@@ -123,13 +123,13 @@ async function generateDescription(
 
 async function seedAdmin() {
   const existing = await prisma.user.findUnique({
-    where: { email: "admin@markethub.com" },
+    where: { email: "admin@aliexpress.com" },
   });
 
   if (!existing) {
     await prisma.user.create({
       data: {
-        email: "admin@markethub.com",
+        email: "admin@aliexpress.com",
         firstName: "Super",
         lastName: "Admin",
         role: "ADMIN",
@@ -138,7 +138,7 @@ async function seedAdmin() {
         password: "no",
       },
     });
-    console.log("✅ Default admin created: admin@markethub.com");
+    console.log("✅ Default admin created: admin@aliexpress.com");
   } else {
     console.log("ℹ️  Admin already exists, skipping");
   }

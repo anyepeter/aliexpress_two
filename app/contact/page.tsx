@@ -17,7 +17,7 @@ const contactCards = [
   {
     icon: Mail,
     title: "Email",
-    detail: "support@markethubexpress.com",
+    detail: "support@aliexpressexpress.com",
   },
   {
     icon: Clock,
@@ -48,14 +48,14 @@ const faqs = [
       "We offer a 30-day return window on most products. If you receive a damaged or incorrect item, you can initiate a return request from your order details page. Refunds are typically processed within 5-7 business days after the return is approved.",
   },
   {
-    question: "How do I become a seller on MarketHub Express?",
+    question: "How do I become a seller on AliExpress?",
     answer:
       'Getting started is easy. Click on "Become a Seller" in the navigation menu, fill out the registration form with your business details, and submit for review. Our team typically approves verified sellers within 48 hours.',
   },
   {
     question: "Is my payment information secure?",
     answer:
-      "Absolutely. MarketHub Express uses industry-standard SSL encryption and partners with trusted payment processors to ensure all transactions are fully secure. We never store your full card details on our servers.",
+      "Absolutely. AliExpress uses industry-standard SSL encryption and partners with trusted payment processors to ensure all transactions are fully secure. We never store your full card details on our servers.",
   },
 ];
 

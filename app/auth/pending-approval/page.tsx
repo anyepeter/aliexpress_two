@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/accordion";
 
 export const metadata = {
-  title: "Application Under Review — MarketHub",
+  title: "Application Under Review — AliExpress",
 };
 
 const TIMELINE = [
@@ -66,7 +66,7 @@ export default function PendingApprovalPage() {
         <Link href="/" className="flex items-center gap-2 w-fit">
           <Store className="w-7 h-7 text-[#E53935]" />
           <span className="text-xl font-extrabold text-[#E53935]">
-            Market<span className="text-[#E53935]">Hub</span>
+            Ali<span className="text-[#E53935]">Express</span>
           </span>
         </Link>
       </header>
@@ -83,7 +83,7 @@ export default function PendingApprovalPage() {
               Application Under Review
             </h1>
             <p className="text-gray-500 mb-6">
-              Thank you for applying to become a MarketHub seller! Our team is
+              Thank you for applying to become a AliExpress seller! Our team is
               carefully reviewing your application and documents. You&apos;ll
               receive an email update within 2–3 business days.
             </p>
@@ -167,7 +167,7 @@ export default function PendingApprovalPage() {
           <div className="text-center text-sm text-gray-500">
             Need help?{" "}
             <a
-              href="mailto:seller-support@markethub.com"
+              href="mailto:seller-support@aliexpress.com"
               className="text-[#E53935] font-semibold hover:text-[#E53935] transition-colors"
             >
               Contact seller support

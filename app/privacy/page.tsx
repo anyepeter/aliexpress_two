@@ -18,9 +18,9 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — MarketHub Express",
+  title: "Privacy Policy — AliExpress",
   description:
-    "Learn how MarketHub Express collects, uses, and protects your personal information. Your privacy matters to us.",
+    "Learn how AliExpress collects, uses, and protects your personal information. Your privacy matters to us.",
 };
 
 const sections = [
@@ -39,7 +39,7 @@ const sections = [
       },
       {
         subtitle: "Cookies & Similar Technologies",
-        text: "We use cookies, web beacons, and similar tracking technologies to recognize your browser, remember your preferences, and understand how you use MarketHub Express. See Section 5 for more details.",
+        text: "We use cookies, web beacons, and similar tracking technologies to recognize your browser, remember your preferences, and understand how you use AliExpress. See Section 5 for more details.",
       },
     ],
   },
@@ -81,11 +81,11 @@ const sections = [
       },
       {
         subtitle: "Legal Requirements",
-        text: "We may disclose your information when required by law, in response to valid legal processes, or to protect the rights, property, or safety of MarketHub Express, our users, or the public.",
+        text: "We may disclose your information when required by law, in response to valid legal processes, or to protect the rights, property, or safety of AliExpress, our users, or the public.",
       },
       {
         subtitle: "We Never Sell Your Data",
-        text: "MarketHub Express does not sell, rent, or trade your personal information to third parties for their marketing purposes. Your trust is paramount to our business.",
+        text: "AliExpress does not sell, rent, or trade your personal information to third parties for their marketing purposes. Your trust is paramount to our business.",
       },
     ],
   },
@@ -180,7 +180,7 @@ const sections = [
     content: [
       {
         subtitle: "Age Restriction",
-        text: "MarketHub Express is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13. If we become aware that we have collected data from a child under 13, we will take steps to delete that information promptly.",
+        text: "AliExpress is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13. If we become aware that we have collected data from a child under 13, we will take steps to delete that information promptly.",
       },
       {
         subtitle: "Parental Notice",
@@ -242,7 +242,7 @@ export default function PrivacyPage() {
         <section className="mx-auto max-w-4xl px-4 py-12">
           <div className="rounded-2xl border border-[#E53935]/10 bg-white p-8 shadow-sm">
             <p className="text-lg leading-relaxed text-gray-700">
-              At MarketHub Express, your privacy is critically important to us.
+              At AliExpress, your privacy is critically important to us.
               This Privacy Policy explains how we collect, use, disclose, and
               safeguard your information when you visit our marketplace platform,
               make purchases, or interact with our services. Please read this

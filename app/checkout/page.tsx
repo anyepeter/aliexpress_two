@@ -228,7 +228,7 @@ export default function CheckoutPage() {
                 <div key={order.orderNumber} className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold text-gray-900">{order.orderNumber}</p>
-                    <p className="text-xs text-gray-500">{order.store?.storeName ?? "MarketHub"}</p>
+                    <p className="text-xs text-gray-500">{order.store?.storeName ?? "AliExpress"}</p>
                   </div>
                   <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
                     Pending

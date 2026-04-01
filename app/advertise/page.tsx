@@ -24,9 +24,9 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Advertise with Us | MarketHub Express",
+  title: "Advertise with Us | AliExpress",
   description:
-    "Grow your business with MarketHub Express advertising. Reach millions of active shoppers with sponsored products, featured seller spots, and banner advertising.",
+    "Grow your business with AliExpress advertising. Reach millions of active shoppers with sponsored products, featured seller spots, and banner advertising.",
 };
 
 export default function AdvertisePage() {
@@ -188,7 +188,7 @@ export default function AdvertisePage() {
           <div className="max-w-5xl mx-auto px-4 text-center">
             <Megaphone className="w-16 h-16 mx-auto mb-6 text-[#E53935]" />
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Grow Your Business with MarketHub Advertising
+              Grow Your Business with AliExpress Advertising
             </h1>
             <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
               Reach millions of active shoppers across the globe. Our
@@ -277,7 +277,7 @@ export default function AdvertisePage() {
         <section className="bg-white py-16">
           <div className="max-w-5xl mx-auto px-4">
             <h2 className="text-3xl font-bold text-[#E53935] mb-3">
-              Why Advertise with MarketHub
+              Why Advertise with AliExpress
             </h2>
             <p className="text-gray-600 mb-10">
               Our platform offers unique advantages that help you get the most
@@ -312,7 +312,7 @@ export default function AdvertisePage() {
             How It Works
           </h2>
           <p className="text-gray-600 mb-10">
-            Getting started with MarketHub advertising is simple. Follow these
+            Getting started with AliExpress advertising is simple. Follow these
             four steps to launch your first campaign.
           </p>
           <div className="grid md:grid-cols-4 gap-6">

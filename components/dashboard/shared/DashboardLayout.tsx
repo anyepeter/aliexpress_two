@@ -200,7 +200,7 @@ export default function DashboardLayout({ role, user, children }: DashboardLayou
           {/* Title */}
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-[#E53935] lg:hidden" />
-            <span className="font-bold text-[#E53935] lg:hidden">MarketHub</span>
+            <span className="font-bold text-[#E53935] lg:hidden">AliExpress</span>
           </div>
 
           <div className="flex-1" />

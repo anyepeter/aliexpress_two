@@ -120,7 +120,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const product = await getProduct(id);
   if (!product) return { title: "Product Not Found" };
   return {
-    title: `${product.title} | MarketHub`,
+    title: `${product.title} | AliExpress`,
     description: product.description.slice(0, 155),
   };
 }

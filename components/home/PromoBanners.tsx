@@ -139,7 +139,7 @@ export default function PromoBanners() {
                 className="text-2xl md:text-3xl font-black text-white leading-tight"
                 style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic" }}
               >
-                MarketHub{" "}
+                AliExpress{" "}
                 <span className="text-[#E53935]">Business</span>
               </h3>
               <div className="flex items-center gap-4 mt-2 text-white/80 text-xs">

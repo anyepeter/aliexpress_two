@@ -25,9 +25,9 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Seller Guidelines & Standards | MarketHub Express",
+  title: "Seller Guidelines & Standards | AliExpress",
   description:
-    "Learn about the guidelines and standards for selling on MarketHub Express. Understand our requirements for product listings, shipping, and seller performance.",
+    "Learn about the guidelines and standards for selling on AliExpress. Understand our requirements for product listings, shipping, and seller performance.",
 };
 
 export default function SellerGuidelinesPage() {
@@ -143,7 +143,7 @@ export default function SellerGuidelinesPage() {
             Getting Started
           </h2>
           <p className="text-gray-600 mb-8">
-            To begin selling on MarketHub Express, you must meet the following
+            To begin selling on AliExpress, you must meet the following
             requirements:
           </p>
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
@@ -187,7 +187,7 @@ export default function SellerGuidelinesPage() {
             Product Listing Standards
           </h2>
           <p className="text-gray-600 mb-8">
-            Every listing on MarketHub Express must meet these quality
+            Every listing on AliExpress must meet these quality
             standards to ensure a consistent buyer experience.
           </p>
           <div className="grid md:grid-cols-2 gap-6">
@@ -247,7 +247,7 @@ export default function SellerGuidelinesPage() {
             Prohibited Items
           </h2>
           <p className="text-gray-600 mb-8">
-            The following items are strictly prohibited on MarketHub Express.
+            The following items are strictly prohibited on AliExpress.
             Listing any of these will result in immediate removal and potential
             account suspension.
           </p>
@@ -300,7 +300,7 @@ export default function SellerGuidelinesPage() {
             Violations & Consequences
           </h2>
           <p className="text-gray-600 mb-8">
-            MarketHub Express takes policy violations seriously. Our enforcement
+            AliExpress takes policy violations seriously. Our enforcement
             process is designed to be fair while protecting the marketplace
             community.
           </p>
@@ -353,7 +353,7 @@ export default function SellerGuidelinesPage() {
         <section className="bg-[#E53935] py-16">
           <div className="max-w-3xl mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold text-white mb-4">
-              Ready to Sell on MarketHub Express?
+              Ready to Sell on AliExpress?
             </h2>
             <p className="text-gray-300 mb-8">
               Join thousands of successful sellers and start reaching millions

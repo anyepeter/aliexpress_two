@@ -6,7 +6,7 @@ import UnderReviewBanner from "@/components/dashboard/shared/UnderReviewBanner";
 import UserProfileClient from "@/components/profile/UserProfileClient";
 
 export const metadata = {
-  title: "My Profile — MarketHub",
+  title: "My Profile — AliExpress",
 };
 
 export default async function SellerProfilePage() {

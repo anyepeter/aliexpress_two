@@ -74,7 +74,7 @@ export default function ChatHeader({
           </span>
           {participant.role === "ADMIN" && (
             <span className="text-[9px] font-bold text-[#E53935] bg-[#E53935]/10 px-1.5 py-0.5 rounded-full flex-shrink-0">
-              MarketHub Admin
+              AliExpress Admin
             </span>
           )}
           {participant.role === "SELLER" && participant.isVerified && (

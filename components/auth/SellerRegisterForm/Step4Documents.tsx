@@ -119,7 +119,7 @@ export default function Step4Documents({ initialData, onNext, onBack }: Step4Pro
               className="mt-0.5"
             />
             <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer leading-relaxed">
-              I agree to MarketHub&apos;s{" "}
+              I agree to AliExpress&apos;s{" "}
               <a
                 href="/terms"
                 target="_blank"

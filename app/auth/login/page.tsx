@@ -21,7 +21,7 @@ const BENEFITS = [
 ];
 
 export const metadata = {
-  title: "Sign In — MarketHub",
+  title: "Sign In — AliExpress",
 };
 
 interface PageProps {
@@ -43,7 +43,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
         <Link href="/" className="flex items-center gap-3 relative z-10">
           <Store className="w-9 h-9 text-[#E53935]" />
           <span className="text-2xl font-extrabold text-white tracking-tight">
-            Market<span className="text-[#E53935]">Hub</span>
+            Ali<span className="text-[#E53935]">Express</span>
           </span>
         </Link>
 
@@ -75,7 +75,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
 
         {/* Bottom text */}
         <p className="text-blue-300 text-xs relative z-10">
-          © {new Date().getFullYear()} MarketHub. All rights reserved.
+          © {new Date().getFullYear()} AliExpress. All rights reserved.
         </p>
       </div>
 
@@ -86,7 +86,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
           <Link href="/" className="flex items-center gap-2 mb-8 lg:hidden">
             <Store className="w-7 h-7 text-[#E53935]" />
             <span className="text-xl font-extrabold text-[#E53935]">
-              Market<span className="text-[#E53935]">Hub</span>
+              Ali<span className="text-[#E53935]">Express</span>
             </span>
           </Link>
 

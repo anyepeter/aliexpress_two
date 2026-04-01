@@ -144,7 +144,7 @@ export default async function BuyerDashboard() {
                       {order.orderNumber}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {order.store?.storeName ?? "MarketHub"} · {new Date(order.createdAt).toLocaleDateString()}
+                      {order.store?.storeName ?? "AliExpress"} · {new Date(order.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">

@@ -20,9 +20,9 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — MarketHub Express",
+  title: "Terms of Service — AliExpress",
   description:
-    "Read the Terms of Service for MarketHub Express. Understand your rights and responsibilities as a buyer or seller on our marketplace.",
+    "Read the Terms of Service for AliExpress. Understand your rights and responsibilities as a buyer or seller on our marketplace.",
 };
 
 const sections = [
@@ -33,11 +33,11 @@ const sections = [
     content: [
       {
         subtitle: "Agreement",
-        text: 'By accessing or using the MarketHub Express platform, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this platform. The term "platform" refers to the MarketHub Express website, mobile applications, and all related services.',
+        text: 'By accessing or using the AliExpress platform, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this platform. The term "platform" refers to the AliExpress website, mobile applications, and all related services.',
       },
       {
         subtitle: "Modifications",
-        text: "MarketHub Express reserves the right to modify these terms at any time. Continued use of the platform after any modifications constitutes your acceptance of the revised terms. We will make reasonable efforts to notify users of significant changes.",
+        text: "AliExpress reserves the right to modify these terms at any time. Continued use of the platform after any modifications constitutes your acceptance of the revised terms. We will make reasonable efforts to notify users of significant changes.",
       },
     ],
   },
@@ -48,15 +48,15 @@ const sections = [
     content: [
       {
         subtitle: "Age Requirements",
-        text: "You must be at least 18 years of age or the age of majority in your jurisdiction to create an account and use MarketHub Express. By registering, you represent and warrant that you meet this requirement.",
+        text: "You must be at least 18 years of age or the age of majority in your jurisdiction to create an account and use AliExpress. By registering, you represent and warrant that you meet this requirement.",
       },
       {
         subtitle: "Account Security",
-        text: "You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must immediately notify MarketHub Express of any unauthorized use of your account or any other security breach.",
+        text: "You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must immediately notify AliExpress of any unauthorized use of your account or any other security breach.",
       },
       {
         subtitle: "Accurate Information",
-        text: "You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete. MarketHub Express reserves the right to suspend or terminate accounts with inaccurate or incomplete information.",
+        text: "You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete. AliExpress reserves the right to suspend or terminate accounts with inaccurate or incomplete information.",
       },
     ],
   },
@@ -67,11 +67,11 @@ const sections = [
     content: [
       {
         subtitle: "Minimum Purchase Requirement",
-        text: "MarketHub Express operates on a bulk-purchase model. All buyers are required to have a minimum of 10 items in their shopping cart before checkout is enabled. This policy applies to every order placed on the platform, regardless of the seller or product category. Items may be sourced from any combination of sellers to meet this requirement.",
+        text: "AliExpress operates on a bulk-purchase model. All buyers are required to have a minimum of 10 items in their shopping cart before checkout is enabled. This policy applies to every order placed on the platform, regardless of the seller or product category. Items may be sourced from any combination of sellers to meet this requirement.",
       },
       {
         subtitle: "Ordering",
-        text: "When you place an order on MarketHub Express (with the required minimum of 10 items), you are making an offer to purchase the products from the respective sellers at the listed prices. The order is confirmed once the seller accepts and processes it. MarketHub Express acts as a marketplace facilitator and is not the seller of the products.",
+        text: "When you place an order on AliExpress (with the required minimum of 10 items), you are making an offer to purchase the products from the respective sellers at the listed prices. The order is confirmed once the seller accepts and processes it. AliExpress acts as a marketplace facilitator and is not the seller of the products.",
       },
       {
         subtitle: "Payment",
@@ -79,7 +79,7 @@ const sections = [
       },
       {
         subtitle: "Shipping & Delivery",
-        text: "Shipping times and costs vary by seller and destination. Estimated delivery dates are provided as guidance and are not guaranteed. MarketHub Express is not responsible for shipping delays caused by carriers, customs, or events beyond our control.",
+        text: "Shipping times and costs vary by seller and destination. Estimated delivery dates are provided as guidance and are not guaranteed. AliExpress is not responsible for shipping delays caused by carriers, customs, or events beyond our control.",
       },
       {
         subtitle: "Taxes",
@@ -94,7 +94,7 @@ const sections = [
     content: [
       {
         subtitle: "Listing Requirements",
-        text: "Sellers must provide accurate, complete, and truthful product descriptions, images, and specifications. All listings must comply with applicable laws and MarketHub Express policies. Misleading or deceptive listings will be removed.",
+        text: "Sellers must provide accurate, complete, and truthful product descriptions, images, and specifications. All listings must comply with applicable laws and AliExpress policies. Misleading or deceptive listings will be removed.",
       },
       {
         subtitle: "Pricing",
@@ -106,7 +106,7 @@ const sections = [
       },
       {
         subtitle: "Prohibited Items",
-        text: "Sellers may not list items that are illegal, counterfeit, hazardous, or otherwise prohibited by MarketHub Express policies. This includes but is not limited to weapons, controlled substances, stolen goods, and items that infringe on intellectual property rights. Violations may result in immediate account termination.",
+        text: "Sellers may not list items that are illegal, counterfeit, hazardous, or otherwise prohibited by AliExpress policies. This includes but is not limited to weapons, controlled substances, stolen goods, and items that infringe on intellectual property rights. Violations may result in immediate account termination.",
       },
     ],
   },
@@ -121,7 +121,7 @@ const sections = [
       },
       {
         subtitle: "Content Guidelines",
-        text: "All content submitted to the platform, including reviews, messages, and product listings, must be lawful, accurate, and respectful. Users may not post content that is defamatory, obscene, threatening, discriminatory, or that violates the rights of others. MarketHub Express reserves the right to remove content that violates these guidelines.",
+        text: "All content submitted to the platform, including reviews, messages, and product listings, must be lawful, accurate, and respectful. Users may not post content that is defamatory, obscene, threatening, discriminatory, or that violates the rights of others. AliExpress reserves the right to remove content that violates these guidelines.",
       },
     ],
   },
@@ -132,15 +132,15 @@ const sections = [
     content: [
       {
         subtitle: "Platform Content",
-        text: "All content on MarketHub Express, including the logo, design, text, graphics, and software, is the property of MarketHub Express or its content suppliers and is protected by international copyright, trademark, and other intellectual property laws.",
+        text: "All content on AliExpress, including the logo, design, text, graphics, and software, is the property of AliExpress or its content suppliers and is protected by international copyright, trademark, and other intellectual property laws.",
       },
       {
         subtitle: "User Content",
-        text: "By submitting content to the platform, you grant MarketHub Express a non-exclusive, worldwide, royalty-free license to use, display, reproduce, and distribute your content in connection with the operation of the marketplace. You retain ownership of your original content.",
+        text: "By submitting content to the platform, you grant AliExpress a non-exclusive, worldwide, royalty-free license to use, display, reproduce, and distribute your content in connection with the operation of the marketplace. You retain ownership of your original content.",
       },
       {
         subtitle: "Infringement Claims",
-        text: "MarketHub Express respects intellectual property rights and will respond to valid notices of alleged infringement. If you believe your intellectual property has been infringed upon, please contact us with the relevant details for prompt investigation and action.",
+        text: "AliExpress respects intellectual property rights and will respond to valid notices of alleged infringement. If you believe your intellectual property has been infringed upon, please contact us with the relevant details for prompt investigation and action.",
       },
     ],
   },
@@ -151,7 +151,7 @@ const sections = [
     content: [
       {
         subtitle: "Transaction Fees",
-        text: "MarketHub Express charges sellers a transaction fee on each completed sale. The current fee schedule is available in the Seller Dashboard and may be updated with reasonable notice. No hidden fees will be applied.",
+        text: "AliExpress charges sellers a transaction fee on each completed sale. The current fee schedule is available in the Seller Dashboard and may be updated with reasonable notice. No hidden fees will be applied.",
       },
       {
         subtitle: "Seller Payouts",
@@ -159,7 +159,7 @@ const sections = [
       },
       {
         subtitle: "Refund Process",
-        text: "Refunds are processed in accordance with the seller's return policy and MarketHub Express's Buyer Protection program. Refund timelines depend on the payment method and may take 5-14 business days to appear in the buyer's account. MarketHub Express may mediate refund disputes between buyers and sellers.",
+        text: "Refunds are processed in accordance with the seller's return policy and AliExpress's Buyer Protection program. Refund timelines depend on the payment method and may take 5-14 business days to appear in the buyer's account. AliExpress may mediate refund disputes between buyers and sellers.",
       },
     ],
   },
@@ -170,15 +170,15 @@ const sections = [
     content: [
       {
         subtitle: "Buyer-Seller Disputes",
-        text: "We encourage buyers and sellers to resolve disputes directly through communication. If a resolution cannot be reached, either party may escalate the issue to MarketHub Express for mediation through our Resolution Center.",
+        text: "We encourage buyers and sellers to resolve disputes directly through communication. If a resolution cannot be reached, either party may escalate the issue to AliExpress for mediation through our Resolution Center.",
       },
       {
         subtitle: "Mediation",
-        text: "MarketHub Express offers a mediation service to help resolve disputes fairly. Our team will review the evidence provided by both parties and make a determination. Both parties agree to cooperate in good faith during the mediation process.",
+        text: "AliExpress offers a mediation service to help resolve disputes fairly. Our team will review the evidence provided by both parties and make a determination. Both parties agree to cooperate in good faith during the mediation process.",
       },
       {
-        subtitle: "MarketHub Express's Role",
-        text: "As a marketplace facilitator, MarketHub Express may intervene in disputes to protect the integrity of the platform and ensure fair outcomes. Our decisions in dispute resolution are made at our discretion and are guided by our policies and the evidence presented.",
+        subtitle: "AliExpress's Role",
+        text: "As a marketplace facilitator, AliExpress may intervene in disputes to protect the integrity of the platform and ensure fair outcomes. Our decisions in dispute resolution are made at our discretion and are guided by our policies and the evidence presented.",
       },
     ],
   },
@@ -189,15 +189,15 @@ const sections = [
     content: [
       {
         subtitle: "Disclaimer",
-        text: 'MarketHub Express provides the platform on an "as is" and "as available" basis. We make no warranties, express or implied, regarding the platform\'s reliability, availability, or fitness for a particular purpose. We do not guarantee uninterrupted or error-free operation.',
+        text: 'AliExpress provides the platform on an "as is" and "as available" basis. We make no warranties, express or implied, regarding the platform\'s reliability, availability, or fitness for a particular purpose. We do not guarantee uninterrupted or error-free operation.',
       },
       {
         subtitle: "Limitation",
-        text: "To the maximum extent permitted by law, MarketHub Express shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or business opportunities, arising from your use of the platform, even if we have been advised of the possibility of such damages.",
+        text: "To the maximum extent permitted by law, AliExpress shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or business opportunities, arising from your use of the platform, even if we have been advised of the possibility of such damages.",
       },
       {
         subtitle: "Third-Party Products",
-        text: "MarketHub Express is not responsible for the quality, safety, legality, or any other aspect of products sold by third-party sellers on the platform. Transactions are between buyers and sellers, and MarketHub Express is not a party to those transactions except as a facilitator.",
+        text: "AliExpress is not responsible for the quality, safety, legality, or any other aspect of products sold by third-party sellers on the platform. Transactions are between buyers and sellers, and AliExpress is not a party to those transactions except as a facilitator.",
       },
     ],
   },
@@ -211,8 +211,8 @@ const sections = [
         text: "You may terminate your account at any time by contacting our support team or through your account settings. Termination does not relieve you of any obligations incurred prior to termination, including pending orders and outstanding payments.",
       },
       {
-        subtitle: "By MarketHub Express",
-        text: "MarketHub Express reserves the right to suspend or terminate your account at any time, with or without cause, and with or without notice. Reasons for termination may include violation of these terms, fraudulent activity, extended inactivity, or any conduct that we determine to be harmful to the platform or its users.",
+        subtitle: "By AliExpress",
+        text: "AliExpress reserves the right to suspend or terminate your account at any time, with or without cause, and with or without notice. Reasons for termination may include violation of these terms, fraudulent activity, extended inactivity, or any conduct that we determine to be harmful to the platform or its users.",
       },
       {
         subtitle: "Effect of Termination",
@@ -274,8 +274,8 @@ export default function TermsPage() {
         <section className="mx-auto max-w-4xl px-4 py-12">
           <div className="rounded-2xl border border-[#E53935]/10 bg-white p-8 shadow-sm">
             <p className="text-lg leading-relaxed text-gray-700">
-              Welcome to MarketHub Express. These Terms of Service govern your
-              access to and use of the MarketHub Express marketplace platform,
+              Welcome to AliExpress. These Terms of Service govern your
+              access to and use of the AliExpress marketplace platform,
               including all associated services, features, and content. By using
               our platform as a buyer, seller, or visitor, you acknowledge that
               you have read, understood, and agree to be bound by these terms.

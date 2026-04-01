@@ -4,10 +4,10 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "MarketHub Express — Shop from 50,000+ Verified Sellers Worldwide",
+  title: "AliExpress — Shop from 50,000+ Verified Sellers Worldwide",
   description:
     "Discover millions of products at unbeatable prices from verified sellers across 190+ countries. Electronics, Fashion, Beauty, Home & Garden. Free shipping on orders over $50. Buyer protection guaranteed.",
-  alternates: { canonical: "https://markethubexpress.com" },
+  alternates: { canonical: "https://aliexpressexpress.com" },
 };
 
 import TopBanner from "@/components/layout/TopBanner";
@@ -83,15 +83,15 @@ export default async function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "MarketHub Express",
-    url: "https://markethubexpress.com",
+    name: "AliExpress",
+    url: "https://aliexpressexpress.com",
     description:
       "Global multi-vendor marketplace with 50,000+ verified sellers across 190+ countries.",
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://markethubexpress.com/shop?q={search_term_string}",
+        urlTemplate: "https://aliexpressexpress.com/shop?q={search_term_string}",
       },
       "query-input": "required name=search_term_string",
     },
@@ -100,15 +100,15 @@ export default async function HomePage() {
   const orgJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "MarketHub Express",
-    url: "https://markethubexpress.com",
-    logo: "https://markethubexpress.com/og-image.png",
+    name: "AliExpress",
+    url: "https://aliexpressexpress.com",
+    logo: "https://aliexpressexpress.com/og-image.png",
     description:
       "Global multi-vendor marketplace connecting buyers and sellers in 190+ countries.",
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      email: "support@markethubexpress.com",
+      email: "support@aliexpressexpress.com",
       availableLanguage: "English",
     },
     sameAs: [],

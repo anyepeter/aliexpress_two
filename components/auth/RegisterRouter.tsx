@@ -11,7 +11,7 @@ export default function RegisterRouter() {
     <div className="w-full max-w-lg space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-[#1A1A1A]">Join MarketHub</h1>
+        <h1 className="text-3xl font-bold text-[#1A1A1A]">Join AliExpress</h1>
         <p className="text-gray-500 mt-2">Choose how you&apos;d like to join</p>
       </div>
 
@@ -77,7 +77,7 @@ export default function RegisterRouter() {
             </div>
             <div>
               <h2 className="text-lg font-bold text-[#1A1A1A]">
-                Sell on MarketHub
+                Sell on AliExpress
               </h2>
               <p className="text-xs text-gray-500 mt-1">
                 Set up your store and start selling today

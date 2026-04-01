@@ -11,8 +11,8 @@ import { Store } from "lucide-react";
 export const metadata: Metadata = {
   title: "All Stores & Verified Sellers",
   description:
-    "Discover 50,000+ verified stores and sellers on MarketHub Express. Browse by category, rating, and location. Every store is vetted for quality and reliability.",
-  alternates: { canonical: "https://markethubexpress.com/stores" },
+    "Discover 50,000+ verified stores and sellers on AliExpress. Browse by category, rating, and location. Every store is vetted for quality and reliability.",
+  alternates: { canonical: "https://aliexpressexpress.com/stores" },
 };
 
 export default async function StoresPage() {
@@ -37,7 +37,7 @@ export default async function StoresPage() {
             All Stores
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Discover {stores.length} seller{stores.length !== 1 ? "s" : ""} on MarketHub
+            Discover {stores.length} seller{stores.length !== 1 ? "s" : ""} on AliExpress
           </p>
         </div>
 
@@ -56,7 +56,7 @@ export default async function StoresPage() {
               No stores yet
             </h2>
             <p className="text-sm text-gray-500 max-w-sm">
-              Be the first to open a store on MarketHub and start selling your products.
+              Be the first to open a store on AliExpress and start selling your products.
             </p>
             <a
               href="/auth/register/seller"

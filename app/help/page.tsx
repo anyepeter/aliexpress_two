@@ -89,7 +89,7 @@ const faqCategories: FAQCategory[] = [
       {
         question: "Do you offer international shipping?",
         answer:
-          "Yes, MarketHub Express supports international shipping to over 200 countries and territories. Shipping costs and delivery times vary by destination. Please note that international orders may be subject to customs duties and import taxes, which are the responsibility of the buyer. You can see available shipping options at checkout.",
+          "Yes, AliExpress supports international shipping to over 200 countries and territories. Shipping costs and delivery times vary by destination. Please note that international orders may be subject to customs duties and import taxes, which are the responsibility of the buyer. You can see available shipping options at checkout.",
       },
       {
         question: "Can I change or cancel my order?",
@@ -347,10 +347,10 @@ export default function HelpPage() {
                   as possible.
                 </p>
                 <a
-                  href="mailto:support@markethubexpress.com"
+                  href="mailto:support@aliexpressexpress.com"
                   className="inline-flex items-center gap-2 text-[#E53935] font-semibold hover:underline"
                 >
-                  support@markethubexpress.com
+                  support@aliexpressexpress.com
                 </a>
               </div>
               {/* Contact Page */}

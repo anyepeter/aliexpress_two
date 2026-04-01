@@ -48,7 +48,7 @@ const NAV_CATEGORIES = [
   { name: "Women's Watches", slug: "womens-watches" },
 ];
 
-function MarketHubLogo({ className = "" }: { className?: string }) {
+function AliExpressLogo({ className = "" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 200 40"
@@ -71,7 +71,7 @@ function MarketHubLogo({ className = "" }: { className?: string }) {
         fill="url(#logoGrad)"
         letterSpacing="-0.5"
       >
-        MarketHub
+        AliExpress
       </text>
     </svg>
   );
@@ -143,8 +143,8 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-3">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 mr-1">
-            <MarketHubLogo className="h-9 w-auto hidden sm:block" />
-            <MarketHubLogo className="h-7 w-auto sm:hidden" />
+            <AliExpressLogo className="h-9 w-auto hidden sm:block" />
+            <AliExpressLogo className="h-7 w-auto sm:hidden" />
           </Link>
 
           {/* All Categories + Search Bar — Desktop (same line) */}
@@ -279,7 +279,7 @@ export default function Navbar() {
                       <div className="fixed inset-0 z-10" onClick={() => setAccountOpen(false)} />
                       <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-20">
                         <div className="px-4 py-2 border-b border-gray-50 mb-1">
-                          <p className="text-xs text-gray-400">Welcome to MarketHub</p>
+                          <p className="text-xs text-gray-400">Welcome to AliExpress</p>
                           <p className="text-sm font-semibold text-[#1A1A1A]">
                             Sign in to your account
                           </p>

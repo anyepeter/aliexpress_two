@@ -6,7 +6,7 @@ import { ShoppingBag, Store, ArrowLeft, TrendingUp, Shield, Users } from "lucide
 import UpgradeToSellerForm from "@/components/auth/UpgradeToSellerForm";
 
 export const metadata = {
-  title: "Become a Seller — MarketHub",
+  title: "Become a Seller — AliExpress",
 };
 
 const BENEFITS = [
@@ -59,7 +59,7 @@ export default async function BecomeSellerPage() {
         <Link href="/" className="flex items-center gap-3 relative z-10">
           <ShoppingBag className="w-9 h-9 text-[#E53935]" />
           <span className="text-2xl font-extrabold text-white tracking-tight">
-            Market<span className="text-[#E53935]">Hub</span>
+            Ali<span className="text-[#E53935]">Express</span>
           </span>
         </Link>
 
@@ -92,7 +92,7 @@ export default async function BecomeSellerPage() {
 
         {/* Footer */}
         <p className="text-blue-300/60 text-xs relative z-10">
-          © {new Date().getFullYear()} MarketHub. All rights reserved.
+          © {new Date().getFullYear()} AliExpress. All rights reserved.
         </p>
       </div>
 
@@ -104,7 +104,7 @@ export default async function BecomeSellerPage() {
           <Link href="/" className="flex items-center gap-2 lg:hidden">
             <Store className="w-6 h-6 text-[#E53935]" />
             <span className="text-lg font-extrabold text-[#E53935]">
-              Market<span className="text-[#E53935]">Hub</span>
+              Ali<span className="text-[#E53935]">Express</span>
             </span>
           </Link>
 

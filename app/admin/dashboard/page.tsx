@@ -125,7 +125,7 @@ export default async function AdminDashboard() {
       <div className="space-y-6">
         {/* Welcome */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Admin Panel — MarketHub</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Admin Panel — AliExpress</h1>
           <p className="text-gray-500 mt-1">
             Welcome back, {user.firstName}. Here&apos;s what&apos;s happening.
           </p>

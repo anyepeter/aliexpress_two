@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
           .upload_stream(
             {
               resource_type: "video", // cloudinary uses "video" for audio
-              folder: `markethub/messages/${conversationId}/voice`,
+              folder: `aliexpress/messages/${conversationId}/voice`,
             },
             (error, uploadResult) => {
               if (error) reject(error);

@@ -16,7 +16,7 @@ const footerLinks = {
     { label: "Advertise with Us", href: "/advertise" },
   ],
   company: [
-    { label: "About MarketHub", href: "/about" },
+    { label: "About AliExpress", href: "/about" },
     { label: "Contact Us", href: "/contact" },
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Terms of Service", href: "/terms" },
@@ -43,7 +43,7 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-2xl font-bold italic text-[#E53935] tracking-tight" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
-                MarketHub
+                AliExpress
               </span>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-xs">
@@ -154,7 +154,7 @@ export default function Footer() {
       <div className="border-t border-white/8">
         <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()} MarketHub Inc. All rights reserved.
+            © {new Date().getFullYear()} AliExpress Inc. All rights reserved.
           </p>
 
           {/* Payment Badges */}

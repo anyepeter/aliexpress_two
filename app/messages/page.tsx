@@ -6,7 +6,7 @@ import DashboardLayout from "@/components/dashboard/shared/DashboardLayout";
 import MessagesLayout from "@/components/messages/MessagesLayout";
 
 export const metadata: Metadata = {
-  title: "Messages — MarketHub",
+  title: "Messages — AliExpress",
 };
 
 export default async function MessagesPage() {

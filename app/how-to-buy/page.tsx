@@ -18,9 +18,9 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "How to Buy — MarketHub Express",
+  title: "How to Buy — AliExpress",
   description:
-    "Learn how to shop on MarketHub Express. Our step-by-step guide makes online shopping easy, secure, and enjoyable.",
+    "Learn how to shop on AliExpress. Our step-by-step guide makes online shopping easy, secure, and enjoyable.",
 };
 
 const steps = [
@@ -49,7 +49,7 @@ const steps = [
     number: 4,
     title: "Add to Cart (Min. 10 Items)",
     description:
-      "Select your preferred variants and add items to your cart. Remember: MarketHub requires a minimum of 10 items per order. Mix and match from any seller or category to reach the minimum.",
+      "Select your preferred variants and add items to your cart. Remember: AliExpress requires a minimum of 10 items per order. Mix and match from any seller or category to reach the minimum.",
     icon: ShoppingCart,
   },
   {
@@ -99,7 +99,7 @@ const shoppingTips = [
     icon: ShieldCheck,
     title: "Use Buyer Protection",
     description:
-      "Every purchase on MarketHub is covered by our buyer protection program. Shop with confidence knowing you are covered.",
+      "Every purchase on AliExpress is covered by our buyer protection program. Shop with confidence knowing you are covered.",
   },
 ];
 
@@ -121,7 +121,7 @@ export default function HowToBuyPage() {
             </span>
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
               How to Shop on{" "}
-              <span className="text-[#E53935]">MarketHub</span>
+              <span className="text-[#E53935]">AliExpress</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-lg text-gray-300">
               Easy, secure, and enjoyable shopping in just a few simple steps.
@@ -207,7 +207,7 @@ export default function HowToBuyPage() {
               Shopping Tips
             </h2>
             <p className="mt-3 text-gray-500 text-lg">
-              Make the most of your MarketHub experience with these helpful tips
+              Make the most of your AliExpress experience with these helpful tips
             </p>
           </div>
 

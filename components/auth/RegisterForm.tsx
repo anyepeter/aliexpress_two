@@ -381,7 +381,7 @@ export default function RegisterForm({
               <p className="text-xs text-gray-400">
                 Store URL:{" "}
                 <span className="text-[#E53935] font-medium">
-                  markethub.com/store/{storeSlug}
+                  aliexpress.com/store/{storeSlug}
                 </span>
               </p>
             )}
@@ -468,7 +468,7 @@ export default function RegisterForm({
               Creating account…
             </>
           ) : role === "SELLER" ? (
-            "Start Selling on MarketHub"
+            "Start Selling on AliExpress"
           ) : (
             "Create Buyer Account"
           )}

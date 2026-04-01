@@ -62,7 +62,7 @@ export default function QuickViewModal({
         price: product.price,
         discountPercentage: product.discountPercentage,
         thumbnail: product.thumbnail,
-        brand: product.brand ?? "MarketHub",
+        brand: product.brand ?? "AliExpress",
         category: product.category,
         quantity: 1,
         storeId: store.id,

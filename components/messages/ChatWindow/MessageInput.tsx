@@ -71,7 +71,7 @@ export default function MessageInput({
   const uploadFile = async (file: File): Promise<{ url: string } | null> => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("folder", `markethub/messages/${conversationId}`);
+    formData.append("folder", `aliexpress/messages/${conversationId}`);
     try {
       const res = await fetch("/api/upload", {
         method: "POST",

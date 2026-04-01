@@ -21,9 +21,9 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Returns & Refunds — MarketHub Express",
+  title: "Returns & Refunds — AliExpress",
   description:
-    "Learn about our hassle-free return and refund policy. 30-day returns, easy process, and fast refunds on MarketHub Express.",
+    "Learn about our hassle-free return and refund policy. 30-day returns, easy process, and fast refunds on AliExpress.",
 };
 
 const returnSteps = [
@@ -80,7 +80,7 @@ const refundTimelines = [
   },
   {
     scenario: "Store Credit Refund",
-    method: "MarketHub wallet",
+    method: "AliExpress wallet",
     timeline: "Instant",
   },
 ];
@@ -174,7 +174,7 @@ export default function ReturnsPage() {
                 </h2>
                 <p className="mt-3 text-gray-500 leading-relaxed">
                   We offer a generous return policy to ensure your complete
-                  satisfaction with every purchase on MarketHub Express.
+                  satisfaction with every purchase on AliExpress.
                 </p>
               </div>
             </div>

@@ -100,7 +100,7 @@ export default function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     <div className="space-y-5">
       <div>
         <h2 className="text-xl font-bold text-[#1A1A1A]">Welcome back</h2>
-        <p className="text-gray-500 text-sm mt-1">Sign in to your MarketHub account</p>
+        <p className="text-gray-500 text-sm mt-1">Sign in to your AliExpress account</p>
       </div>
 
       {apiError && (
