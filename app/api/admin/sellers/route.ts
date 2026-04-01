@@ -142,15 +142,24 @@ export async function PATCH(req: NextRequest) {
     if (seller.store) {
       const storeId = seller.store.id;
 
-      // Delete deal section items referencing seller products
-      await prisma.dealSectionItem.deleteMany({
-        where: { product: { storeId } },
+      // Get seller product IDs
+      const sellerProducts = await prisma.sellerProduct.findMany({
+        where: { storeId },
+        select: { id: true },
       });
+      const productIds = sellerProducts.map((p) => p.id);
 
-      // Delete product views
-      await prisma.productView.deleteMany({
-        where: { product: { storeId } },
-      });
+      // Delete deal section items referencing seller products
+      if (productIds.length > 0) {
+        await prisma.dealSectionItem.deleteMany({
+          where: { productId: { in: productIds } },
+        });
+
+        // Delete product views
+        await prisma.productView.deleteMany({
+          where: { productId: { in: productIds } },
+        });
+      }
 
       // Delete seller products
       await prisma.sellerProduct.deleteMany({ where: { storeId } });
