@@ -19,7 +19,7 @@ export default function RegisterRouter() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Buyer Card */}
         <div
-          onClick={() => router.push("/auth/register/buyer")}
+          onClick={() => router.push("/auth/register/buyer/policy")}
           className="relative bg-white rounded-2xl border-2 border-gray-200 hover:border-[#E53935] p-6 cursor-pointer transition-all duration-200 hover:shadow-lg group"
         >
           <div className="flex flex-col items-center text-center gap-3">
@@ -52,7 +52,7 @@ export default function RegisterRouter() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                router.push("/auth/register/buyer");
+                router.push("/auth/register/buyer/policy");
               }}
               className="w-full py-2 border-2 border-[#E53935] text-[#E53935] rounded-lg text-sm font-semibold hover:bg-[#C62828] hover:text-white transition-colors"
             >

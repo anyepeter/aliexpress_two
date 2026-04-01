@@ -106,12 +106,21 @@ export default function CheckoutPage() {
     }
   }, [isLoaded, isSignedIn, router]);
 
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+
   // Redirect if cart is empty (and not in success state)
   useEffect(() => {
     if (items.length === 0 && !orderSuccess) {
       router.push("/");
     }
   }, [items.length, orderSuccess, router]);
+
+  // Redirect if fewer than 10 items
+  useEffect(() => {
+    if (items.length > 0 && totalItems < 10 && !orderSuccess) {
+      router.push("/");
+    }
+  }, [totalItems, items.length, orderSuccess, router]);
 
   const handleAddAddress = async () => {
     if (!addressForm.label || !addressForm.street || !addressForm.city || !addressForm.country) {
@@ -145,6 +154,10 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!selectedAddressId || !paymentMethod) return;
+    if (totalItems < 10) {
+      setError("Minimum 10 items required to place an order. Please add more items to your cart.");
+      return;
+    }
     setPlacing(true);
     setError(null);
 
@@ -636,7 +649,7 @@ export default function CheckoutPage() {
 
               <div className="flex items-center gap-2 text-[11px] text-gray-400 justify-center pt-1">
                 <Shield className="w-3 h-3" />
-                Secure checkout
+                Secure checkout &middot; Min. 10 items
               </div>
             </div>
           </div>

@@ -110,6 +110,7 @@ export default function BuyerProtectionPage() {
     "Items explicitly sold as-is or for parts",
     "Shipping delays due to customs or force majeure",
     "Digital goods after download or access",
+    "Orders placed with fewer than the 10-item minimum requirement",
   ];
 
   const stats = [

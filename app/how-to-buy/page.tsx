@@ -47,16 +47,16 @@ const steps = [
   },
   {
     number: 4,
-    title: "Add to Cart",
+    title: "Add to Cart (Min. 10 Items)",
     description:
-      "Select your preferred variants such as size, color, or style. Choose your quantity and add items to your cart for a seamless checkout.",
+      "Select your preferred variants and add items to your cart. Remember: MarketHub requires a minimum of 10 items per order. Mix and match from any seller or category to reach the minimum.",
     icon: ShoppingCart,
   },
   {
     number: 5,
     title: "Secure Checkout",
     description:
-      "Choose your preferred shipping method, enter your delivery address, and pay securely with our encrypted payment processing.",
+      "Once you have at least 10 items in your cart, proceed to checkout. Choose your shipping method, enter your delivery address, and pay securely with our encrypted payment processing.",
     icon: CreditCard,
   },
   {

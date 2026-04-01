@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { X, ShoppingBag, Trash2 } from "lucide-react";
+import { X, ShoppingBag, Trash2, AlertTriangle } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -192,22 +192,40 @@ export default function CartDrawer() {
                     Continue Shopping
                   </button>
 
+                  {totalItems < 10 && (
+                    <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5">
+                      <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                      <p className="text-[11px] text-amber-700 leading-snug">
+                        <span className="font-semibold">Minimum 10 items required.</span>{" "}
+                        Add {10 - totalItems} more item{10 - totalItems !== 1 ? "s" : ""} to checkout.
+                      </p>
+                    </div>
+                  )}
+
                   <button
                     onClick={() => {
+                      if (totalItems < 10) return;
                       closeCart();
                       if (isSignedIn) {
                         router.push("/checkout");
                       } else {
-                        router.push("/auth/register/buyer?redirect=/checkout");
+                        router.push("/auth/register/buyer/policy?redirect=/checkout");
                       }
                     }}
-                    className="w-full py-3 bg-[#E53935] text-white text-sm font-bold rounded-xl hover:bg-[#C62828] transition-colors"
+                    disabled={totalItems < 10}
+                    className={`w-full py-3 text-sm font-bold rounded-xl transition-colors ${
+                      totalItems < 10
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-[#E53935] text-white hover:bg-[#C62828]"
+                    }`}
                   >
-                    {isSignedIn ? "Proceed to Checkout" : "Sign In to Checkout"}
+                    {isSignedIn
+                      ? `Proceed to Checkout${totalItems < 10 ? ` (${totalItems}/10 items)` : ""}`
+                      : "Sign In to Checkout"}
                   </button>
 
                   <p className="text-center text-[11px] text-gray-400 pt-0.5">
-                    🔒 Secure checkout &nbsp;•&nbsp; Free returns
+                    🔒 Secure checkout &nbsp;•&nbsp; Min. 10 items per order
                   </p>
                 </div>
               </div>

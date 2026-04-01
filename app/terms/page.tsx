@@ -66,8 +66,12 @@ const sections = [
     title: "3. Buyer Terms",
     content: [
       {
+        subtitle: "Minimum Purchase Requirement",
+        text: "MarketHub Express operates on a bulk-purchase model. All buyers are required to have a minimum of 10 items in their shopping cart before checkout is enabled. This policy applies to every order placed on the platform, regardless of the seller or product category. Items may be sourced from any combination of sellers to meet this requirement.",
+      },
+      {
         subtitle: "Ordering",
-        text: "When you place an order on MarketHub Express, you are making an offer to purchase the product from the seller at the listed price. The order is confirmed once the seller accepts and processes it. MarketHub Express acts as a marketplace facilitator and is not the seller of the products.",
+        text: "When you place an order on MarketHub Express (with the required minimum of 10 items), you are making an offer to purchase the products from the respective sellers at the listed prices. The order is confirmed once the seller accepts and processes it. MarketHub Express acts as a marketplace facilitator and is not the seller of the products.",
       },
       {
         subtitle: "Payment",
