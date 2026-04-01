@@ -12,7 +12,7 @@ const footerLinks = {
     { label: "Register as Seller", href: "/auth/register" },
     { label: "Seller Dashboard", href: "/seller/dashboard" },
     { label: "Seller Guidelines", href: "/seller-guidelines" },
-    { label: "Seller Academy", href: "/seller-academy" },
+    // { label: "Seller Academy", href: "/seller-academy" },
     { label: "Advertise with Us", href: "/advertise" },
   ],
   company: [
