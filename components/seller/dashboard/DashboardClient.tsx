@@ -170,7 +170,7 @@ export default function DashboardClient({ data }: Props) {
                         </span>
                     )}
                 </div>
-                <p className="text-2xl font-bold text-[#E53935] transition-all duration-300">{stat.value}</p>
+                <p className="text-2xl font-bold text-[#1A1A1A] transition-all duration-300">{stat.value}</p>
                 <p className="text-xs text-[#6B7280] mt-1 font-medium">{stat.label}</p>
                 <p className="text-[11px] text-gray-400 mt-0.5">{stat.sub}</p>
             </div>
@@ -202,7 +202,7 @@ export default function DashboardClient({ data }: Props) {
                         <div className={`p-2.5 rounded-xl bg-gradient-to-br ${action.gradient} text-white group-hover:scale-110 transition-transform duration-300`}>
                             <action.icon className="w-4 h-4" />
                         </div>
-                        <span className="text-[11px] font-semibold text-[#E53935] text-center leading-tight">{action.label}</span>
+                        <span className="text-[11px] font-semibold text-[#1A1A1A] text-center leading-tight">{action.label}</span>
                     </Link>
                 ))}
             </div>
@@ -216,7 +216,7 @@ export default function DashboardClient({ data }: Props) {
                 {hasMoreCards && (
                     <button
                         onClick={() => setShowAllCards(!showAllCards)}
-                        className="w-full mt-3 py-2.5 bg-white rounded-xl shadow-sm border border-[#E5E7EB] text-sm font-semibold text-[#E53935] hover:bg-gray-50 hover:border-[#E53935]/20 transition-all duration-300 flex items-center justify-center gap-2"
+                        className="w-full mt-3 py-2.5 bg-white rounded-xl shadow-sm border border-[#E5E7EB] text-sm font-semibold text-[#1A1A1A] hover:bg-gray-50 hover:border-[#E53935]/20 transition-all duration-300 flex items-center justify-center gap-2"
                     >
                         {showAllCards ? (
                             <>Show Less <ChevronUp className="w-4 h-4" /></>
@@ -234,7 +234,7 @@ export default function DashboardClient({ data }: Props) {
             {/* Revenue Chart — scrollable on mobile */}
             {isLoading ? (
                 <div className="bg-white rounded-2xl shadow-sm p-6 flex items-center justify-center h-[380px]">
-                    <Loader2 className="w-6 h-6 text-[#E53935] animate-spin" />
+                    <Loader2 className="w-6 h-6 text-[#1A1A1A] animate-spin" />
                 </div>
             ) : analytics ? (
                 <div className="overflow-x-auto -mx-2 px-2 scrollbar-thin">
@@ -266,7 +266,7 @@ export default function DashboardClient({ data }: Props) {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Category breakdown */}
                     <div className="bg-white rounded-2xl shadow-sm p-6">
-                        <h3 className="text-lg font-bold text-[#E53935] mb-4">Sales by Category</h3>
+                        <h3 className="text-lg font-bold text-[#1A1A1A] mb-4">Sales by Category</h3>
                         {analytics.categoryBreakdown.length === 0 ? (
                             <div className="text-center py-8 text-[#6B7280] text-sm">No category data yet</div>
                         ) : (
@@ -292,8 +292,8 @@ export default function DashboardClient({ data }: Props) {
                     {/* Recent orders */}
                     <div className="bg-white rounded-2xl shadow-sm p-6">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-bold text-[#E53935]">Recent Orders</h3>
-                            <Link href="/seller/orders" className="text-xs text-[#E53935] font-medium hover:underline flex items-center gap-1">
+                            <h3 className="text-lg font-bold text-[#1A1A1A]">Recent Orders</h3>
+                            <Link href="/seller/orders" className="text-xs text-[#1A1A1A] font-medium hover:underline flex items-center gap-1">
                                 View All <ArrowRight className="w-3 h-3" />
                             </Link>
                         </div>
@@ -328,7 +328,7 @@ export default function DashboardClient({ data }: Props) {
                     >
                         <div className="flex items-center gap-3">
                             <span className="text-lg">🚀</span>
-                            <h3 className="text-[#E53935] font-semibold">Setup Progress</h3>
+                            <h3 className="text-[#1A1A1A] font-semibold">Setup Progress</h3>
                             <span className="text-xs text-[#6B7280]">{completedChecklist}/{data.checklist.length} complete</span>
                         </div>
                         <div className="flex items-center gap-3">
@@ -362,7 +362,7 @@ export default function DashboardClient({ data }: Props) {
                                         {item.text}
                                     </span>
                                     {!item.done && item.link && (
-                                        <Link href={item.link} className="text-xs text-[#E53935] font-medium hover:underline">
+                                        <Link href={item.link} className="text-xs text-[#1A1A1A] font-medium hover:underline">
                                             Go →
                                         </Link>
                                     )}

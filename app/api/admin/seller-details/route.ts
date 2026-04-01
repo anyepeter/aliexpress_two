@@ -57,6 +57,7 @@ export async function GET(req: NextRequest) {
               totalOrders: true,
               totalRevenue: true,
               totalProfit: true,
+              revenueAdjustment: true,
             },
           },
           _count: {

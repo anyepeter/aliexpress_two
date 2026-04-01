@@ -26,7 +26,7 @@ export default async function SellerPaymentsPage() {
   if (!user.store) redirect("/seller/dashboard");
 
   // Compute balance
-  const [revenueResult, totalWithdrawnResult, pendingResult] = await Promise.all([
+  const [revenueResult, totalWithdrawnResult, pendingResult, analyticsResult] = await Promise.all([
     prisma.order.aggregate({
       where: { storeId: user.store.id, status: "COMPLETED" },
       _sum: { sellerRevenue: true },
@@ -39,9 +39,14 @@ export default async function SellerPaymentsPage() {
       where: { storeId: user.store.id, status: "PENDING" },
       _sum: { amount: true },
     }),
+    prisma.storeAnalytics.findUnique({
+      where: { storeId: user.store.id },
+      select: { revenueAdjustment: true },
+    }),
   ]);
 
-  const totalEarnings = revenueResult._sum.sellerRevenue ?? 0;
+  const revenueAdjustment = analyticsResult?.revenueAdjustment ?? 0;
+  const totalEarnings = (revenueResult._sum.sellerRevenue ?? 0) + revenueAdjustment;
   const withdrawn = totalWithdrawnResult._sum.amount ?? 0;
   const pendingAmount = pendingResult._sum.amount ?? 0;
   const availableBalance = totalEarnings - withdrawn - pendingAmount;

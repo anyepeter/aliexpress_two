@@ -20,43 +20,33 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "storeId and non-zero amount required" }, { status: 400 });
   }
 
-  // Get current analytics
-  const analytics = await prisma.storeAnalytics.findUnique({
-    where: { storeId },
-  });
+  // Upsert analytics and adjust the revenueAdjustment field
+  const analytics = await prisma.storeAnalytics.findUnique({ where: { storeId } });
 
   if (!analytics) {
-    // Create analytics if it doesn't exist
     await prisma.storeAnalytics.create({
       data: {
         storeId,
-        totalRevenue: Math.max(0, amount),
-        totalProfit: Math.max(0, amount),
+        revenueAdjustment: amount,
+        totalRevenue: 0,
+        totalProfit: 0,
         totalOrders: 0,
         totalViews: 0,
       },
     });
   } else {
-    const newRevenue = Math.max(0, analytics.totalRevenue + amount);
-    const newProfit = Math.max(0, analytics.totalProfit + amount);
-
     await prisma.storeAnalytics.update({
       where: { storeId },
       data: {
-        totalRevenue: newRevenue,
-        totalProfit: newProfit,
+        revenueAdjustment: analytics.revenueAdjustment + amount,
       },
     });
   }
 
-  // Fetch updated analytics
-  const updated = await prisma.storeAnalytics.findUnique({
-    where: { storeId },
-  });
+  const updated = await prisma.storeAnalytics.findUnique({ where: { storeId } });
 
   return NextResponse.json({
     success: true,
-    totalRevenue: updated?.totalRevenue ?? 0,
-    totalProfit: updated?.totalProfit ?? 0,
+    revenueAdjustment: updated?.revenueAdjustment ?? 0,
   });
 }

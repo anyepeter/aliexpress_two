@@ -128,13 +128,14 @@ model SellerProduct {
 }
 
 model StoreAnalytics {
-  id            String   @id @default(cuid())
-  storeId       String   @unique
-  totalViews    Int      @default(0)
-  totalOrders   Int      @default(0)
-  totalRevenue  Float    @default(0)
-  totalProfit   Float    @default(0)
-  updatedAt     DateTime @updatedAt
+  id                String   @id @default(cuid())
+  storeId           String   @unique
+  totalViews        Int      @default(0)
+  totalOrders       Int      @default(0)
+  totalRevenue      Float    @default(0)
+  totalProfit       Float    @default(0)
+  revenueAdjustment Float    @default(0)
+  updatedAt         DateTime @updatedAt
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
 }

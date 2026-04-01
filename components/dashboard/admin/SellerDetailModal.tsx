@@ -92,6 +92,7 @@ interface SellerData {
       totalOrders: number;
       totalRevenue: number;
       totalProfit: number;
+      revenueAdjustment: number;
     } | null;
     _count: { sellerProducts: number };
     orders: OrderItem[];
@@ -244,8 +245,8 @@ export default function SellerDetailModal({
             store: {
               ...prev.store!,
               analytics: prev.store!.analytics
-                ? { ...prev.store!.analytics, totalRevenue: result.totalRevenue, totalProfit: result.totalProfit }
-                : { totalViews: 0, totalOrders: 0, totalRevenue: result.totalRevenue, totalProfit: result.totalProfit },
+                ? { ...prev.store!.analytics, revenueAdjustment: result.revenueAdjustment }
+                : { totalViews: 0, totalOrders: 0, totalRevenue: 0, totalProfit: 0, revenueAdjustment: result.revenueAdjustment },
             },
           };
         });
@@ -356,7 +357,7 @@ export default function SellerDetailModal({
                       <div className="grid grid-cols-4 gap-3">
                         <StatBox label="Products" value={store._count.sellerProducts} />
                         <StatBox label="Total Orders" value={data.orderStats.total} />
-                        <StatBox label="Revenue" value={`$${(analytics?.totalRevenue ?? 0).toFixed(2)}`} />
+                        <StatBox label="Revenue" value={`$${((analytics?.totalRevenue ?? 0) + (analytics?.revenueAdjustment ?? 0)).toFixed(2)}`} />
                         <StatBox label="Store Views" value={analytics?.totalViews ?? 0} />
                       </div>
                     </div>
@@ -479,12 +480,21 @@ export default function SellerDetailModal({
               {tab === "financials" && (
                 <div className="space-y-6">
                   {/* Revenue stats */}
-                  <div className="grid grid-cols-4 gap-3">
-                    <StatBox label="Total Revenue" value={`$${(analytics?.totalRevenue ?? 0).toFixed(2)}`} />
-                    <StatBox label="Total Profit" value={`$${(analytics?.totalProfit ?? 0).toFixed(2)}`} />
-                    <StatBox label="Withdrawn" value={`$${(data.withdrawalStats.approved).toFixed(2)}`} />
-                    <StatBox label="Pending Payout" value={`$${(data.withdrawalStats.pending).toFixed(2)}`} />
-                  </div>
+                  {(() => {
+                    const adj = analytics?.revenueAdjustment ?? 0;
+                    const orderRevenue = analytics?.totalRevenue ?? 0;
+                    const orderProfit = analytics?.totalProfit ?? 0;
+                    const combinedRevenue = orderRevenue + adj;
+                    const combinedProfit = orderProfit + adj;
+                    return (
+                      <div className="grid grid-cols-4 gap-3">
+                        <StatBox label="Total Revenue" value={`$${combinedRevenue.toFixed(2)}`} />
+                        <StatBox label="Total Profit" value={`$${combinedProfit.toFixed(2)}`} />
+                        <StatBox label="Withdrawn" value={`$${(data.withdrawalStats.approved).toFixed(2)}`} />
+                        <StatBox label="Adjustment" value={`${adj >= 0 ? "+" : ""}$${adj.toFixed(2)}`} />
+                      </div>
+                    );
+                  })()}
 
                   {/* Adjust revenue */}
                   <div className="border border-gray-200 rounded-lg p-5">

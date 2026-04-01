@@ -125,8 +125,9 @@ export default async function SellerDashboard() {
     }
   }
 
-  const totalRevenue = revenueResult._sum.sellerRevenue ?? 0;
-  const totalProfit = profitResult._sum.profit ?? 0;
+  const revenueAdjustment = analytics?.revenueAdjustment ?? 0;
+  const totalRevenue = (revenueResult._sum.sellerRevenue ?? 0) + revenueAdjustment;
+  const totalProfit = (profitResult._sum.profit ?? 0) + revenueAdjustment;
   const todayProfit = todayProfitResult._sum.profit ?? 0;
   const totalWithdrawn = totalWithdrawnResult._sum.amount ?? 0;
   const pendingWithdrawals = pendingWithdrawalResult._sum.amount ?? 0;
@@ -161,7 +162,7 @@ export default async function SellerDashboard() {
         {/* Welcome */}
         <div className="flex items-start justify-between flex-wrap gap-3 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-[#E53935]">
+            <h1 className="text-2xl font-bold text-[#1A1A1A]">
               Welcome back, {user.firstName}!
             </h1>
             <p className="text-[#6B7280] mt-1 flex items-center gap-2 flex-wrap">
