@@ -12,7 +12,88 @@ import {
     Loader2,
     ChevronDown,
     ChevronUp,
+    Settings,
 } from "lucide-react";
+
+// ── Loan Settings Panel ──
+function LoanSettingsPanel() {
+    const [settings, setSettings] = useState<Record<string, number> | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        fetch("/api/admin/loan-settings")
+            .then((r) => r.ok ? r.json() : null)
+            .then(setSettings)
+            .finally(() => setLoading(false));
+    }, []);
+
+    const handleSave = async () => {
+        if (!settings) return;
+        setSaving(true);
+        try {
+            const res = await fetch("/api/admin/loan-settings", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(settings),
+            });
+            if (res.ok) setSettings(await res.json());
+        } finally { setSaving(false); }
+    };
+
+    if (loading || !settings) return null;
+
+    return (
+        <div className="mb-6">
+            <button
+                onClick={() => setOpen(!open)}
+                className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-[#E53935] transition-colors"
+            >
+                <Settings className="w-4 h-4" />
+                Loan Settings
+                {open ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+
+            {open && (
+                <div className="mt-3 bg-white rounded-2xl border border-gray-200 p-5">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div>
+                            <label className="text-[11px] font-medium text-gray-500 uppercase block mb-1">Daily Interest Rate</label>
+                            <div className="flex items-center gap-1">
+                                <input type="number" step="0.001" min="0" max="1" value={settings.dailyInterestRate} onChange={(e) => setSettings({ ...settings, dailyInterestRate: parseFloat(e.target.value) || 0 })} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E53935]/20" />
+                                <span className="text-xs text-gray-400 shrink-0">= {((settings.dailyInterestRate ?? 0) * 100).toFixed(1)}%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="text-[11px] font-medium text-gray-500 uppercase block mb-1">Max Repayment Days</label>
+                            <input type="number" min="1" max="365" value={settings.maxRepaymentDays} onChange={(e) => setSettings({ ...settings, maxRepaymentDays: parseInt(e.target.value) || 7 })} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E53935]/20" />
+                        </div>
+                        <div>
+                            <label className="text-[11px] font-medium text-gray-500 uppercase block mb-1">Min Revenue Required</label>
+                            <input type="number" min="0" value={settings.minRevenue} onChange={(e) => setSettings({ ...settings, minRevenue: parseFloat(e.target.value) || 0 })} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E53935]/20" />
+                        </div>
+                        <div>
+                            <label className="text-[11px] font-medium text-gray-500 uppercase block mb-1">Min Completed Orders</label>
+                            <input type="number" min="0" value={settings.minCompletedOrders} onChange={(e) => setSettings({ ...settings, minCompletedOrders: parseInt(e.target.value) || 0 })} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E53935]/20" />
+                        </div>
+                        <div>
+                            <label className="text-[11px] font-medium text-gray-500 uppercase block mb-1">Min Loan Amount</label>
+                            <input type="number" min="0" value={settings.minLoanAmount} onChange={(e) => setSettings({ ...settings, minLoanAmount: parseFloat(e.target.value) || 0 })} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E53935]/20" />
+                        </div>
+                        <div>
+                            <label className="text-[11px] font-medium text-gray-500 uppercase block mb-1">Max Loan Amount</label>
+                            <input type="number" min="0" value={settings.maxLoanAmount} onChange={(e) => setSettings({ ...settings, maxLoanAmount: parseFloat(e.target.value) || 0 })} className="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E53935]/20" />
+                        </div>
+                    </div>
+                    <button onClick={handleSave} disabled={saving} className="mt-4 px-5 py-2 bg-[#E53935] text-white text-sm font-semibold rounded-xl hover:bg-[#C62828] transition-colors disabled:opacity-50">
+                        {saving ? "Saving..." : "Save Settings"}
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+}
 
 type Tab = "PENDING" | "APPROVED" | "REJECTED" | "all";
 
@@ -83,6 +164,9 @@ export default function AdminLoansClient() {
 
     return (
         <>
+            {/* Loan Settings */}
+            <LoanSettingsPanel />
+
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                 {statCards.map((stat) => (

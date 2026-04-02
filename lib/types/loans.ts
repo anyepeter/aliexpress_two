@@ -21,6 +21,9 @@ export interface LoanRequest {
     rejectedAt: string | null;
     balanceRemaining: number;
     totalRepaid: number;
+    repaymentDays: number;
+    dueDate: string | null;
+    dailyInterestRate: number;
     createdAt: string;
     updatedAt: string;
     transactions: LoanTransaction[];

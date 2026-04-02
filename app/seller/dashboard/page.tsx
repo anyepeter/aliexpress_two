@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import DashboardLayout from "@/components/dashboard/shared/DashboardLayout";
 import UnderReviewBanner from "@/components/dashboard/shared/UnderReviewBanner";
 import DashboardClient from "@/components/seller/dashboard/DashboardClient";
+import LoanReminderBanner from "@/components/seller/loans/LoanReminderBanner";
 import { Plus, RefreshCw, WifiOff } from "lucide-react";
 
 export default async function SellerDashboard() {
@@ -159,6 +160,8 @@ export default async function SellerDashboard() {
       <UnderReviewBanner status={user.status} role="SELLER" />
 
       <div className="p-6 min-h-screen bg-[#F5F6FA]">
+        {/* Loan Reminder */}
+        <LoanReminderBanner />
         {/* Welcome */}
         <div className="flex items-start justify-between flex-wrap gap-3 mb-8">
           <div>

@@ -44,13 +44,17 @@ export async function PATCH(
                 );
             }
 
+            const now = new Date();
+            const dueDate = new Date(now.getTime() + loan.repaymentDays * 24 * 60 * 60 * 1000);
+
             const updated = await prisma.loanRequest.update({
                 where: { id: loanId },
                 data: {
                     status: "APPROVED",
                     approvedAmount: finalAmount,
                     balanceRemaining: finalAmount,
-                    approvedAt: new Date(),
+                    approvedAt: now,
+                    dueDate,
                     adminNote: adminNote || null,
                 },
                 include: { transactions: true },

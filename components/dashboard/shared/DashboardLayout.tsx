@@ -56,7 +56,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { label: "Orders", href: "/seller/orders", icon: ShoppingBag },
     { label: "Reviews", href: "/seller/reviews", icon: Star },
     { label: "Payments", href: "/seller/payments", icon: CreditCard },
-    // { label: "Take a Loan", href: "/seller/loans", icon: CreditCard },
+    { label: "Loans", href: "/seller/loans", icon: CreditCard },
     { label: "Messages", href: "/messages", icon: MessageSquare },
     // { label: "Store Settings", href: "/seller/settings", icon: Settings },
     // { label: "Analytics", href: "/seller/analytics", icon: BarChart2 },

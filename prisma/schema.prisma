@@ -380,6 +380,9 @@ model LoanRequest {
   rejectedAt       DateTime?
   balanceRemaining Float         @default(0)
   totalRepaid      Float         @default(0)
+  repaymentDays    Int           @default(7) // number of days to repay
+  dueDate          DateTime?     // calculated: approvedAt + repaymentDays
+  dailyInterestRate Float        @default(0.003) // 0.3% daily
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
@@ -388,6 +391,19 @@ model LoanRequest {
 
   @@index([storeId])
   @@index([sellerId])
+}
+
+// ─── Loan Settings (admin-configurable) ─────────────────────────
+
+model LoanSettings {
+  id                  String   @id @default("default")
+  dailyInterestRate   Float    @default(0.003)  // 0.3% per day
+  maxRepaymentDays    Int      @default(7)       // max days seller can select
+  minRevenue          Float    @default(30000)   // $30,000 minimum revenue
+  minCompletedOrders  Int      @default(5)       // 5 completed orders minimum
+  minLoanAmount       Float    @default(100)     // minimum loan $100
+  maxLoanAmount       Float    @default(10000)   // maximum loan $10,000
+  updatedAt           DateTime @updatedAt
 }
 
 model LoanTransaction {
