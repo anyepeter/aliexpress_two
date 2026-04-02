@@ -33,6 +33,9 @@ export async function GET(
     country: store.country ?? null,
     city: store.city ?? null,
     socialLinks: (store.socialLinks as Record<string, string>) ?? null,
+    averageRating: store.ratingOverride ?? store.averageRating ?? null,
+    totalReviews: store.totalReviews ?? 0,
+    ratingOverride: store.ratingOverride ?? null,
   };
 
   return NextResponse.json({ store: storeInfo });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,9 +15,11 @@ import {
   ChevronDown,
   ChevronUp,
   Truck,
+  Star,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import MessageAdminButton from "@/components/messages/MessageAdminButton";
+import ReviewOrderModal from "./ReviewOrderModal";
 
 type OrderStatus = "PENDING" | "CONTACTED_ADMIN" | "SHIPPING" | "COMPLETED" | "REJECTED";
 
@@ -71,6 +73,25 @@ const STATUS_CONFIG: Record<
 export default function BuyerOrdersList({ orders }: { orders: SerializedOrder[] }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | OrderStatus>("all");
+  const [reviewModal, setReviewModal] = useState<{ orderId: string; orderNumber: string; storeName: string } | null>(null);
+  const [reviewedOrders, setReviewedOrders] = useState<Set<string>>(new Set());
+
+  // Check which completed orders have already been reviewed
+  useEffect(() => {
+    const completedOrders = orders.filter((o) => o.status === "COMPLETED");
+    if (completedOrders.length === 0) return;
+
+    Promise.all(
+      completedOrders.map((o) =>
+        fetch(`/api/store-reviews?orderId=${o.id}`)
+          .then((r) => r.json())
+          .then((data) => (data.reviewed ? o.id : null))
+          .catch(() => null)
+      )
+    ).then((results) => {
+      setReviewedOrders(new Set(results.filter(Boolean) as string[]));
+    });
+  }, [orders]);
 
   const filtered = filter === "all" ? orders : orders.filter((o) => o.status === filter);
 
@@ -240,8 +261,32 @@ export default function BuyerOrdersList({ orders }: { orders: SerializedOrder[] 
                       </div>
                     )}
 
-                    {/* Contact Support button */}
-                    <div className="flex justify-end">
+                    {/* Actions */}
+                    <div className="flex items-center justify-between">
+                      {/* Rate button for completed orders */}
+                      {order.status === "COMPLETED" && order.store && !reviewedOrders.has(order.id) ? (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setReviewModal({
+                              orderId: order.id,
+                              orderNumber: order.orderNumber,
+                              storeName: order.store!.storeName,
+                            });
+                          }}
+                          className="flex items-center gap-1.5 px-4 py-2 bg-amber-50 text-amber-700 text-xs font-semibold rounded-xl hover:bg-amber-100 transition-colors"
+                        >
+                          <Star className="w-3.5 h-3.5" />
+                          Rate this Order
+                        </button>
+                      ) : order.status === "COMPLETED" && reviewedOrders.has(order.id) ? (
+                        <span className="flex items-center gap-1.5 text-xs text-green-600 font-medium">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          Reviewed
+                        </span>
+                      ) : (
+                        <div />
+                      )}
                       <MessageAdminButton
                         subject={`Support for Order #${order.orderNumber}`}
                         orderId={order.id}
@@ -255,6 +300,18 @@ export default function BuyerOrdersList({ orders }: { orders: SerializedOrder[] 
             );
           })}
         </div>
+      )}
+      {reviewModal && (
+        <ReviewOrderModal
+          isOpen={!!reviewModal}
+          onClose={() => setReviewModal(null)}
+          orderId={reviewModal.orderId}
+          orderNumber={reviewModal.orderNumber}
+          storeName={reviewModal.storeName}
+          onReviewSubmitted={() => {
+            setReviewedOrders((prev) => new Set([...prev, reviewModal.orderId]));
+          }}
+        />
       )}
     </div>
   );

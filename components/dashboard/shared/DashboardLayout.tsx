@@ -54,6 +54,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { label: "My Store", href: "/seller/store", icon: Store },
     { label: "Add Products", href: "/seller/products", icon: Package },
     { label: "Orders", href: "/seller/orders", icon: ShoppingBag },
+    { label: "Reviews", href: "/seller/reviews", icon: Star },
     { label: "Payments", href: "/seller/payments", icon: CreditCard },
     // { label: "Take a Loan", href: "/seller/loans", icon: CreditCard },
     { label: "Messages", href: "/messages", icon: MessageSquare },

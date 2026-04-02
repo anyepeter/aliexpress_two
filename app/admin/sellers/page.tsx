@@ -53,6 +53,9 @@ export default async function AdminSellersPage() {
           totalRevenue: s.store.analytics?.totalRevenue ?? 0,
           totalOrders: s.store.analytics?.totalOrders ?? 0,
           createdAt: s.store.createdAt.toISOString(),
+          averageRating: s.store.averageRating,
+          totalReviews: s.store.totalReviews,
+          ratingOverride: s.store.ratingOverride,
         }
       : null,
   }));

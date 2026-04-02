@@ -64,6 +64,9 @@ export async function getFeaturedMarketplaceProducts(
         country: p.store.country ?? null,
         city: p.store.city ?? null,
         socialLinks: (p.store.socialLinks as Record<string, string>) ?? null,
+        averageRating: p.store.ratingOverride ?? p.store.averageRating ?? null,
+        totalReviews: p.store.totalReviews ?? 0,
+        ratingOverride: p.store.ratingOverride ?? null,
       };
 
       return {
@@ -203,6 +206,9 @@ export async function getFlashDealProducts(limit = 10): Promise<{
       country: store.country ?? null,
       city: store.city ?? null,
       socialLinks: (store.socialLinks as Record<string, string>) ?? null,
+      averageRating: store.ratingOverride ?? store.averageRating ?? null,
+      totalReviews: store.totalReviews ?? 0,
+      ratingOverride: store.ratingOverride ?? null,
     };
 
     const sellerProducts = await prisma.sellerProduct.findMany({
@@ -367,6 +373,9 @@ export async function getAllStores(): Promise<
       country: s.country ?? null,
       city: s.city ?? null,
       socialLinks: (s.socialLinks as Record<string, string>) ?? null,
+      averageRating: s.ratingOverride ?? s.averageRating ?? null,
+      totalReviews: s.totalReviews ?? 0,
+      ratingOverride: s.ratingOverride ?? null,
       productCount: s._count.sellerProducts,
     }));
   } catch (error) {
@@ -402,6 +411,9 @@ export async function getVerifiedStores(limit = 10): Promise<StoreInfo[]> {
       country: s.country ?? null,
       city: s.city ?? null,
       socialLinks: (s.socialLinks as Record<string, string>) ?? null,
+      averageRating: s.ratingOverride ?? s.averageRating ?? null,
+      totalReviews: s.totalReviews ?? 0,
+      ratingOverride: s.ratingOverride ?? null,
     }));
   } catch (error) {
     console.error("getVerifiedStores error:", error);

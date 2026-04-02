@@ -58,6 +58,9 @@ export async function GET(req: NextRequest) {
             country: true,
             city: true,
             socialLinks: true,
+            averageRating: true,
+            totalReviews: true,
+            ratingOverride: true,
             user: { select: { email: true, phone: true } },
           },
         },
@@ -95,6 +98,9 @@ export async function GET(req: NextRequest) {
       country: p.store.country ?? null,
       city: p.store.city ?? null,
       socialLinks: (p.store.socialLinks as Record<string, string>) ?? null,
+      averageRating: p.store.ratingOverride ?? p.store.averageRating ?? null,
+      totalReviews: p.store.totalReviews ?? 0,
+      ratingOverride: p.store.ratingOverride ?? null,
     };
 
     const product: MarketplaceProduct = {

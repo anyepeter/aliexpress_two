@@ -44,6 +44,7 @@ model User {
   sellerConversations  Conversation[]   @relation("SellerConversations")
   adminConversations   Conversation[]   @relation("AdminConversations")
   presence             UserPresence?
+  storeReviews         StoreReview[]    @relation("BuyerStoreReviews")
 
   @@index([email])
   @@index([clerkId])
@@ -77,6 +78,14 @@ model Store {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
+  // Rating fields (cached aggregates + admin override)
+  averageRating     Float?   // computed average of all reviews (or admin override)
+  totalReviews      Int      @default(0)
+  itemRatingAvg     Float?   // average "Item as Described" score
+  commsRatingAvg    Float?   // average "Communication" score
+  shippingRatingAvg Float?   // average "Shipping Speed" score
+  ratingOverride    Float?   // admin can override the displayed rating
+
   user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   sellerProducts SellerProduct[]
   analytics      StoreAnalytics?
@@ -84,6 +93,7 @@ model Store {
   loanRequests   LoanRequest[]
   orderAnalytics OrderAnalytics[]
   withdrawals    Withdrawal[]
+  reviews        StoreReview[]
 
   @@index([storeName])
   @@index([storeSlug])
@@ -411,6 +421,30 @@ model LoanRepayment {
   @@index([loanId])
   @@index([storeId])
   @@index([status])
+}
+
+// ─── Store Reviews ──────────────────────────────────────────────
+
+model StoreReview {
+  id               String   @id @default(cuid())
+  storeId          String
+  store            Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  buyerId          String
+  buyer            User     @relation("BuyerStoreReviews", fields: [buyerId], references: [id], onDelete: Cascade)
+  orderId          String   @unique // one review per order
+  itemRating       Int      // 1-5: "Item as Described"
+  communicationRating Int   // 1-5: "Communication"
+  shippingRating   Int      // 1-5: "Shipping Speed"
+  overallRating    Float    // computed: average of the 3 ratings
+  comment          String?  // optional buyer comment
+  sellerReply      String?  // seller can reply to the review
+  sellerRepliedAt  DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([buyerId])
+  @@index([orderId])
 }
 
 // ─── Product Catalog (migrated from DummyJSON) ──────────────────

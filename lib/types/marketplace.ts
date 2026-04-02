@@ -13,6 +13,9 @@ export interface StoreInfo {
   country: string | null;
   city: string | null;
   socialLinks: Record<string, string> | null;
+  averageRating: number | null;
+  totalReviews: number;
+  ratingOverride: number | null;
 }
 
 export interface MarketplaceProduct {

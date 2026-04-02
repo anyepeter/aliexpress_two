@@ -80,6 +80,9 @@ export async function GET(
       country: store.country ?? null,
       city: store.city ?? null,
       socialLinks: (store.socialLinks as Record<string, string>) ?? null,
+      averageRating: store.ratingOverride ?? store.averageRating ?? null,
+      totalReviews: store.totalReviews ?? 0,
+      ratingOverride: store.ratingOverride ?? null,
     };
 
     const product: MarketplaceProduct = {
@@ -121,6 +124,9 @@ export async function GET(
     country: store.country ?? null,
     city: store.city ?? null,
     socialLinks: (store.socialLinks as Record<string, string>) ?? null,
+    averageRating: (store as any).ratingOverride ?? (store as any).averageRating ?? null,
+    totalReviews: (store as any).totalReviews ?? 0,
+    ratingOverride: (store as any).ratingOverride ?? null,
   };
 
   return NextResponse.json({ store: storeInfo, products, total, hasMore, categories });

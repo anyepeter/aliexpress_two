@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import {
   Search,
@@ -11,8 +12,9 @@ import {
   Trash2,
   X,
   AlertTriangle,
+  Star,
 } from "lucide-react";
-import SellerDetailModal from "./SellerDetailModal";
+
 
 interface SellerStore {
   id: string;
@@ -28,6 +30,9 @@ interface SellerStore {
   totalRevenue: number;
   totalOrders: number;
   createdAt: string;
+  averageRating: number | null;
+  totalReviews: number;
+  ratingOverride: number | null;
 }
 
 interface SellerItem {
@@ -48,11 +53,11 @@ interface Props {
 type FilterTab = "ALL" | "ACTIVE" | "SUSPENDED" | "PENDING_APPROVAL" | "REJECTED";
 
 export default function AdminSellersClient({ sellers: initialSellers }: Props) {
+  const router = useRouter();
   const [sellers, setSellers] = useState(initialSellers);
   const [filter, setFilter] = useState<FilterTab>("ALL");
   const [search, setSearch] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [viewSellerId, setViewSellerId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<SellerItem | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -190,7 +195,7 @@ export default function AdminSellersClient({ sellers: initialSellers }: Props) {
                 <div
                   key={seller.id}
                   className="p-4 hover:bg-gray-50 transition-colors cursor-pointer"
-                  onClick={() => setViewSellerId(seller.id)}
+                  onClick={() => router.push(`/admin/sellers/${seller.id}`)}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center shrink-0">
@@ -223,6 +228,12 @@ export default function AdminSellersClient({ sellers: initialSellers }: Props) {
                             <span className="text-gray-400">{seller.store.totalOrders} orders</span>
                             <span className="text-gray-300 mx-1">·</span>
                             <span className="text-gray-400">${seller.store.totalRevenue.toFixed(2)}</span>
+                            <span className="text-gray-300 mx-1">·</span>
+                            <span className="inline-flex items-center gap-0.5">
+                              <Star className={`w-3 h-3 ${(seller.store.ratingOverride ?? seller.store.averageRating) ? "text-amber-400 fill-amber-400" : "text-gray-300"}`} />
+                              <span className="text-gray-500 font-medium">{(seller.store.ratingOverride ?? seller.store.averageRating ?? 0).toFixed(1)}</span>
+                              <span className="text-gray-400">({seller.store.totalReviews})</span>
+                            </span>
                           </>
                         )}
                       </p>
@@ -280,13 +291,6 @@ export default function AdminSellersClient({ sellers: initialSellers }: Props) {
           </div>
         )}
       </Card>
-
-      <SellerDetailModal
-        sellerId={viewSellerId ?? ""}
-        open={!!viewSellerId}
-        onClose={() => setViewSellerId(null)}
-        showActions={true}
-      />
 
       {/* Delete Confirmation Dialog */}
       {deleteTarget && (

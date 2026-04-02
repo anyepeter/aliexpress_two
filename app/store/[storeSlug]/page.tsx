@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import TopBanner from "@/components/layout/TopBanner";
 import StoreBanner from "@/components/store/StoreBanner";
 import StoreProductsGrid from "@/components/store/StoreProductsGrid";
+import StoreReviews from "@/components/store/StoreReviews";
 import type { MarketplaceProduct, StoreInfo } from "@/lib/types/marketplace";
 import { prisma } from "@/lib/prisma";
 
@@ -37,6 +38,9 @@ async function getStoreData(storeSlug: string) {
     city: store.city ?? null,
     socialLinks: (store.socialLinks as Record<string, string>) ?? null,
     userId: store.user.id,
+    averageRating: store.ratingOverride ?? store.averageRating ?? null,
+    totalReviews: store.totalReviews ?? 0,
+    ratingOverride: store.ratingOverride ?? null,
   };
 
   const sellerProducts = await prisma.sellerProduct.findMany({
@@ -140,6 +144,11 @@ export default async function StorePage({ params }: PageProps) {
           initialHasMore={hasMore}
           store={store}
         />
+
+        {/* Customer Reviews */}
+        <div className="mt-8">
+          <StoreReviews storeId={store.id} storeName={store.storeName} />
+        </div>
       </main>
 
       <Footer />

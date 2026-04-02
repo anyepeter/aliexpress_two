@@ -87,6 +87,9 @@ interface SellerData {
     approvedAt: string | null;
     approvedBy: string | null;
     createdAt: string;
+    averageRating: number | null;
+    totalReviews: number;
+    ratingOverride: number | null;
     analytics: {
       totalViews: number;
       totalOrders: number;
@@ -178,6 +181,84 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "withdrawals", label: "Withdrawals" },
   { key: "documents", label: "Documents" },
 ];
+
+/* ── Rating Override Section ── */
+
+function RatingOverrideSection({
+  storeId,
+  currentOverride,
+  averageRating,
+  onUpdated,
+}: {
+  storeId: string;
+  currentOverride: number | null;
+  averageRating: number | null;
+  onUpdated: (v: number | null) => void;
+}) {
+  const [value, setValue] = useState(currentOverride?.toString() ?? "");
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async (override: number | null) => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/admin/store-rating", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ storeId, ratingOverride: override }),
+      });
+      if (res.ok) {
+        onUpdated(override);
+        if (override === null) setValue("");
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div>
+      <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Store Rating Override</p>
+      <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-3">
+        <div className="flex-1">
+          <p className="text-[11px] text-gray-500 mb-1">
+            Organic avg: <strong>{averageRating?.toFixed(1) ?? "No reviews"}</strong>
+            {currentOverride !== null && (
+              <span className="text-amber-600 ml-2">Overridden to: {currentOverride.toFixed(1)}</span>
+            )}
+          </p>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              min="0"
+              max="5"
+              step="0.1"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="e.g. 4.5"
+              className="w-24 px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#E53935]/20"
+            />
+            <button
+              onClick={() => handleSave(parseFloat(value))}
+              disabled={saving || !value || isNaN(parseFloat(value)) || parseFloat(value) < 0 || parseFloat(value) > 5}
+              className="px-3 py-1.5 bg-[#E53935] text-white text-xs font-semibold rounded-lg hover:bg-[#C62828] transition-colors disabled:opacity-50"
+            >
+              {saving ? "..." : "Set"}
+            </button>
+            {currentOverride !== null && (
+              <button
+                onClick={() => handleSave(null)}
+                disabled={saving}
+                className="px-3 py-1.5 text-xs text-gray-500 hover:text-red-500 transition-colors"
+              >
+                Remove Override
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /* ── Main Component ── */
 
@@ -359,8 +440,25 @@ export default function SellerDetailModal({
                         <StatBox label="Total Orders" value={data.orderStats.total} />
                         <StatBox label="Revenue" value={`$${((analytics?.totalRevenue ?? 0) + (analytics?.revenueAdjustment ?? 0)).toFixed(2)}`} />
                         <StatBox label="Store Views" value={analytics?.totalViews ?? 0} />
+                        <StatBox label="Rating" value={store.ratingOverride ?? store.averageRating ?? "—"} />
+                        <StatBox label="Reviews" value={store.totalReviews} />
                       </div>
                     </div>
+                  )}
+
+                  {/* Rating Override */}
+                  {store && (
+                    <RatingOverrideSection
+                      storeId={store.id}
+                      currentOverride={store.ratingOverride}
+                      averageRating={store.averageRating}
+                      onUpdated={(newOverride) => {
+                        setData((prev) => prev ? {
+                          ...prev,
+                          store: { ...prev.store!, ratingOverride: newOverride },
+                        } : prev);
+                      }}
+                    />
                   )}
                 </div>
               )}

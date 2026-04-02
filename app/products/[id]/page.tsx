@@ -67,6 +67,9 @@ async function getProduct(id: string): Promise<MarketplaceProduct | null> {
           country: true,
           city: true,
           socialLinks: true,
+          averageRating: true,
+          totalReviews: true,
+          ratingOverride: true,
           user: { select: { id: true, email: true, phone: true } },
         },
       },
@@ -93,6 +96,9 @@ async function getProduct(id: string): Promise<MarketplaceProduct | null> {
     city: sellerProduct.store.city ?? null,
     socialLinks: (sellerProduct.store.socialLinks as Record<string, string>) ?? null,
     userId: sellerProduct.store.user?.id ?? "",
+    averageRating: sellerProduct.store.ratingOverride ?? sellerProduct.store.averageRating ?? null,
+    totalReviews: sellerProduct.store.totalReviews ?? 0,
+    ratingOverride: sellerProduct.store.ratingOverride ?? null,
   };
 
   return {
