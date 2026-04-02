@@ -23,10 +23,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json([]);
   }
 
+  // Hide the super admin (system owner) from all users
+  const superAdminEmail = process.env.SUPER_ADMIN_EMAIL;
+
   const baseWhere = {
     id: { not: currentUser.id },
     status: "ACTIVE" as const,
     role: { in: roles as ("ADMIN" | "SELLER" | "BUYER")[] },
+    ...(superAdminEmail ? { email: { not: superAdminEmail } } : {}),
   };
 
   const searchFilter = q.length >= 2

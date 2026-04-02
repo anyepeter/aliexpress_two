@@ -235,7 +235,7 @@ export default function BuyerOrdersList({ orders }: { orders: SerializedOrder[] 
                     {/* Admin note */}
                     {order.adminNote && (
                       <div className="bg-white rounded-lg border border-gray-100 p-3">
-                        <p className="text-xs font-bold text-gray-500 mb-1">Admin Note</p>
+                        <p className="text-xs font-bold text-gray-500 mb-1">Support Note</p>
                         <p className="text-xs text-gray-600">{order.adminNote}</p>
                       </div>
                     )}

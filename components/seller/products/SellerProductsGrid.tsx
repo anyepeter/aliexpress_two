@@ -10,8 +10,8 @@ interface SellerProductsGridProps {
   onDelete?: (id: string) => void;
 }
 
-const EDIT_MIN = 15;
-const EDIT_MAX = 25;
+const EDIT_MIN = 10;
+const EDIT_MAX = 15;
 
 const statusColors: Record<string, string> = {
   PUBLISHED: "bg-green-100 text-green-700",

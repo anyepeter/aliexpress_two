@@ -12,12 +12,12 @@ const TABS_BY_ROLE: Record<UserRole, { label: string; value: string }[]> = {
   BUYER: [
     { label: "All", value: "all" },
     { label: "Sellers", value: "sellers" },
-    { label: "Admin", value: "admin" },
+    { label: "Support", value: "admin" },
   ],
   SELLER: [
     { label: "All", value: "all" },
     { label: "Buyers", value: "buyers" },
-    { label: "Admin", value: "admin" },
+    { label: "Support", value: "admin" },
   ],
   ADMIN: [
     { label: "All", value: "all" },

@@ -106,7 +106,7 @@ export default function SellerPaymentsClient({
         return;
       }
 
-      setSuccess("Withdrawal request submitted! Waiting for admin approval.");
+      setSuccess("Withdrawal request submitted! Waiting for approval.");
       setShowForm(false);
       setAmount("");
       setMethod("BANK_TRANSFER");
@@ -385,7 +385,7 @@ export default function SellerPaymentsClient({
                 onChange={(e) => setSellerNote(e.target.value)}
                 rows={2}
                 className="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#E53935]/20 focus:border-[#E53935] resize-none"
-                placeholder="Any additional notes for admin..."
+                placeholder="Any additional notes for customer support..."
               />
             </div>
 
@@ -498,7 +498,7 @@ export default function SellerPaymentsClient({
                           )}
                           {w.adminNote && (
                             <p className="text-xs text-blue-600 mt-1">
-                              Admin: {w.adminNote}
+                              Support: {w.adminNote}
                             </p>
                           )}
                         </div>

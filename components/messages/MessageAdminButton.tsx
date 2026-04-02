@@ -15,7 +15,7 @@ interface MessageAdminButtonProps {
 export default function MessageAdminButton({
   subject,
   orderId,
-  label = "Message Admin",
+  label = "Message Support",
   variant = "secondary",
   className = "",
 }: MessageAdminButtonProps) {

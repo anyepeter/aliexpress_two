@@ -74,7 +74,7 @@ const STATUS_CONFIG: Record<
   { label: string; color: string; bg: string; icon: React.ElementType }
 > = {
   PENDING: { label: "Pending", color: "text-amber-700", bg: "bg-amber-50", icon: Clock },
-  CONTACTED_ADMIN: { label: "Contacted Admin", color: "text-blue-700", bg: "bg-blue-50", icon: PhoneCall },
+  CONTACTED_ADMIN: { label: "Contacted Support", color: "text-blue-700", bg: "bg-blue-50", icon: PhoneCall },
   SHIPPING: { label: "Shipping", color: "text-indigo-700", bg: "bg-indigo-50", icon: Truck },
   COMPLETED: { label: "Completed", color: "text-green-700", bg: "bg-green-50", icon: CheckCircle2 },
   REJECTED: { label: "Rejected", color: "text-red-700", bg: "bg-red-50", icon: XCircle },
@@ -188,7 +188,7 @@ export default function SellerOrdersList({ orders: initialOrders }: { orders: Se
             </div>
           </div>
           <p className="text-2xl font-bold text-amber-600">${pendingBaseCost.toFixed(2)}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">Amount to pay admin</p>
+          <p className="text-[11px] text-gray-400 mt-0.5">Amount to pay</p>
         </Card>
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
@@ -368,7 +368,7 @@ export default function SellerOrdersList({ orders: initialOrders }: { orders: Se
                           <span className="font-bold text-gray-900">${order.totalAmount.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-gray-500">Cost to pay admin (base price)</span>
+                          <span className="text-gray-500">Cost to pay (base price)</span>
                           <span className="font-bold text-red-600">-${order.baseCost.toFixed(2)}</span>
                         </div>
                         <div className="border-t border-gray-100 pt-1.5 flex justify-between text-xs">
@@ -381,7 +381,7 @@ export default function SellerOrdersList({ orders: initialOrders }: { orders: Se
                     {/* Admin note */}
                     {order.adminNote && (
                       <div className="bg-white rounded-lg border border-gray-100 p-3">
-                        <p className="text-xs font-bold text-gray-500 mb-1">Admin Note</p>
+                        <p className="text-xs font-bold text-gray-500 mb-1">Support Note</p>
                         <p className="text-xs text-gray-600">{order.adminNote}</p>
                       </div>
                     )}
@@ -471,7 +471,7 @@ export default function SellerOrdersList({ orders: initialOrders }: { orders: Se
                               <PhoneCall className="w-4 h-4 text-[#E53935]" />
                               <span className="text-sm font-semibold text-[#E53935]">Pay Normally</span>
                             </div>
-                            <p className="text-xs text-[#6B7280] mb-3">Contact admin to arrange bank transfer or Bitcoin</p>
+                            <p className="text-xs text-[#6B7280] mb-3">Contact customer support to arrange bank transfer or Bitcoin</p>
                             <button
                               onClick={() => handleContactAdmin(order.id)}
                               disabled={contactingId === order.id}
@@ -480,7 +480,7 @@ export default function SellerOrdersList({ orders: initialOrders }: { orders: Se
                               {contactingId === order.id ? (
                                 <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Contacting...</>
                               ) : (
-                                <>Contact Admin →</>
+                                <>Contact Support →</>
                               )}
                             </button>
                           </div>
@@ -500,7 +500,7 @@ export default function SellerOrdersList({ orders: initialOrders }: { orders: Se
                     {order.status === "CONTACTED_ADMIN" && (
                       <div className="bg-blue-50 rounded-lg border border-blue-100 p-3 text-center space-y-1">
                         <p className="text-sm font-medium text-blue-700">
-                          Admin has been notified. Awaiting verification of your ${order.baseCost.toFixed(2)} payment.
+                          Customer support has been notified. Awaiting verification of your ${order.baseCost.toFixed(2)} payment.
                         </p>
                         {order.contactedAt && (
                           <p className="text-xs text-blue-500">
@@ -515,7 +515,7 @@ export default function SellerOrdersList({ orders: initialOrders }: { orders: Se
                       <MessageAdminButton
                         subject={`Payment for Order #${order.orderNumber}`}
                         orderId={order.id}
-                        label="Message Admin"
+                        label="Message Support"
                         variant="secondary"
                       />
                     </div>

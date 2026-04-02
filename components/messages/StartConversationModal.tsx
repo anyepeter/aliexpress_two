@@ -29,7 +29,7 @@ const ALLOWED_TARGET_ROLES: Record<UserRole, UserRole[]> = {
 };
 
 const ROLE_CONFIG: Record<UserRole, { label: string; pluralLabel: string; icon: typeof User; color: string; bg: string }> = {
-  ADMIN: { label: "Admin", pluralLabel: "Admins", icon: ShieldCheck, color: "text-[#E53935]", bg: "bg-[#E53935]/10" },
+  ADMIN: { label: "Customer Support", pluralLabel: "Support", icon: ShieldCheck, color: "text-[#E53935]", bg: "bg-[#E53935]/10" },
   SELLER: { label: "Seller", pluralLabel: "Sellers", icon: Store, color: "text-[#E53935]", bg: "bg-[#E53935]/10" },
   BUYER: { label: "Buyer", pluralLabel: "Buyers", icon: User, color: "text-blue-600", bg: "bg-blue-50" },
 };
@@ -237,12 +237,12 @@ export default function StartConversationModal({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-[#1A1A1A]">
-                            {user.firstName} {user.lastName}
+                            {user.role === "ADMIN" ? "Customer Support" : `${user.firstName} ${user.lastName}`}
                           </span>
                           <span
                             className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${config.bg} ${config.color}`}
                           >
-                            {role}
+                            {user.role === "ADMIN" ? "SUPPORT" : role}
                           </span>
                         </div>
                         {user.store?.storeName && (

@@ -59,7 +59,7 @@ export default function ContactAdminCard({ subject = "Payment & Support", orderI
             Need to make a payment or have a question?
           </h3>
           <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-            Your admin is available to help with order funding, payments, and account support.
+            Our customer support team is available to help with order funding, payments, and account support.
           </p>
           <button
             onClick={handleContact}
@@ -71,7 +71,7 @@ export default function ContactAdminCard({ subject = "Payment & Support", orderI
             ) : (
               <MessageSquare className="w-4 h-4" />
             )}
-            Contact Admin
+            Contact Support
           </button>
         </div>
       </div>

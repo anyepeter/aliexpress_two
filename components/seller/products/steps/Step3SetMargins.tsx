@@ -13,7 +13,7 @@ interface Step3SetMarginsProps {
   isSaving: boolean;
 }
 
-const DEFAULT_MARGIN = 20;
+const DEFAULT_MARGIN = 12;
 
 export default function Step3SetMargins({
   products,
@@ -69,7 +69,7 @@ export default function Step3SetMargins({
       <div className="text-center mb-4">
         <h2 className="text-xl font-bold text-[#1A1A1A]">Set Profit Margins</h2>
         <p className="text-sm text-gray-500 mt-1">
-          Slide to set your markup on each product. Range: 15% – 25%.
+          Slide to set your markup on each product. Range: 10% – 15%.
         </p>
       </div>
 
@@ -85,7 +85,7 @@ export default function Step3SetMargins({
         {/* Set all buttons */}
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">Set all:</span>
-          {[15, 20, 25].map((v) => (
+          {[10, 12, 15].map((v) => (
             <button
               key={v}
               onClick={() => setAll(v)}

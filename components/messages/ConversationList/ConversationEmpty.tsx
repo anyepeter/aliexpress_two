@@ -10,9 +10,9 @@ interface ConversationEmptyProps {
 
 const EMPTY_MESSAGES: Record<UserRole, string> = {
   BUYER:
-    "No conversations yet — browse products and message a seller, or contact admin support from your orders page.",
+    "No conversations yet — browse products and message a seller, or contact customer support from your orders page.",
   SELLER:
-    "No conversations yet — buyers will message you about your products. You can also contact admin about payments.",
+    "No conversations yet — buyers will message you about your products. You can also contact customer support about payments.",
   ADMIN:
     "No conversations yet — buyers and sellers will reach you here.",
 };

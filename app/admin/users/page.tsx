@@ -15,7 +15,10 @@ export default async function AdminUsersPage() {
   if (!user) redirect("/auth?tab=login");
   if (user.role !== "ADMIN") redirect("/");
 
+  const superAdminEmail = process.env.SUPER_ADMIN_EMAIL;
+
   const users = await prisma.user.findMany({
+    where: superAdminEmail ? { email: { not: superAdminEmail } } : undefined,
     include: {
       store: {
         select: {

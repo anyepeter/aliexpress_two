@@ -30,7 +30,7 @@ function getRoleBadge(role: string) {
     case "ADMIN":
       return (
         <span className="text-[9px] font-bold text-[#E53935] bg-[#E53935]/10 px-1.5 py-0.5 rounded-full">
-          Admin
+          Support
         </span>
       );
     case "SELLER":
@@ -59,7 +59,7 @@ export default function ConversationRow({
   if (!other) return null;
 
   const hasUnread = unreadCount > 0;
-  const displayName = `${other.firstName} ${other.lastName}`;
+  const displayName = other.role === "ADMIN" ? "Customer Support" : `${other.firstName} ${other.lastName}`;
 
   return (
     <button
@@ -81,8 +81,7 @@ export default function ConversationRow({
           />
         ) : (
           <div className="w-11 h-11 rounded-full bg-[#E53935] flex items-center justify-center text-white text-sm font-bold">
-            {other.firstName[0]?.toUpperCase()}
-            {other.lastName[0]?.toUpperCase()}
+            {other.role === "ADMIN" ? "CS" : `${other.firstName[0]?.toUpperCase()}${other.lastName[0]?.toUpperCase()}`}
           </div>
         )}
         <span

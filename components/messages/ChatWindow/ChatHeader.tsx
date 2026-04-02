@@ -30,7 +30,7 @@ export default function ChatHeader({
   orderId,
   onBack,
 }: ChatHeaderProps) {
-  const displayName = `${participant.firstName} ${participant.lastName}`;
+  const displayName = participant.role === "ADMIN" ? "Customer Support" : `${participant.firstName} ${participant.lastName}`;
 
   return (
     <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white">
@@ -55,8 +55,7 @@ export default function ChatHeader({
           />
         ) : (
           <div className="w-10 h-10 rounded-full bg-[#E53935] flex items-center justify-center text-white text-sm font-bold">
-            {participant.firstName[0]?.toUpperCase()}
-            {participant.lastName[0]?.toUpperCase()}
+            {participant.role === "ADMIN" ? "CS" : `${participant.firstName[0]?.toUpperCase()}${participant.lastName[0]?.toUpperCase()}`}
           </div>
         )}
         <span
@@ -74,7 +73,7 @@ export default function ChatHeader({
           </span>
           {participant.role === "ADMIN" && (
             <span className="text-[9px] font-bold text-[#E53935] bg-[#E53935]/10 px-1.5 py-0.5 rounded-full flex-shrink-0">
-              AliExpress Admin
+              Customer Support
             </span>
           )}
           {participant.role === "SELLER" && participant.isVerified && (

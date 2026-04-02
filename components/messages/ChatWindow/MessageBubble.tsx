@@ -93,7 +93,7 @@ export default function MessageBubble({
         {!isSent && sender.role === "ADMIN" && showAvatar && (
           <div className="flex items-center gap-1 mb-1">
             <span className="text-[9px] font-bold text-[#E53935] bg-[#E53935]/10 px-1.5 py-0.5 rounded-full">
-              AliExpress Admin
+              Customer Support
             </span>
           </div>
         )}

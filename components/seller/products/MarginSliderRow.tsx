@@ -10,8 +10,8 @@ interface MarginSliderRowProps {
   onChange: (margin: number) => void;
 }
 
-const MIN_MARGIN = 15;
-const MAX_MARGIN = 25;
+const MIN_MARGIN = 10;
+const MAX_MARGIN = 15;
 
 export default function MarginSliderRow({
   product,
