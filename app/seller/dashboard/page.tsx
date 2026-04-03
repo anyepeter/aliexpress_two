@@ -205,6 +205,8 @@ export default async function SellerDashboard() {
             totalWithdrawn,
             pendingWithdrawals,
             checklist,
+            storeRating: store?.ratingOverride ?? store?.averageRating ?? null,
+            totalReviews: store?.totalReviews ?? 0,
           }}
         />
       </div>

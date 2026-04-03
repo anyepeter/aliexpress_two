@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
           logoUrl: true,
           isVerified: true,
           user: { select: { firstName: true, lastName: true, email: true } },
+          analytics: { select: { totalViews: true } },
         },
       },
     },

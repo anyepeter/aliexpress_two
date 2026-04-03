@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Loader2,
   Settings,
@@ -14,6 +14,7 @@ import {
   Star,
   Zap,
   Crown,
+  TrendingUp,
 } from "lucide-react";
 
 interface AdPlan {
@@ -36,6 +37,7 @@ interface SubStore {
   logoUrl: string | null;
   isVerified: boolean;
   user: { firstName: string; lastName: string; email: string };
+  analytics: { totalViews: number } | null;
 }
 
 interface AdSubscription {
@@ -53,36 +55,55 @@ interface AdSubscription {
   store: SubStore;
 }
 
-type Tab = "PENDING" | "ACTIVE" | "EXPIRED" | "all";
+type Tab = "all" | "PENDING" | "ACTIVE" | "EXPIRED" | "CANCELLED";
 
 const TIER_ICONS: Record<string, typeof Star> = { BASIC: Star, STANDARD: Zap, PREMIUM: Crown };
 
+function formatViews(n: number) {
+  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
+  return String(n);
+}
+
 export default function AdminAdsClient() {
   const [plans, setPlans] = useState<AdPlan[]>([]);
-  const [subscriptions, setSubscriptions] = useState<AdSubscription[]>([]);
+  const [allSubscriptions, setAllSubscriptions] = useState<AdSubscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>("PENDING");
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [savingPlan, setSavingPlan] = useState<string | null>(null);
+  const [cancelConfirm, setCancelConfirm] = useState<{ id: string; storeName: string; planName: string } | null>(null);
+  const [boostingVisitors, setBoostingVisitors] = useState(false);
+  const [boostResult, setBoostResult] = useState<string | null>(null);
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const [p, s] = await Promise.all([
         fetch("/api/admin/ad-plans").then((r) => r.json()),
-        fetch(`/api/admin/ad-subscriptions?status=${activeTab}`).then((r) => r.json()),
+        fetch("/api/admin/ad-subscriptions?status=all").then((r) => r.json()),
       ]);
       setPlans(p);
-      setSubscriptions(s);
+      setAllSubscriptions(s);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchData(); }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchData(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [cancelConfirm, setCancelConfirm] = useState<{ id: string; storeName: string; planName: string } | null>(null);
+  // Client-side filtering
+  const filteredSubscriptions = useMemo(() => {
+    if (activeTab === "all") return allSubscriptions;
+    return allSubscriptions.filter((s) => s.status === activeTab);
+  }, [allSubscriptions, activeTab]);
+
+  // Counts from ALL data (not filtered)
+  const pendingCount = allSubscriptions.filter((s) => s.status === "PENDING").length;
+  const activeCount = allSubscriptions.filter((s) => s.status === "ACTIVE").length;
+  const expiredCount = allSubscriptions.filter((s) => s.status === "EXPIRED").length;
+  const cancelledCount = allSubscriptions.filter((s) => s.status === "CANCELLED").length;
 
   const handleAction = async (subId: string, action: "approve" | "reject" | "cancel") => {
     setProcessingId(subId);
@@ -113,15 +134,27 @@ export default function AdminAdsClient() {
     }
   };
 
-  const tabs: { label: string; value: Tab }[] = [
-    { label: "Pending", value: "PENDING" },
-    { label: "Active", value: "ACTIVE" },
-    { label: "Expired", value: "EXPIRED" },
-    { label: "All", value: "all" },
-  ];
+  const handleBoostVisitors = async () => {
+    setBoostingVisitors(true);
+    setBoostResult(null);
+    try {
+      const res = await fetch(`/api/cron/ad-visitors?secret=${encodeURIComponent(process.env.NEXT_PUBLIC_CRON_SECRET ?? "mh-cron-secret-2026")}`);
+      if (res.ok) {
+        const data = await res.json();
+        setBoostResult(`Boosted ${data.boosted} store${data.boosted !== 1 ? "s" : ""}. ${data.expired} expired.`);
+        // Refresh to show updated visitor counts
+        fetchData();
+      }
+    } finally {
+      setBoostingVisitors(false);
+    }
+  };
 
-  const pendingCount = subscriptions.filter((s) => s.status === "PENDING").length;
-  const activeCount = subscriptions.filter((s) => s.status === "ACTIVE").length;
+  const tabs: { label: string; value: Tab; count: number }[] = [
+    { label: "Pending", value: "PENDING", count: pendingCount },
+    { label: "Active", value: "ACTIVE", count: activeCount },
+    { label: "Expired", value: "EXPIRED", count: expiredCount },
+  ];
 
   return (
     <div className="space-y-6">
@@ -132,15 +165,38 @@ export default function AdminAdsClient() {
             {activeCount} active · {pendingCount} pending
           </p>
         </div>
-        <button
-          onClick={() => setShowSettings(!showSettings)}
-          className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
-        >
-          <Settings className="w-4 h-4" />
-          Plan Settings
-          {showSettings ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleBoostVisitors}
+            disabled={boostingVisitors}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#0a1a2e] to-[#14304d] text-white rounded-xl text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-60"
+          >
+            {boostingVisitors ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Boosting...</>
+            ) : (
+              <><TrendingUp className="w-4 h-4" /> Boost Visitors</>
+            )}
+          </button>
+          <button
+            onClick={() => setShowSettings(!showSettings)}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-200 transition-colors"
+          >
+            <Settings className="w-4 h-4" />
+            Settings
+            {showSettings ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
+        </div>
       </div>
+
+      {/* Boost Result */}
+      {boostResult && (
+        <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-2.5 flex items-center justify-between">
+          <p className="text-sm text-green-700 font-medium">{boostResult}</p>
+          <button onClick={() => setBoostResult(null)} className="text-green-400 hover:text-green-600">
+            <XCircle className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Plan Settings */}
       {showSettings && (
@@ -173,7 +229,7 @@ export default function AdminAdsClient() {
               activeTab === tab.value ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            {tab.label}
+            {tab.label} <span className="text-gray-400">({tab.count})</span>
           </button>
         ))}
       </div>
@@ -181,21 +237,23 @@ export default function AdminAdsClient() {
       {/* Subscriptions List */}
       {loading ? (
         <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-gray-400" /></div>
-      ) : subscriptions.length === 0 ? (
+      ) : filteredSubscriptions.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center">
           <Store className="w-8 h-8 text-gray-200 mx-auto mb-2" />
           <p className="text-sm text-gray-400">No {activeTab === "all" ? "" : activeTab.toLowerCase()} subscriptions</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {subscriptions.map((sub) => {
+          {filteredSubscriptions.map((sub) => {
             const isProcessing = processingId === sub.id;
             const daysLeft = sub.endDate ? Math.max(0, Math.ceil((new Date(sub.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : null;
+            const storeViews = sub.store.analytics?.totalViews ?? 0;
             const statusColors: Record<string, string> = {
               ACTIVE: "bg-green-50 text-green-700",
               PENDING: "bg-amber-50 text-amber-700",
               EXPIRED: "bg-gray-100 text-gray-500",
               REJECTED: "bg-red-50 text-red-700",
+              CANCELLED: "bg-gray-100 text-gray-500",
             };
 
             return (
@@ -224,10 +282,17 @@ export default function AdminAdsClient() {
                   </div>
                 </div>
 
-                <div className="mt-3 flex items-center gap-4 text-xs text-gray-500">
+                <div className="mt-3 flex items-center gap-4 text-xs text-gray-500 flex-wrap">
                   <span className="font-medium text-gray-900">{sub.plan.name} Plan</span>
                   <span>${sub.plan.price.toLocaleString()}</span>
-                  <span><Eye className="w-3 h-3 inline mr-0.5" />{sub.plan.minVisitorsDay.toLocaleString()}–{sub.plan.maxVisitorsDay.toLocaleString()}/day</span>
+                  <span className="flex items-center gap-0.5">
+                    <Eye className="w-3 h-3" />
+                    {sub.plan.minVisitorsDay.toLocaleString()}–{sub.plan.maxVisitorsDay.toLocaleString()}/day
+                  </span>
+                  <span className="flex items-center gap-0.5 font-semibold text-[#0F2540]">
+                    <Eye className="w-3 h-3" />
+                    {formatViews(storeViews)} total views
+                  </span>
                   {daysLeft !== null && <span>{daysLeft} days left</span>}
                   <span>Requested: {new Date(sub.createdAt).toLocaleDateString()}</span>
                 </div>
@@ -246,7 +311,7 @@ export default function AdminAdsClient() {
                     <button
                       onClick={() => handleAction(sub.id, "reject")}
                       disabled={isProcessing}
-                      className="flex items-center gap-1.5 px-4 py-1.5 bg-red-50 text-red-600 text-xs font-semibold rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-4 py-1.5 bg-gray-100 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
                     >
                       <XCircle className="w-3.5 h-3.5" />
                       Reject
@@ -260,7 +325,7 @@ export default function AdminAdsClient() {
                     <button
                       onClick={() => setCancelConfirm({ id: sub.id, storeName: sub.store.storeName, planName: sub.plan.name })}
                       disabled={isProcessing}
-                      className="flex items-center gap-1.5 px-4 py-1.5 bg-red-50 text-red-600 text-xs font-semibold rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-4 py-1.5 bg-gray-100 text-red-600 text-xs font-semibold rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
                     >
                       {isProcessing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <XCircle className="w-3.5 h-3.5" />}
                       Cancel Plan
@@ -292,17 +357,11 @@ export default function AdminAdsClient() {
               </div>
             </div>
             <div className="flex gap-3 px-6 py-4 bg-gray-50 border-t border-gray-100">
-              <button
-                onClick={() => setCancelConfirm(null)}
-                className="flex-1 py-2.5 border border-gray-200 text-gray-600 text-sm font-medium rounded-xl hover:bg-gray-100 transition-colors"
-              >
+              <button onClick={() => setCancelConfirm(null)} className="flex-1 py-2.5 border border-gray-200 text-gray-600 text-sm font-medium rounded-xl hover:bg-gray-100 transition-colors">
                 Keep Plan
               </button>
               <button
-                onClick={() => {
-                  handleAction(cancelConfirm.id, "cancel");
-                  setCancelConfirm(null);
-                }}
+                onClick={() => { handleAction(cancelConfirm.id, "cancel"); setCancelConfirm(null); }}
                 disabled={processingId === cancelConfirm.id}
                 className="flex-1 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
@@ -363,7 +422,7 @@ function PlanEditor({
       <button
         onClick={() => onSave({ price, minVisitorsDay: minV, maxVisitorsDay: maxV, durationDays: duration })}
         disabled={saving}
-        className="mt-3 px-4 py-1.5 bg-[#E53935] text-white text-xs font-semibold rounded-lg hover:bg-[#C62828] transition-colors disabled:opacity-50"
+        className="mt-3 px-4 py-1.5 bg-gradient-to-r from-[#0a1a2e] to-[#14304d] text-white text-xs font-semibold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save Changes"}
       </button>

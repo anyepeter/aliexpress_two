@@ -35,7 +35,7 @@ interface AiSubscription {
 type Tab = "PENDING" | "ACTIVE" | "EXPIRED" | "all";
 
 export default function AdminAiAnalysisClient() {
-  const [subscriptions, setSubscriptions] = useState<AiSubscription[]>([]);
+  const [allSubscriptions, setAllSubscriptions] = useState<AiSubscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>("PENDING");
   const [processingId, setProcessingId] = useState<string | null>(null);
@@ -43,14 +43,18 @@ export default function AdminAiAnalysisClient() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/ai-analysis?status=${activeTab}`);
-      if (res.ok) setSubscriptions(await res.json());
+      const res = await fetch("/api/admin/ai-analysis?status=all");
+      if (res.ok) setAllSubscriptions(await res.json());
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchData(); }, [activeTab]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchData(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const subscriptions = activeTab === "all"
+    ? allSubscriptions
+    : allSubscriptions.filter((s) => s.status === activeTab);
 
   const handleAction = async (subId: string, action: "approve" | "reject" | "revoke") => {
     setProcessingId(subId);
@@ -66,18 +70,18 @@ export default function AdminAiAnalysisClient() {
     }
   };
 
-  const tabs: { label: string; value: Tab }[] = [
-    { label: "Pending", value: "PENDING" },
-    { label: "Active", value: "ACTIVE" },
-    { label: "Expired / Rejected", value: "EXPIRED" },
-    { label: "All", value: "all" },
-  ];
-
-  const pendingCount = subscriptions.filter((s) => s.status === "PENDING").length;
-  const activeCount = subscriptions.filter((s) => s.status === "ACTIVE").length;
-  const totalRevenue = subscriptions
+  const pendingCount = allSubscriptions.filter((s) => s.status === "PENDING").length;
+  const activeCount = allSubscriptions.filter((s) => s.status === "ACTIVE").length;
+  const expiredCount = allSubscriptions.filter((s) => s.status === "EXPIRED").length;
+  const totalRevenue = allSubscriptions
     .filter((s) => s.status === "ACTIVE")
     .reduce((sum, s) => sum + s.price, 0);
+
+  const tabs: { label: string; value: Tab; count: number }[] = [
+    { label: "Pending", value: "PENDING", count: pendingCount },
+    { label: "Active", value: "ACTIVE", count: activeCount },
+    { label: "Expired", value: "EXPIRED", count: expiredCount },
+  ];
 
   return (
     <div className="space-y-6">
@@ -126,7 +130,7 @@ export default function AdminAiAnalysisClient() {
               activeTab === tab.value ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            {tab.label}
+            {tab.label} <span className="text-gray-400">({tab.count})</span>
           </button>
         ))}
       </div>

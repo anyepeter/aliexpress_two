@@ -26,6 +26,7 @@ import {
     Loader2,
     Wallet,
     Sunrise,
+    Star,
 } from "lucide-react";
 
 interface DashboardData {
@@ -42,6 +43,8 @@ interface DashboardData {
     totalWithdrawn: number;
     pendingWithdrawals: number;
     checklist: { done: boolean; text: string; link?: string }[];
+    storeRating: number | null;
+    totalReviews: number;
 }
 
 interface Props {
@@ -106,6 +109,15 @@ export default function DashboardClient({ data }: Props) {
             icon: Eye,
             iconBg: "bg-blue-50",
             iconColor: "text-blue-600",
+        },
+        {
+            label: "Store Rating",
+            value: data.storeRating ? data.storeRating.toFixed(1) : "—",
+            sub: data.totalReviews > 0 ? `${data.totalReviews} review${data.totalReviews !== 1 ? "s" : ""}` : "No reviews yet",
+            icon: Star,
+            iconBg: data.storeRating ? "bg-amber-50" : "bg-gray-50",
+            iconColor: data.storeRating ? "text-amber-500" : "text-gray-400",
+            href: "/seller/reviews",
         },
         {
             label: "Available Balance",
