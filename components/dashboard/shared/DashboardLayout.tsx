@@ -24,6 +24,7 @@ import {
   UserCircle,
   Eye,
   Star,
+  Megaphone,
 } from "lucide-react";
 import { useUnreadCount } from "@/lib/hooks/useUnreadCount";
 
@@ -41,12 +42,13 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { label: "Users", href: "/admin/users", icon: Users },
     { label: "Sellers", href: "/admin/sellers", icon: Store },
     { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
-    { label: "Today's Deals", href: "/admin/deals", icon: ShoppingBag },
+    // { label: "Today's Deals", href: "/admin/deals", icon: ShoppingBag },
     { label: "Payments", href: "/admin/payments", icon: CreditCard },
     { label: "Messages", href: "/messages", icon: MessageSquare },
     { label: "Loans", href: "/admin/loans", icon: CreditCard },
     { label: "Visitors", href: "/admin/visitors", icon: Eye },
     { label: "Premium", href: "/admin/premium", icon: Star },
+    { label: "Advertisements", href: "/admin/advertisements", icon: Megaphone },
     { label: "Analytics", href: "/admin/analytics", icon: BarChart2 },
   ],
   SELLER: [
@@ -57,6 +59,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { label: "Reviews", href: "/seller/reviews", icon: Star },
     { label: "Payments", href: "/seller/payments", icon: CreditCard },
     { label: "Loans", href: "/seller/loans", icon: CreditCard },
+    { label: "Advertisements", href: "/seller/advertisements", icon: Megaphone },
     { label: "Messages", href: "/messages", icon: MessageSquare },
     // { label: "Store Settings", href: "/seller/settings", icon: Settings },
     // { label: "Analytics", href: "/seller/analytics", icon: BarChart2 },

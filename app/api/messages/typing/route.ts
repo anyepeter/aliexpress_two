@@ -26,11 +26,15 @@ export async function POST(req: NextRequest) {
     userName: `${user.firstName} ${user.lastName}`,
   };
 
-  await pusherServer.trigger(
-    `private-conversation-${conversationId}`,
-    event,
-    payload
-  );
+  try {
+    await pusherServer.trigger(
+      `private-conversation-${conversationId}`,
+      event,
+      payload
+    );
+  } catch (e) {
+    console.error("Pusher typing trigger failed:", e);
+  }
 
   return NextResponse.json({ ok: true });
 }

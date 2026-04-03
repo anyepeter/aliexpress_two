@@ -20,6 +20,7 @@ import TodaysDeals from "@/components/home/TodaysDeals";
 import PromoBanners from "@/components/home/PromoBanners";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import { ProductCardSkeleton } from "@/components/home/ProductCard";
+import SponsoredProducts from "@/components/home/SponsoredProducts";
 
 import { getCategories } from "@/lib/api/products";
 import {
@@ -137,13 +138,16 @@ export default async function HomePage() {
         {/* 4. Trust badges strip */}
         <TrustBadges />
 
+        {/* 5. Sponsored Products from advertisers */}
+        <SponsoredProducts />
+
         {/* 6. Today's Deals — Dollar Express + SuperDeals */}
-        <Suspense fallback={<TodaysDealsSkeleton />}>
+        {/* <Suspense fallback={<TodaysDealsSkeleton />}>
           <TodaysDeals
             dollarExpress={todaysDeals.dollarExpress}
             superDeals={todaysDeals.superDeals}
           />
-        </Suspense>
+        </Suspense> */}
 
         {/* 7. 3-column promotional banners */}
         <PromoBanners />

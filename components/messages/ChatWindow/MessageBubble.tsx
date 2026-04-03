@@ -85,8 +85,8 @@ export default function MessageBubble({
       <div
         className={`max-w-[65%] rounded-2xl px-3 py-2 ${
           isSent
-            ? "bg-[#E53935] text-white rounded-br"
-            : "bg-[#F0F2F5] text-[#1A1A1A] rounded-bl"
+            ? "bg-[#0F2540] text-white rounded-br"
+            : "bg-[#E4E6EB] text-[#1A1A1A] rounded-bl"
         }`}
       >
         {/* Admin badge for received admin messages */}

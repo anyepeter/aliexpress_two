@@ -92,8 +92,9 @@ model Store {
   orders         Order[]
   loanRequests   LoanRequest[]
   orderAnalytics OrderAnalytics[]
-  withdrawals    Withdrawal[]
-  reviews        StoreReview[]
+  withdrawals      Withdrawal[]
+  reviews          StoreReview[]
+  adSubscriptions  AdSubscription[]
 
   @@index([storeName])
   @@index([storeSlug])
@@ -461,6 +462,60 @@ model StoreReview {
   @@index([storeId])
   @@index([buyerId])
   @@index([orderId])
+}
+
+// ─── Advertisement System ───────────────────────────────────────
+
+enum AdPlanTier {
+  BASIC
+  STANDARD
+  PREMIUM
+}
+
+enum AdSubscriptionStatus {
+  PENDING    // seller submitted, awaiting admin approval
+  ACTIVE     // admin approved, running
+  EXPIRED    // plan ended
+  REJECTED   // admin rejected
+  CANCELLED  // seller cancelled
+}
+
+model AdPlan {
+  id              String     @id @default(cuid())
+  tier            AdPlanTier @unique
+  name            String     // "Basic", "Standard", "Premium"
+  price           Float      // e.g. 699, 1799, 5199
+  durationDays    Int        @default(30)
+  minVisitorsDay  Int        // e.g. 500
+  maxVisitorsDay  Int        // e.g. 1000
+  description     String?    // plan description
+  features        String[]   // list of features for display
+  isActive        Boolean    @default(true)
+  sortOrder       Int        @default(0)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  subscriptions   AdSubscription[]
+}
+
+model AdSubscription {
+  id          String               @id @default(cuid())
+  storeId     String
+  store       Store                @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  planId      String
+  plan        AdPlan               @relation(fields: [planId], references: [id])
+  status      AdSubscriptionStatus @default(PENDING)
+  startDate   DateTime?            // set when admin approves
+  endDate     DateTime?            // startDate + plan.durationDays
+  adminNote   String?
+  approvedAt  DateTime?
+  rejectedAt  DateTime?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@index([storeId])
+  @@index([status])
+  @@index([endDate])
 }
 
 // ─── Product Catalog (migrated from DummyJSON) ──────────────────

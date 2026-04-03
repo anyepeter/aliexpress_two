@@ -52,11 +52,42 @@ export function useConversation(conversationId: string | null, currentUserId: st
     }
   }, [conversationId, nextCursor]);
 
-  // Mark as read on open
+  // Mark as read on open + poll for new messages as Pusher fallback
   useEffect(() => {
     if (!conversationId) return;
     fetchMessages();
     fetch(`/api/messages/conversations/${conversationId}`, { method: "PATCH" });
+
+    // Poll every 4 seconds as fallback when Pusher isn't working
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(
+          `/api/messages/conversations/${conversationId}/messages?limit=30`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const serverMessages = data.messages as MessageData[];
+          setMessages((prev) => {
+            const serverMap = new Map(serverMessages.map((m) => [m.id, m]));
+            // Update existing messages (status changes like SENT→READ) + add new ones
+            const updated = prev.map((m) => {
+              const serverVersion = serverMap.get(m.id);
+              if (serverVersion && serverVersion.status !== m.status) {
+                return { ...m, status: serverVersion.status, readAt: serverVersion.readAt };
+              }
+              return m;
+            });
+            // Add truly new messages
+            const existingIds = new Set(prev.map((m) => m.id));
+            const newMsgs = serverMessages.filter((m) => !existingIds.has(m.id));
+            if (newMsgs.length === 0 && updated.every((m, i) => m === prev[i])) return prev;
+            return [...updated, ...newMsgs];
+          });
+        }
+      } catch { /* silent */ }
+    }, 4000);
+
+    return () => clearInterval(interval);
   }, [conversationId, fetchMessages]);
 
   // Subscribe to Pusher

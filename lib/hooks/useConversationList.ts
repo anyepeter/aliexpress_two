@@ -25,6 +25,10 @@ export function useConversationList(currentUserId: string | null) {
 
   useEffect(() => {
     fetchConversations();
+
+    // Poll every 5 seconds as fallback when Pusher isn't working
+    const interval = setInterval(fetchConversations, 5000);
+    return () => clearInterval(interval);
   }, [fetchConversations]);
 
   // Subscribe to Pusher channels for each conversation

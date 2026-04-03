@@ -161,16 +161,20 @@ export async function POST(
     },
   });
 
-  // Fire Pusher event
-  await pusherServer.trigger(
-    `private-conversation-${conversationId}`,
-    "new-message",
-    {
-      ...message,
-      createdAt: message.createdAt.toISOString(),
-      readAt: null,
-    }
-  );
+  // Fire Pusher event (non-blocking — don't crash if Pusher fails)
+  try {
+    await pusherServer.trigger(
+      `private-conversation-${conversationId}`,
+      "new-message",
+      {
+        ...message,
+        createdAt: message.createdAt.toISOString(),
+        readAt: null,
+      }
+    );
+  } catch (e) {
+    console.error("Pusher trigger failed (message still saved):", e);
+  }
 
   return NextResponse.json({
     ...message,
