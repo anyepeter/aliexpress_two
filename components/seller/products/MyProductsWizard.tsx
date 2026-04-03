@@ -36,8 +36,11 @@ export default function MyProductsWizard() {
     fetch("/api/seller/products")
       .then((r) => r.json())
       .then((data) => {
+        // Only block products that are PUBLISHED or DRAFT — ARCHIVED ones can be re-added
         const ids = new Set<number>(
-          (data.products ?? []).map((p: { dummyProductId: number }) => p.dummyProductId)
+          (data.products ?? [])
+            .filter((p: { status: string }) => p.status === "PUBLISHED" || p.status === "DRAFT")
+            .map((p: { dummyProductId: number }) => p.dummyProductId)
         );
         setExistingProductIds(ids);
       })

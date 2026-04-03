@@ -36,9 +36,9 @@ export default function SponsoredProducts() {
   const [addedId, setAddedId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/products/sponsored")
-      .then((r) => r.ok ? r.json() : [])
-      .then(setProducts)
+    fetch("/api/products/sponsored?limit=6")
+      .then((r) => r.ok ? r.json() : { products: [] })
+      .then((data) => setProducts(data.products ?? data))
       .finally(() => setLoading(false));
   }, []);
 

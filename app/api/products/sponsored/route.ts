@@ -1,9 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    // Find all stores with active ad subscriptions, ordered by plan tier (Premium first)
+    const { searchParams } = new URL(req.url);
+    const limitParam = searchParams.get("limit");
+    const category = searchParams.get("category");
+    const sort = searchParams.get("sort") ?? "relevance";
+    const limit = limitParam ? parseInt(limitParam) : undefined;
+
+    // Find all stores with active ad subscriptions
     const activeSubs = await prisma.adSubscription.findMany({
       where: { status: "ACTIVE" },
       include: {
@@ -18,20 +24,21 @@ export async function GET() {
           },
         },
       },
-      orderBy: { plan: { sortOrder: "desc" } }, // Premium first
+      orderBy: { plan: { sortOrder: "desc" } },
     });
 
     if (activeSubs.length === 0) return NextResponse.json([]);
 
-    // Get published products from these stores
     const storeIds = activeSubs.map((s) => s.storeId);
+
+    // Get published products from sponsored stores
     const sellerProducts = await prisma.sellerProduct.findMany({
       where: {
         storeId: { in: storeIds },
         status: "PUBLISHED",
+        ...(category ? { category } : {}),
       },
       orderBy: { sortOrder: "asc" },
-      take: 20,
     });
 
     if (sellerProducts.length === 0) return NextResponse.json([]);
@@ -43,11 +50,10 @@ export async function GET() {
     });
     const productMap = new Map(productRecords.map((p) => [p.id, p]));
 
-    // Build store → subscription map for tier info
     const storeTierMap = new Map(activeSubs.map((s) => [s.storeId, s.plan.tier]));
     const storeMap = new Map(activeSubs.map((s) => [s.storeId, s.store]));
 
-    const sponsored = sellerProducts
+    let sponsored = sellerProducts
       .map((sp) => {
         const prodData = productMap.get(sp.dummyProductId);
         if (!prodData) return null;
@@ -76,15 +82,29 @@ export async function GET() {
           planTier: storeTierMap.get(sp.storeId) ?? "BASIC",
         };
       })
-      .filter(Boolean);
+      .filter(Boolean) as NonNullable<ReturnType<typeof Array.prototype.map>[number]>[];
 
-    // Sort: Premium stores' products first, then Standard, then Basic
+    // Sort
     const tierOrder: Record<string, number> = { PREMIUM: 0, STANDARD: 1, BASIC: 2 };
-    sponsored.sort((a, b) => (tierOrder[a!.planTier] ?? 3) - (tierOrder[b!.planTier] ?? 3));
+    if (sort === "price-asc") {
+      sponsored.sort((a: any, b: any) => a.sellingPrice - b.sellingPrice);
+    } else if (sort === "price-desc") {
+      sponsored.sort((a: any, b: any) => b.sellingPrice - a.sellingPrice);
+    } else if (sort === "rating") {
+      sponsored.sort((a: any, b: any) => b.rating - a.rating);
+    } else {
+      // Default: by tier then sort order
+      sponsored.sort((a: any, b: any) => (tierOrder[a.planTier] ?? 3) - (tierOrder[b.planTier] ?? 3));
+    }
 
-    return NextResponse.json(sponsored.slice(0, 10));
+    // Get unique categories for filters
+    const categories = [...new Set(sponsored.map((p: any) => p.category))].sort();
+
+    if (limit) sponsored = sponsored.slice(0, limit);
+
+    return NextResponse.json({ products: sponsored, categories });
   } catch (error) {
     console.error("Sponsored products error:", error);
-    return NextResponse.json([]);
+    return NextResponse.json({ products: [], categories: [] });
   }
 }
