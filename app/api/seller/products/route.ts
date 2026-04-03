@@ -63,7 +63,8 @@ export async function POST(req: NextRequest) {
           tags: p.tags ?? [],
           rating: p.rating ?? null,
           ratingCount: p.ratingCount ?? null,
-          status: "ARCHIVED",
+          status: (p as any).status === "PUBLISHED" ? "PUBLISHED" : "ARCHIVED",
+          publishedAt: (p as any).status === "PUBLISHED" ? new Date() : null,
           sortOrder: 0,
         },
         update: {

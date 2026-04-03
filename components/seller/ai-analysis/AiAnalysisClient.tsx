@@ -109,35 +109,34 @@ export default function AiAnalysisClient() {
     if (!marginModal) return;
     setPublishing(true);
     try {
-      // Fetch full product data for each and publish
-      for (const p of marginModal.products) {
-        const prodRes = await fetch(`/api/products/dummy-${p.id}`);
-        if (!prodRes.ok) continue;
-        const { product: prodData } = await prodRes.json();
+      // Build all products payload at once using data we already have
+      const payload = marginModal.products.map((p) => ({
+        dummyProductId: p.id,
+        title: p.title,
+        description: "",
+        images: [],
+        category: p.category,
+        brand: null,
+        basePrice: p.price,
+        marginPercent: margin,
+        sellingPrice: parseFloat((p.price * (1 + margin / 100)).toFixed(2)),
+        discountPct: 0,
+        stock: 100,
+        tags: [],
+        rating: 0,
+        status: "PUBLISHED",
+      }));
 
-        const basePrice = prodData.sellingPrice ?? prodData.price ?? p.price;
-        await fetch("/api/seller/products", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify([{
-            dummyProductId: p.id,
-            title: prodData.title ?? p.title,
-            description: prodData.description ?? "",
-            images: prodData.images ?? [],
-            category: prodData.category ?? p.category,
-            brand: prodData.brand ?? null,
-            basePrice,
-            marginPercent: margin,
-            sellingPrice: parseFloat((basePrice * (1 + margin / 100)).toFixed(2)),
-            discountPct: prodData.discountPercentage ?? 0,
-            stock: prodData.stock ?? 100,
-            tags: [],
-            rating: prodData.rating ?? 0,
-            status: "PUBLISHED",
-          }]),
-        });
+      const res = await fetch("/api/seller/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ products: payload }),
+      });
 
-        setAddedProducts((prev) => new Set([...prev, p.id]));
+      if (res.ok) {
+        for (const p of marginModal.products) {
+          setAddedProducts((prev) => new Set([...prev, p.id]));
+        }
       }
 
       setMarginModal(null);
