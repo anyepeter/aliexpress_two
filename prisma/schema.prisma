@@ -94,7 +94,8 @@ model Store {
   orderAnalytics OrderAnalytics[]
   withdrawals      Withdrawal[]
   reviews          StoreReview[]
-  adSubscriptions  AdSubscription[]
+  adSubscriptions      AdSubscription[]
+  aiAnalysisSubscriptions AiAnalysisSubscription[]
 
   @@index([storeName])
   @@index([storeSlug])
@@ -462,6 +463,24 @@ model StoreReview {
   @@index([storeId])
   @@index([buyerId])
   @@index([orderId])
+}
+
+// ─── AI Analysis Subscription ───────────────────────────────────
+
+model AiAnalysisSubscription {
+  id          String   @id @default(cuid())
+  storeId     String
+  store       Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  status      String   @default("PENDING") // PENDING, ACTIVE, EXPIRED
+  price       Float    @default(299)
+  startDate   DateTime?
+  endDate     DateTime?
+  approvedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([storeId])
+  @@index([status])
 }
 
 // ─── Advertisement System ───────────────────────────────────────

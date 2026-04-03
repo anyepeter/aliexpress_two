@@ -49,6 +49,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { label: "Visitors", href: "/admin/visitors", icon: Eye },
     { label: "Premium", href: "/admin/premium", icon: Star },
     { label: "Advertisements", href: "/admin/advertisements", icon: Megaphone },
+    { label: "AI Analysis", href: "/admin/ai-analysis", icon: BarChart2 },
     { label: "Analytics", href: "/admin/analytics", icon: BarChart2 },
   ],
   SELLER: [
@@ -60,6 +61,7 @@ const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { label: "Payments", href: "/seller/payments", icon: CreditCard },
     { label: "Loans", href: "/seller/loans", icon: CreditCard },
     { label: "Advertisements", href: "/seller/advertisements", icon: Megaphone },
+    { label: "AI Analysis", href: "/seller/ai-analysis", icon: BarChart2 },
     { label: "Messages", href: "/messages", icon: MessageSquare },
     // { label: "Store Settings", href: "/seller/settings", icon: Settings },
     // { label: "Analytics", href: "/seller/analytics", icon: BarChart2 },
