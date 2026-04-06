@@ -30,7 +30,7 @@ const badges = [
 export default function TrustBadges() {
   return (
     <section className="bg-white border-b border-gray-100 py-3">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-[1440px] mx-auto px-4">
         <div className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
           {badges.map((badge) => {
             const Icon = badge.icon;

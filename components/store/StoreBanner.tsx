@@ -8,7 +8,7 @@ interface StoreBannerProps {
 
 export default function StoreBanner({ store, productCount }: StoreBannerProps) {
   return (
-    <div className="rounded-xl overflow-hidden shadow-sm border border-gray-100">
+    <div className="rounded-xl overflow-hidden border border-gray-100">
       {/* Banner */}
       <div className="relative h-[140px] sm:h-[180px] bg-gradient-to-r from-[#E53935] to-[#2a5c8e]">
         {store.bannerUrl && (

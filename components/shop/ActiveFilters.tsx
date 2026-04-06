@@ -14,7 +14,17 @@ export default function ActiveFilters() {
   if (filters.category) {
     pills.push({
       label: `Category: ${filters.category.replace(/-/g, " ")}`,
-      onRemove: () => setFilter("category", null),
+      onRemove: () => {
+        setFilter("category", null);
+        setFilter("subcategory", null);
+      },
+    });
+  }
+
+  if (filters.subcategory) {
+    pills.push({
+      label: `${filters.subcategory.replace(/-/g, " ")}`,
+      onRemove: () => setFilter("subcategory", null),
     });
   }
 
@@ -57,7 +67,7 @@ export default function ActiveFilters() {
   }
 
   return (
-    <div className="flex items-center gap-2 flex-wrap mb-4 bg-white rounded-xl px-4 py-2.5 shadow-sm">
+    <div className="flex items-center gap-2 flex-wrap mb-3 bg-white rounded-lg px-4 py-2.5 border border-gray-100">
       <span className="text-xs text-gray-500 font-medium flex-shrink-0">
         Active filters:
       </span>

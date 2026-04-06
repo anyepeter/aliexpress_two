@@ -121,7 +121,7 @@ export default async function StorePage({ params }: PageProps) {
       <TopBanner />
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
+      <main className="flex-1 max-w-[1440px] mx-auto w-full px-4 py-8">
         {/* Breadcrumb */}
         <nav className="text-xs text-gray-400 mb-6">
           <a href="/" className="hover:text-[#E53935]">Home</a>

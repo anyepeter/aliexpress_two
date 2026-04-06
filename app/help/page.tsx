@@ -233,7 +233,7 @@ export default function HelpPage() {
             <div className="absolute top-10 right-20 w-80 h-80 bg-[#E53935] rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-10 w-64 h-64 bg-[#E53935] rounded-full blur-3xl" />
           </div>
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
+          <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-8">
               <HelpCircle className="w-5 h-5 text-[#E53935]" />
               <span className="text-white/90 text-sm font-medium tracking-wide">
@@ -263,7 +263,7 @@ export default function HelpPage() {
 
         {/* Quick Links Grid */}
         {!searchQuery && (
-          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+          <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {quickLinks.map((link) => (
                 <Link
@@ -323,7 +323,7 @@ export default function HelpPage() {
 
         {/* Still Need Help? */}
         <section className="bg-white py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-[#E53935] mb-4">
                 Still Need Help?

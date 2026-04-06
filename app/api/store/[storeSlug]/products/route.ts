@@ -93,6 +93,7 @@ export async function GET(
       images: prodData.images ?? [],
       brand: p.brand ?? prodData.brand ?? "Unknown",
       category: p.category,
+      subcategory: prodData.subcategory ?? null,
       sellingPrice: p.sellingPrice,
       rating: prodData.rating ?? 0,
       discountPercentage: prodData.discountPercentage ?? 0,

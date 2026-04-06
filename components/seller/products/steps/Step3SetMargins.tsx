@@ -52,6 +52,7 @@ export default function Step3SetMargins({
         description: p.description,
         images: p.images,
         category: p.category,
+        subcategory: p.subcategory ?? null,
         brand: p.brand,
         basePrice: p.price,
         marginPercent: m,

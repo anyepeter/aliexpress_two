@@ -26,6 +26,7 @@ export interface MarketplaceProduct {
   images: string[];
   brand: string;
   category: string;
+  subcategory: string | null;
   sellingPrice: number;   // ONLY price buyers ever see — never expose basePrice
   rating: number;
   discountPercentage: number;

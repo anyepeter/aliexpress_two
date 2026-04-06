@@ -37,7 +37,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#1A1A1A] text-gray-300">
       {/* Main Grid */}
-      <div className="max-w-7xl mx-auto px-4 pt-14 pb-10">
+      <div className="max-w-[1440px] mx-auto px-4 pt-14 pb-10">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand Column */}
           <div className="lg:col-span-1">
@@ -126,7 +126,7 @@ export default function Footer() {
 
       {/* Newsletter Strip */}
       <div className="border-t border-white/8">
-        <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="max-w-[1440px] mx-auto px-4 py-6">
           <div className="flex flex-col sm:flex-row items-center gap-4 justify-between">
             <div>
               <p className="text-sm font-semibold text-white">
@@ -152,7 +152,7 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="border-t border-white/8">
-        <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="max-w-[1440px] mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-500">
             © {new Date().getFullYear()} AliExpress Inc. All rights reserved.
           </p>

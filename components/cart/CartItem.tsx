@@ -31,7 +31,7 @@ export default function CartItem({ item }: CartItemProps) {
   };
 
   return (
-    <div className="flex gap-3 p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:border-gray-200 transition-colors">
+    <div className="flex gap-3 p-3 bg-white rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
       {/* Thumbnail */}
       <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-50">
         <Image

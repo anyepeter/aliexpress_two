@@ -32,7 +32,7 @@ import {
 
 function TodaysDealsSkeleton() {
   return (
-    <section className="max-w-7xl mx-auto px-4 py-8">
+    <section className="max-w-[1440px] mx-auto px-4 py-8">
       <div className="h-8 w-48 bg-gray-200 rounded-lg animate-pulse mx-auto mb-6" />
       <div className="flex flex-col lg:flex-row gap-4">
         {[0, 1].map((i) => (
@@ -56,7 +56,7 @@ function TodaysDealsSkeleton() {
 
 function FeaturedSkeleton() {
   return (
-    <section className="max-w-7xl mx-auto px-4 py-8">
+    <section className="max-w-[1440px] mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-4">
         <div className="h-7 w-48 bg-gray-200 rounded-lg animate-pulse" />
         <div className="h-5 w-16 bg-gray-200 rounded-lg animate-pulse" />

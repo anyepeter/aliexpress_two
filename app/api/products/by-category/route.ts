@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 // GET /api/products/by-category?categories=smartphones,laptops&limit=100
 export async function GET(req: NextRequest) {
   const sp = new URL(req.url).searchParams;
-  const categoriesParam = sp.get("categories") || "";
+  const categoriesParam = sp.get("categories") || sp.get("category") || "";
   const limit = Math.min(parseInt(sp.get("limit") ?? "100"), 500);
 
   const categories = categoriesParam
@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
       stock: p.stock ?? 0,
       brand: p.brand ?? undefined,
       category: p.category,
+      subcategory: p.subcategory ?? null,
       thumbnail: p.thumbnail ?? "",
       images: p.images ?? [],
       tags: p.tags ?? [],

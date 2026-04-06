@@ -17,7 +17,7 @@ export default function SponsoredPage() {
       <TopBanner />
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
+      <main className="flex-1 max-w-[1440px] mx-auto w-full px-4 py-8">
         <SponsoredStoresClient />
       </main>
 

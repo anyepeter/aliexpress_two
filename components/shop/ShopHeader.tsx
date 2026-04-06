@@ -31,7 +31,7 @@ export default function ShopHeader({
   const category = filters.category;
 
   return (
-    <div className="bg-white rounded-xl px-4 py-3 shadow-sm mb-4">
+    <div className="bg-white rounded-lg px-4 py-3 border border-gray-100 mb-3">
       {/* Breadcrumb + result count */}
       <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-3">
         <Link

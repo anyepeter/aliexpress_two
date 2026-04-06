@@ -107,9 +107,9 @@ export default async function SellerProductsPage() {
         {/* Header */}
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-[#1A1A1A]">My Products</h1>
+            <h1 className="text-2xl font-bold text-[#1A1A1A]">Add Products</h1>
             <p className="text-sm text-gray-500 mt-1">
-              Add and manage products for your store catalog.
+              Browse, select, set margins, and publish products to your store.
             </p>
           </div>
           <Link
@@ -123,27 +123,8 @@ export default async function SellerProductsPage() {
           </Link>
         </div>
 
-        {/* Stats summary */}
-        <div className="grid grid-cols-2 gap-3 mb-5">
-          {[
-            { label: "Total Products", value: totalCount, color: "text-[#E53935]" },
-            { label: "Published", value: publishedCount, color: "text-green-600" },
-          ].map(({ label, value, color }) => (
-            <div key={label} className="bg-white rounded-xl p-4 border border-gray-100 text-center shadow-sm">
-              <p className={`text-2xl font-bold ${color}`}>{value}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{label}</p>
-            </div>
-          ))}
-        </div>
-
         {/* Add products wizard */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
-          <div className="border-b border-gray-100 px-6 py-4">
-            <h2 className="font-bold text-[#1A1A1A]">Add Products</h2>
-            <p className="text-xs text-gray-400 mt-0.5">
-              Browse, select, set margins, and publish products to your store.
-            </p>
-          </div>
           <MyProductsWizard />
         </div>
       </div>

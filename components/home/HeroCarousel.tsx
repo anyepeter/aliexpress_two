@@ -155,7 +155,7 @@ export default function HeroCarousel() {
                 pointerEvents: isActive ? "auto" : "none",
               }}
             >
-              <div className="relative max-w-7xl mx-auto px-6 md:px-12 h-full flex items-center">
+              <div className="relative max-w-[1440px] mx-auto px-6 md:px-12 h-full flex items-center">
                 {/* ── Left: text ── */}
                 <div className="relative z-20 max-w-md flex-shrink-0">
                   {slide.discountBadge && (

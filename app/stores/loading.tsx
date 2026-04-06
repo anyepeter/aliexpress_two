@@ -3,7 +3,7 @@ import { StoreCardSkeleton } from "@/components/store/StoreCard";
 export default function StoresLoading() {
   return (
     <div className="min-h-screen bg-[#F5F6FA]">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-[1440px] mx-auto px-4 py-8">
         {/* Breadcrumb skeleton */}
         <div className="h-3 bg-gray-200 rounded w-24 mb-6 animate-pulse" />
 

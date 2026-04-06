@@ -7,6 +7,7 @@ import ProductSelectionCard from "../ProductSelectionCard";
 
 interface Step2SelectProductsProps {
   categories: string[];
+  subcategories: string[];
   selected: number[]; // dummyProductIds
   existingProductIds: Set<number>; // already saved to this store — not selectable
   onNext: (products: DummyProduct[], selectedIds: number[]) => void;
@@ -15,6 +16,7 @@ interface Step2SelectProductsProps {
 
 export default function Step2SelectProducts({
   categories,
+  subcategories,
   selected,
   existingProductIds,
   onNext,
@@ -23,6 +25,7 @@ export default function Step2SelectProducts({
   const [allProducts, setAllProducts] = useState<DummyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [subFilter, setSubFilter] = useState<string | null>(null);
   const [picked, setPicked] = useState<Set<number>>(new Set(selected));
 
   // Fetch products for all selected categories
@@ -37,25 +40,50 @@ export default function Step2SelectProducts({
       .then((flat) => {
         // Dedupe by id
         const seen = new Set<number>();
-        const deduped = flat.filter((p) => {
+        let deduped = flat.filter((p) => {
           if (seen.has(p.id)) return false;
           seen.add(p.id);
           return true;
         });
+        // If user picked specific subcategories, only show those
+        if (subcategories.length > 0) {
+          deduped = deduped.filter((p) => !p.subcategory || subcategories.includes(p.subcategory));
+        }
         setAllProducts(deduped);
       })
       .finally(() => setLoading(false));
-  }, [categories]);
+  }, [categories, subcategories]);
+
+  // Get available subcategories from loaded products
+  const availableSubs = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const p of allProducts) {
+      const sub = p.subcategory ?? "other";
+      counts[sub] = (counts[sub] ?? 0) + 1;
+    }
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  }, [allProducts]);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return allProducts;
-    const q = search.toLowerCase();
-    return allProducts.filter(
-      (p) =>
-        p.title.toLowerCase().includes(q) ||
-        (p.brand ?? "").toLowerCase().includes(q)
-    );
-  }, [allProducts, search]);
+    let result = allProducts;
+
+    // Subcategory filter
+    if (subFilter) {
+      result = result.filter((p) => (p.subcategory ?? "other") === subFilter);
+    }
+
+    // Search filter
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          (p.brand ?? "").toLowerCase().includes(q)
+      );
+    }
+
+    return result;
+  }, [allProducts, search, subFilter]);
 
   const toggle = (id: number) => {
     setPicked((prev) => {
@@ -125,6 +153,35 @@ export default function Step2SelectProducts({
                 );
               })()}
             </div>
+
+            {/* Subcategory filter pills */}
+            {availableSubs.length > 1 && (
+              <div className="flex gap-1.5 flex-wrap mb-3">
+                <button
+                  onClick={() => setSubFilter(null)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                    subFilter === null
+                      ? "bg-[#E53935] text-white border-[#E53935]"
+                      : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#E53935] hover:text-[#E53935]"
+                  }`}
+                >
+                  All ({allProducts.length})
+                </button>
+                {availableSubs.map(([slug, count]) => (
+                  <button
+                    key={slug}
+                    onClick={() => setSubFilter(slug)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors capitalize ${
+                      subFilter === slug
+                        ? "bg-[#E53935] text-white border-[#E53935]"
+                        : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#E53935] hover:text-[#E53935]"
+                    }`}
+                  >
+                    {slug.replace(/-/g, " ")} ({count})
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 max-h-[480px] overflow-y-auto pr-1">

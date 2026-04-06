@@ -49,7 +49,7 @@ export default function CategoryBar({ categories }: CategoryBarProps) {
 
   return (
     <section className="bg-white border-b border-gray-200 sticky top-[56px] z-30 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-[1440px] mx-auto px-4">
         <div
           ref={scrollRef}
           className="flex gap-1 overflow-x-auto no-scrollbar py-2.5"

@@ -47,7 +47,7 @@ export default function SimilarProducts({
             <Link
               key={p.id}
               href={`/products/${p.id}`}
-              className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col"
+              className="bg-white rounded-xl border border-gray-100 hover:shadow-sm transition-shadow overflow-hidden flex flex-col"
             >
               <div className="relative aspect-square bg-gray-100">
                 <Image

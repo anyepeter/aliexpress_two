@@ -416,7 +416,7 @@ export default function TodaysDeals({
   const sdTitle = superDeals?.title ?? "SuperDeals";
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-8">
+    <section className="max-w-[1440px] mx-auto px-4 lg:px-6 py-6">
       <h2
         className="text-2xl md:text-3xl font-black text-center text-[#1A1A1A] mb-6"
         style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}

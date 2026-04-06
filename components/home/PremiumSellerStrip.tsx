@@ -127,7 +127,7 @@ export default function PremiumSellerStrip({ stores }: PremiumSellerStripProps) 
               href={`/store/${store.storeSlug}`}
               onClick={handleClick}
               draggable={false}
-              className="flex flex-col items-center gap-1.5 w-[110px] p-3 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 flex-shrink-0 select-none"
+              className="flex flex-col items-center gap-1.5 w-[110px] p-3 bg-white rounded-lg border border-gray-100 hover:border-gray-200 hover:scale-105 transition-all duration-200 flex-shrink-0 select-none"
             >
               {store.logoUrl ? (
                 <Image

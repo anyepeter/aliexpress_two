@@ -115,6 +115,7 @@ model SellerProduct {
   description     String?
   images          Json                // string[]
   category        String
+  subcategory     String?
   brand           String?
   basePrice       Float               // original DummyJSON price
   marginPercent   Float               @default(20) // 15-25
@@ -552,6 +553,7 @@ model Product {
   stock                Int?
   brand                String?
   category             String
+  subcategory          String?
   thumbnail            String?
   images               String[]
   tags                 String[]
@@ -568,6 +570,7 @@ model Product {
   updatedAt            DateTime @updatedAt
 
   @@index([category])
+  @@index([subcategory])
   @@index([brand])
 }
 

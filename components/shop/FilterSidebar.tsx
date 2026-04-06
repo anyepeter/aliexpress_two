@@ -13,6 +13,7 @@ interface FilterSidebarProps {
   brands: string[];
   brandCounts: Record<string, number>;
   priceRange: { min: number; max: number };
+  allProducts?: import("@/lib/types/marketplace").MarketplaceProduct[];
 }
 
 function Section({
@@ -49,6 +50,7 @@ export default function FilterSidebar({
   brands,
   brandCounts,
   priceRange,
+  allProducts,
 }: FilterSidebarProps) {
   const { filters, toggleBrand, setFilter, resetFilters } = useShopStore();
   const [showAllBrands, setShowAllBrands] = useState(false);
@@ -57,8 +59,8 @@ export default function FilterSidebar({
   const visibleBrands = showAllBrands ? brands : brands.slice(0, 8);
 
   return (
-    <aside className="hidden lg:block w-64 flex-shrink-0">
-      <div className="bg-white rounded-xl p-5 sticky top-[120px] shadow-sm max-h-[calc(100vh-140px)] overflow-y-auto">
+    <aside className="hidden lg:block w-64 xl:w-72 flex-shrink-0">
+      <div className="bg-white rounded-lg p-4 sticky top-[120px] border border-gray-100 max-h-[calc(100vh-140px)] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-bold text-[#1A1A1A] text-sm">Filters</h2>
@@ -93,7 +95,7 @@ export default function FilterSidebar({
 
         {/* Category */}
         <Section title="Category">
-          <CategoryFilter categoryCounts={categoryCounts} />
+          <CategoryFilter categoryCounts={categoryCounts} allProducts={allProducts} />
         </Section>
 
         {/* Price */}

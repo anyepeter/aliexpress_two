@@ -57,7 +57,7 @@ function StoreProductCard({ product }: { product: StoreProduct }) {
 
   return (
     <div
-      className="relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-200 border border-gray-100 flex flex-col h-full"
+      className="relative bg-white rounded-xl hover:shadow-sm transition-shadow duration-200 border border-gray-100 flex flex-col h-full"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

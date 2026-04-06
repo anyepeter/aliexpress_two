@@ -217,7 +217,7 @@ export default function ProductCard({
     return (
       <>
         <div
-          className="relative bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100 flex gap-4 p-3 items-start"
+          className="relative bg-white rounded-lg hover:shadow-sm transition-shadow duration-200 border border-gray-100 flex gap-4 p-3 items-start"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -399,7 +399,7 @@ export default function ProductCard({
   return (
     <>
       <div
-        className="relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-200 border border-gray-100 flex flex-col h-full"
+        className="relative bg-white rounded-lg hover:shadow-sm transition-shadow duration-200 border border-gray-100 flex flex-col h-full"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -502,9 +502,11 @@ export default function ProductCard({
 
         {/* Card Body */}
         <div className="p-3 flex flex-col gap-1.5 flex-1">
-          <span className="text-[10px] font-semibold text-[#E53935] bg-[#E53935]/10 rounded-full px-2 py-0.5 w-fit leading-tight">
-            ✓ Verified Seller
-          </span>
+          {store?.isVerified && (
+            <span className="text-[10px] font-semibold text-[#E53935] bg-[#E53935]/10 rounded-full px-2 py-0.5 w-fit leading-tight">
+              ✓ Verified Seller
+            </span>
+          )}
 
           <h3 className="text-xs font-medium text-[#1A1A1A] line-clamp-2 leading-snug flex-1">
             {product.title}
@@ -596,7 +598,7 @@ export default function ProductCard({
 
 export function ProductCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
+    <div className="bg-white rounded-lg border border-gray-100 overflow-hidden animate-pulse">
       <div className="aspect-square bg-gray-200" />
       <div className="p-3 flex flex-col gap-2">
         <div className="h-3 bg-gray-200 rounded-full w-1/2" />

@@ -42,7 +42,7 @@ export default function MoreFromStore({
           <Link
             key={p.id}
             href={`/products/${p.id}`}
-            className="flex-shrink-0 w-36 bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+            className="flex-shrink-0 w-36 bg-white rounded-xl border border-gray-100 hover:shadow-sm transition-shadow overflow-hidden"
           >
             <div className="relative aspect-square bg-gray-100">
               <Image

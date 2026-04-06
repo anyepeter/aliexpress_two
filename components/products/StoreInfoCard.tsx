@@ -68,7 +68,7 @@ export default function StoreInfoCard({ store }: StoreInfoCardProps) {
   const showContact = isLoaded && isSignedIn;
 
   return (
-    <div className="rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+    <div className="rounded-xl overflow-hidden border border-gray-100">
       {/* Banner */}
       <div className="relative h-20 bg-gradient-to-r from-[#E53935] to-[#2a5c8e]">
         {store.bannerUrl && (

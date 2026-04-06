@@ -142,7 +142,7 @@ export default function BuyerProtectionPage() {
             <div className="absolute top-20 left-10 w-72 h-72 bg-[#E53935] rounded-full blur-3xl" />
             <div className="absolute bottom-10 right-20 w-96 h-96 bg-[#E53935] rounded-full blur-3xl" />
           </div>
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center">
+          <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-8">
               <Shield className="w-5 h-5 text-[#E53935]" />
               <span className="text-white/90 text-sm font-medium tracking-wide">
@@ -162,7 +162,7 @@ export default function BuyerProtectionPage() {
         </section>
 
         {/* You're Protected Banner */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
           <div className="bg-gradient-to-r from-[#E53935] to-[#d4a645] rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-4 shadow-xl shadow-[#E53935]/20">
             <div className="flex-shrink-0 bg-white/20 backdrop-blur-sm rounded-full p-4">
               <ShieldCheck className="w-10 h-10 text-white" />
@@ -180,7 +180,7 @@ export default function BuyerProtectionPage() {
         </section>
 
         {/* Three Protection Pillars */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-bold text-[#E53935] mb-4">
               Our Protection Pillars
@@ -220,7 +220,7 @@ export default function BuyerProtectionPage() {
 
         {/* How It Works */}
         <section className="bg-white py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-14">
               <h2 className="text-3xl md:text-4xl font-bold text-[#E53935] mb-4">
                 How It Works
@@ -261,7 +261,7 @@ export default function BuyerProtectionPage() {
         </section>
 
         {/* What's Covered vs What's Not Covered */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-bold text-[#E53935] mb-4">
               Coverage Details
@@ -315,7 +315,7 @@ export default function BuyerProtectionPage() {
 
         {/* Trust Stats */}
         <section className="bg-[#E53935] py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {stats.map((stat) => (
                 <div key={stat.label} className="text-center">
@@ -333,7 +333,7 @@ export default function BuyerProtectionPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <section className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="bg-gradient-to-br from-[#E53935] to-[#0f2740] rounded-3xl p-10 md:p-16 text-center relative overflow-hidden">
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#E53935] rounded-full blur-3xl" />

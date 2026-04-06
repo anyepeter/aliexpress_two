@@ -8,6 +8,7 @@ export interface DummyProduct {
   stock: number;
   brand?: string;
   category: string;
+  subcategory?: string | null;
   thumbnail: string;
   images: string[];
   tags?: string[];
@@ -26,6 +27,7 @@ export interface SellerProductForm {
   description: string;
   images: string[];
   category: string;
+  subcategory?: string | null;
   brand?: string;
   basePrice: number;
   marginPercent: number;

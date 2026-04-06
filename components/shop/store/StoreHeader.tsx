@@ -44,8 +44,8 @@ export default function StoreHeader({
       </div>
 
       {/* Info bar */}
-      <div className="bg-white border-b border-gray-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6">
           <div className="flex items-start gap-4">
             {/* Logo — pulled up to overlap the banner */}
             <div className="-mt-10 flex-shrink-0 relative z-10">

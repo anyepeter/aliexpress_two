@@ -6,7 +6,7 @@ export default function ShopLoading() {
     <>
       <Navbar />
       <main className="min-h-screen bg-[#F5F6FA]">
-        <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="max-w-[1440px] mx-auto px-4 py-6">
           <div className="flex gap-6">
             {/* Sidebar skeleton */}
             <aside className="hidden lg:block w-64 flex-shrink-0">

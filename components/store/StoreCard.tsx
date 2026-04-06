@@ -11,7 +11,7 @@ export default function StoreCard({ store }: StoreCardProps) {
   return (
     <Link
       href={`/store/${store.storeSlug}`}
-      className="group relative bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden flex flex-col"
+      className="group relative bg-white rounded-xl border border-gray-100 hover:shadow-sm transition-all duration-200 overflow-hidden flex flex-col"
     >
       {/* Banner */}
       <div className="relative h-24 bg-gradient-to-r from-[#E53935] to-[#2a5c8e]">

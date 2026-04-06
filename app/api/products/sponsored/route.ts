@@ -70,6 +70,7 @@ export async function GET(req: NextRequest) {
           discountPercentage: prodData.discountPercentage ?? 0,
           brand: sp.brand ?? prodData.brand ?? "Unknown",
           category: sp.category,
+          subcategory: null,
           description: sp.description ?? prodData.description,
           stock: prodData.stock ?? 0,
           images: prodData.images ?? [],

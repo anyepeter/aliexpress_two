@@ -34,6 +34,7 @@ async function getProduct(id: string): Promise<MarketplaceProduct | null> {
       images: prodData.images ?? [],
       brand: prodData.brand ?? "Unknown",
       category: prodData.category,
+      subcategory: prodData.subcategory ?? null,
       sellingPrice: prodData.price,
       rating: prodData.rating ?? 0,
       discountPercentage: prodData.discountPercentage ?? 0,
@@ -109,6 +110,7 @@ async function getProduct(id: string): Promise<MarketplaceProduct | null> {
     images: prodData.images ?? [],
     brand: sellerProduct.brand ?? prodData.brand ?? "Unknown",
     category: sellerProduct.category,
+    subcategory: prodData.subcategory ?? null,
     sellingPrice: sellerProduct.sellingPrice,
     rating: prodData.rating ?? 0,
     discountPercentage: prodData.discountPercentage ?? 0,
@@ -142,7 +144,7 @@ export default async function ProductPage({ params }: PageProps) {
       <TopBanner />
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
+      <main className="flex-1 max-w-[1440px] mx-auto w-full px-4 py-8">
         {/* Breadcrumb */}
         <nav className="text-xs text-gray-400 mb-6">
           <a href="/" className="hover:text-[#E53935]">Home</a>

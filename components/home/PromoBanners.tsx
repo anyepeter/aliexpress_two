@@ -114,7 +114,7 @@ function MiniProductCard({
 
 export default function PromoBanners() {
   return (
-    <section className="max-w-7xl mx-auto px-4 py-6">
+    <section className="max-w-[1440px] mx-auto px-4 py-6">
       {/* ── Full container with background image ── */}
       <div className="relative rounded-2xl overflow-hidden">
         {/* Background image */}

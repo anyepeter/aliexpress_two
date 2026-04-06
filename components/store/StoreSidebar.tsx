@@ -24,7 +24,7 @@ export default function StoreSidebar({
   return (
     <aside className="w-full lg:w-56 flex-shrink-0">
       {/* Stats */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-4">
+      <div className="bg-white rounded-xl border border-gray-100 p-4 mb-4">
         <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
           Store Stats
         </h3>
@@ -46,7 +46,7 @@ export default function StoreSidebar({
 
       {/* Category filter */}
       {categories.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+        <div className="bg-white rounded-xl border border-gray-100 p-4">
           <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
             Categories
           </h3>
@@ -81,7 +81,7 @@ export default function StoreSidebar({
       )}
 
       {/* Contact links */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mt-4">
+      <div className="bg-white rounded-xl border border-gray-100 p-4 mt-4">
         <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
           Store
         </h3>

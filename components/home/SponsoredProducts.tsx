@@ -66,7 +66,7 @@ export default function SponsoredProducts() {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-8">
+    <section className="max-w-[1440px] mx-auto px-4 py-8">
       <div className="flex items-center gap-2 mb-5">
         <Sparkles className="w-5 h-5 text-[#E53935]" />
         <h2

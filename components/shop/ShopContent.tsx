@@ -27,11 +27,17 @@ export default function ShopContent({
   const { filters, sortBy, currentPage, itemsPerPage, initFromParams } =
     useShopStore();
 
-  // ── 1. Initialize store from URL params (runs once on mount) ──────────────
+  // ── 1. Initialize store from URL params (on mount & when params change) ───
+  const paramsKey = JSON.stringify(initialParams);
   useEffect(() => {
     initFromParams(initialParams);
     didInit.current = true;
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    didFirstSync.current = false; // Reset so the next sync doesn't push stale URL
+    // Small delay to let the store settle before enabling URL sync
+    requestAnimationFrame(() => {
+      didFirstSync.current = true;
+    });
+  }, [paramsKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── 2. Sync store → URL (skip the very first invocation) ─────────────────
   useEffect(() => {
@@ -42,6 +48,7 @@ export default function ShopContent({
 
     const params = new URLSearchParams();
     if (filters.category) params.set("category", filters.category);
+    if (filters.subcategory) params.set("subcategory", filters.subcategory);
     if (filters.searchQuery) params.set("q", filters.searchQuery);
     if (filters.minPrice > 0) params.set("min", String(filters.minPrice));
     if (filters.maxPrice < 10000) params.set("max", String(filters.maxPrice));
@@ -63,7 +70,7 @@ export default function ShopContent({
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="max-w-[1440px] mx-auto px-4 lg:px-6 py-4">
       <div className="flex gap-6">
         {/* Desktop filter sidebar */}
         <FilterSidebar
@@ -71,6 +78,7 @@ export default function ShopContent({
           brands={result.brands}
           brandCounts={result.brandCounts}
           priceRange={result.priceRange}
+          allProducts={allProducts}
         />
 
         {/* Main content */}

@@ -24,6 +24,7 @@ export default function MyProductsWizard() {
 
   // Step data
   const [categories, setCategories] = useState<string[]>([]);
+  const [subcategories, setSubcategories] = useState<string[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<DummyProduct[]>([]);
   const [productForms, setProductForms] = useState<Map<number, SellerProductForm>>(new Map());
@@ -61,8 +62,9 @@ export default function MyProductsWizard() {
   }, []);
 
   // Step 1 → 2
-  const handleStep1Next = (cats: string[]) => {
+  const handleStep1Next = (cats: string[], subs: string[]) => {
     setCategories(cats);
+    setSubcategories(subs);
     goToStep(1);
   };
 
@@ -138,11 +140,12 @@ export default function MyProductsWizard() {
         }`}
       >
         {step === 0 && (
-          <Step1Categories selected={categories} onNext={handleStep1Next} />
+          <Step1Categories selected={categories} selectedSubs={subcategories} onNext={handleStep1Next} />
         )}
         {step === 1 && (
           <Step2SelectProducts
             categories={categories}
+            subcategories={subcategories}
             selected={selectedIds}
             existingProductIds={existingProductIds}
             onNext={handleStep2Next}

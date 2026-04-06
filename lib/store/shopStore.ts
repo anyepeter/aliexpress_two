@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 export interface ShopFilters {
   category: string | null;
+  subcategory: string | null;
   minPrice: number;
   maxPrice: number;
   minRating: number;
@@ -22,6 +23,7 @@ export type ViewMode = "grid" | "list";
 
 export const DEFAULT_FILTERS: ShopFilters = {
   category: null,
+  subcategory: null,
   minPrice: 0,
   maxPrice: 10000,
   minRating: 0,
@@ -86,6 +88,7 @@ export const useShopStore = create<ShopState>((set) => ({
     set(() => {
       const filters: ShopFilters = { ...DEFAULT_FILTERS };
       if (params.category) filters.category = params.category;
+      if (params.subcategory) filters.subcategory = params.subcategory;
       if (params.q) filters.searchQuery = params.q;
       if (params.min) filters.minPrice = parseFloat(params.min) || 0;
       if (params.max) filters.maxPrice = parseFloat(params.max) || 10000;

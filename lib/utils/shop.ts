@@ -14,6 +14,7 @@ export interface ShopResult {
   brandCounts: Record<string, number>;
   priceRange: { min: number; max: number };
   categoryCounts: Record<string, number>;
+  subcategoryCounts: Record<string, number>;
 }
 
 export function filterAndSortProducts(
@@ -30,6 +31,13 @@ export function filterAndSortProducts(
       const cat = p.category.toLowerCase();
       const filterCat = filters.category.toLowerCase();
       if (cat !== filterCat) return false;
+    }
+
+    // Subcategory
+    if (filters.subcategory) {
+      const sub = (p.subcategory ?? "").toLowerCase();
+      const filterSub = filters.subcategory.toLowerCase();
+      if (sub !== filterSub) return false;
     }
 
     // Price range
@@ -93,11 +101,15 @@ export function filterAndSortProducts(
 
   // ── Metadata (from full dataset, not filtered) ────────────────────────
   const categoryCounts: Record<string, number> = {};
+  const subcategoryCounts: Record<string, number> = {};
   const brandCounts: Record<string, number> = {};
   const brandSet = new Set<string>();
 
   for (const p of allProducts) {
     categoryCounts[p.category] = (categoryCounts[p.category] ?? 0) + 1;
+    if (p.subcategory) {
+      subcategoryCounts[p.subcategory] = (subcategoryCounts[p.subcategory] ?? 0) + 1;
+    }
     if (p.brand) {
       brandCounts[p.brand] = (brandCounts[p.brand] ?? 0) + 1;
       brandSet.add(p.brand);
@@ -121,6 +133,7 @@ export function filterAndSortProducts(
     brandCounts,
     priceRange,
     categoryCounts,
+    subcategoryCounts,
   };
 }
 
@@ -130,6 +143,7 @@ export function hasActiveFilters(
 ): boolean {
   return (
     filters.category !== null ||
+    filters.subcategory !== null ||
     filters.minPrice > 0 ||
     filters.maxPrice < defaultMaxPrice ||
     filters.minRating > 0 ||
