@@ -192,7 +192,7 @@ const NAV_CATEGORIES: {
       { name: "T-Shirts", slug: "t-shirts" },
       { name: "Shirts", slug: "shirts" },
       { name: "Pants", slug: "pants" },
-      { name: "Hoodies", slug: "hoodies" },
+      { name: "jackets", slug: "jackets" },
       { name: "Shoes", slug: "shoes" },
     ],
   },
