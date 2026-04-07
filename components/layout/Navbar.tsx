@@ -214,9 +214,8 @@ const NAV_CATEGORIES: {
     icon: Gem,
     subs: [
       { name: "Rings", slug: "rings" },
-      { name: "Necklaces", slug: "necklaces" },
+      { name: "Earrings and Necklaces", slug: "earrings-necklaces" },
       { name: "Bracelets", slug: "bracelets" },
-      { name: "Earrings", slug: "earrings" },
       { name: "Watches", slug: "watches" },
     ],
   },
