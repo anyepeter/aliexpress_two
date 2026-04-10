@@ -71,7 +71,7 @@ export default async function BecomeSellerPage() {
             </h2>
             <p className="text-blue-200 text-lg leading-relaxed">
               Your buyer profile is already set up. Just add your store details and you&apos;ll be
-              reviewed within 2–3 business days.
+              reviewed within 24 hours.
             </p>
           </div>
 

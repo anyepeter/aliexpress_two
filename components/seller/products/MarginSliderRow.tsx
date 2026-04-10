@@ -10,8 +10,8 @@ interface MarginSliderRowProps {
   onChange: (margin: number) => void;
 }
 
-const MIN_MARGIN = 10;
-const MAX_MARGIN = 15;
+const MIN_MARGIN = 8;
+const MAX_MARGIN = 25;
 
 export default function MarginSliderRow({
   product,
@@ -61,11 +61,6 @@ export default function MarginSliderRow({
             <span className="text-sm font-bold text-[#E53935]">{margin.toFixed(1)}%</span>
           </div>
           <p className="text-sm font-bold text-[#1A1A1A]">${sellingPrice.toFixed(2)}</p>
-          {hasDiscount && (
-            <p className="text-[10px] text-gray-400">
-              Buyer pays: <span className="font-medium text-[#1A1A1A]">${buyerPays.toFixed(2)}</span>
-            </p>
-          )}
           <p className="text-[10px] text-green-600 font-medium">+${profit.toFixed(2)}</p>
         </div>
       </div>

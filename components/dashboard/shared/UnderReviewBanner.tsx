@@ -18,8 +18,7 @@ export default function UnderReviewBanner({ status, role }: UnderReviewBannerPro
         <div>
           <p className="font-semibold text-amber-800 text-sm">Account Under Review</p>
           <p className="text-amber-700 text-sm mt-0.5">
-            Your seller account is being reviewed by our team. This typically takes 2–3 business
-            days. You&apos;ll receive an email once approved. Meanwhile, you can explore your
+            Your seller account is being reviewed by our team. This typically takes 24 hours. You&apos;ll receive an email once approved. Meanwhile, you can explore your
             dashboard and set up your store profile.
           </p>
         </div>

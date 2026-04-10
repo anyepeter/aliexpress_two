@@ -38,7 +38,7 @@ const TIMELINE = [
 const FAQS = [
   {
     q: "How long does the review process take?",
-    a: "Most applications are reviewed within 2–3 business days. Complex business registrations may take up to 5 business days. You'll receive an email at each stage.",
+    a: "Most applications are reviewed within 24 hours. Complex business registrations may take up to 5 business days. You'll receive an email at each stage.",
   },
   {
     q: "What happens if my application is rejected?",
@@ -85,7 +85,7 @@ export default function PendingApprovalPage() {
             <p className="text-gray-500 mb-6">
               Thank you for applying to become a AliExpress seller! Our team is
               carefully reviewing your application and documents. You&apos;ll
-              receive an email update within 2–3 business days.
+              receive an email update within 24 hours.
             </p>
 
             <div className="inline-flex items-center gap-2 bg-[#E53935]/10 text-[#E53935] px-4 py-2 rounded-full text-sm font-semibold mb-6">

@@ -30,13 +30,10 @@ interface Step5Props {
   onEditStep: (step: number) => void;
 }
 
-const COUNTRY_NAMES: Record<string, string> = {
-  US: "United States", GB: "United Kingdom", CA: "Canada", AU: "Australia",
-  DE: "Germany", FR: "France", CN: "China", JP: "Japan", KR: "South Korea",
-  IN: "India", BR: "Brazil", MX: "Mexico", SG: "Singapore", AE: "UAE",
-  ZA: "South Africa", NG: "Nigeria", EG: "Egypt", TR: "Turkey",
-  PK: "Pakistan", BD: "Bangladesh", CM: "Cameroon",
-};
+import isoCountries from "i18n-iso-countries";
+import enLocale from "i18n-iso-countries/langs/en.json";
+isoCountries.registerLocale(enLocale);
+const COUNTRY_NAMES = isoCountries.getNames("en", { select: "official" });
 
 function SectionCard({
   title, icon, step, onEdit, children,
@@ -135,18 +132,23 @@ export default function Step5Review({ formData, onBack, onEditStep }: Step5Props
 
   if (redirecting) {
     return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#E53935]">
-        <div className="flex flex-col items-center gap-5">
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-[#0F2540] via-[#1a3050] to-[#0a1a2e]">
+        <div className="flex flex-col items-center gap-6">
           <div className="relative">
-            <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center">
-              <Store className="w-8 h-8 text-white" />
+            <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/10">
+              <Store className="w-10 h-10 text-white" />
             </div>
-            <span className="absolute inset-0 rounded-2xl border-2 border-white/30 animate-ping" />
+            <span className="absolute inset-0 rounded-2xl border-2 border-white/20 animate-ping" />
+            <span className="absolute -inset-2 rounded-3xl border border-white/10 animate-pulse" />
           </div>
-          <Loader2 className="w-6 h-6 text-[#E53935] animate-spin" />
+          <div className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-white/80 animate-bounce" style={{ animationDelay: "0ms" }} />
+            <span className="w-2 h-2 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: "150ms" }} />
+            <span className="w-2 h-2 rounded-full bg-white/40 animate-bounce" style={{ animationDelay: "300ms" }} />
+          </div>
           <div className="text-center">
-            <p className="text-white font-semibold text-lg">Setting up your store…</p>
-            <p className="text-blue-200 text-sm mt-1">Please wait a moment</p>
+            <p className="text-white font-semibold text-lg tracking-wide">Setting up your store…</p>
+            <p className="text-white/50 text-sm mt-1.5">Setting things up for you</p>
           </div>
         </div>
       </div>

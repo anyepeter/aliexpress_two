@@ -176,7 +176,7 @@ export default function Step4Documents({ initialData, onNext, onBack }: Step4Pro
       <div className="flex items-center gap-2 text-xs text-green-700 bg-green-50 border border-green-200 rounded-lg p-3">
         <ShieldCheck className="w-4 h-4 flex-shrink-0" />
         <span>
-          Your application will be reviewed within <strong>2–3 business days</strong>.
+          Your application will be reviewed within <strong>24 hours</strong>.
           You&apos;ll receive an email once approved.
         </span>
       </div>

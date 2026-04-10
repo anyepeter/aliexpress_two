@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useSignIn } from "@clerk/nextjs";
 import {
   Users,
   Store,
@@ -21,6 +22,7 @@ import {
   Clock,
   AlertTriangle,
   Ban,
+  LogIn,
 } from "lucide-react";
 
 type AccountStatus =
@@ -78,6 +80,7 @@ type FilterTab = "ALL" | Role;
 type StatusFilter = "ALL" | AccountStatus;
 
 export default function AdminUsersClient({ initialUsers }: Props) {
+  const { signIn, setActive } = useSignIn();
   const [users, setUsers] = useState<UserData[]>(initialUsers);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<FilterTab>("ALL");
@@ -142,6 +145,41 @@ export default function AdminUsersClient({ initialUsers }: Props) {
       );
     } catch {
       alert("Network error");
+    } finally {
+      setLoadingAction(null);
+    }
+  };
+
+  const handleLoginAs = async (userId: string, userName: string) => {
+    if (!signIn || !setActive) return;
+    if (!confirm(`You will be logged in as "${userName}". Your current session will end. Continue?`)) return;
+
+    setLoadingAction(`login-${userId}`);
+    try {
+      const res = await fetch("/api/admin/login-as", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || "Failed to login as user");
+        return;
+      }
+      const { signInToken, dashboardUrl } = await res.json();
+
+      // Use the sign-in token to create a session
+      const result = await signIn.create({
+        strategy: "ticket",
+        ticket: signInToken,
+      });
+
+      if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+        window.location.href = dashboardUrl;
+      }
+    } catch {
+      alert("Failed to login as user");
     } finally {
       setLoadingAction(null);
     }
@@ -441,6 +479,25 @@ export default function AdminUsersClient({ initialUsers }: Props) {
                                 Activate
                               </button>
                             ) : null}
+
+                            {/* Login As */}
+                            {user.role !== "ADMIN" && user.status === "ACTIVE" && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleLoginAs(user.id, `${user.firstName} ${user.lastName}`);
+                                }}
+                                disabled={!!isLoading}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 disabled:opacity-50 transition-colors"
+                              >
+                                {isLoading && loadingAction === `login-${user.id}` ? (
+                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                  <LogIn className="w-3 h-3" />
+                                )}
+                                Login As
+                              </button>
+                            )}
 
                             {user.role !== "ADMIN" && (
                               <select

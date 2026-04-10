@@ -56,7 +56,7 @@ export default function SellerRegisterPage() {
             </h2>
             <p className="text-blue-200 text-lg leading-relaxed">
               Join thousands of sellers already growing their business on AliExpress. Your
-              application is reviewed within 2–3 business days.
+              application is reviewed within 24 hours.
             </p>
           </div>
 

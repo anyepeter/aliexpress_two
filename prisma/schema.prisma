@@ -118,7 +118,7 @@ model SellerProduct {
   subcategory     String?
   brand           String?
   basePrice       Float               // original DummyJSON price
-  marginPercent   Float               @default(20) // 15-25
+  marginPercent   Float               @default(12) // 8-25
   sellingPrice    Float               // basePrice * (1 + marginPercent/100)
   discountPct     Float               @default(0) // DummyJSON discount percentage
   stock           Int                 @default(0)
