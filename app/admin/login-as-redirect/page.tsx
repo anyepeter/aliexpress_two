@@ -1,11 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth, useSignIn } from "@clerk/nextjs";
 import { Loader2 } from "lucide-react";
 
 export default function LoginAsRedirectPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#E53935] flex flex-col items-center justify-center text-white">
+          <Loader2 className="w-10 h-10 animate-spin" />
+        </div>
+      }
+    >
+      <LoginAsRedirectInner />
+    </Suspense>
+  );
+}
+
+function LoginAsRedirectInner() {
   const searchParams = useSearchParams();
   const { isSignedIn, signOut } = useAuth();
   const { signIn, setActive } = useSignIn();
