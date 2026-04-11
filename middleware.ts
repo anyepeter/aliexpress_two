@@ -1,6 +1,8 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+const isPublicAdminRoute = createRouteMatcher(["/admin/login-as-redirect"]);
+
 const isProtectedRoute = createRouteMatcher([
   "/seller/(.*)",
   "/buyer/(.*)",
@@ -20,7 +22,7 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // Protect dashboard routes — Clerk redirects to sign-in automatically
-  if (isProtectedRoute(req)) {
+  if (isProtectedRoute(req) && !isPublicAdminRoute(req)) {
     await auth.protect();
   }
 });

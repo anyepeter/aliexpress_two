@@ -69,7 +69,7 @@ export default function AdminAdsClient() {
   const [plans, setPlans] = useState<AdPlan[]>([]);
   const [allSubscriptions, setAllSubscriptions] = useState<AdSubscription[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<Tab>("PENDING");
+  const [activeTab, setActiveTab] = useState<Tab>("all");
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [savingPlan, setSavingPlan] = useState<string | null>(null);
@@ -151,9 +151,11 @@ export default function AdminAdsClient() {
   };
 
   const tabs: { label: string; value: Tab; count: number }[] = [
+    { label: "All", value: "all", count: allSubscriptions.length },
     { label: "Pending", value: "PENDING", count: pendingCount },
     { label: "Active", value: "ACTIVE", count: activeCount },
     { label: "Expired", value: "EXPIRED", count: expiredCount },
+    { label: "Cancelled", value: "CANCELLED", count: cancelledCount },
   ];
 
   return (

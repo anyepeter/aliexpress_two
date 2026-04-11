@@ -261,7 +261,7 @@ export default function SellerAdsClient() {
       )}
 
       {/* Plans Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
         {plans.map((plan) => {
           const config = TIER_CONFIG[plan.tier] ?? TIER_CONFIG.BASIC;
           const Icon = config.icon;
@@ -271,7 +271,7 @@ export default function SellerAdsClient() {
           return (
             <div
               key={plan.id}
-              className={`relative bg-white rounded-2xl border-2 overflow-hidden transition-shadow hover:shadow-lg ${
+              className={`relative bg-white rounded-2xl border-2 overflow-hidden transition-shadow hover:shadow-lg flex flex-col ${
                 plan.tier === "PREMIUM" ? "border-[#0F2540]/40 shadow-md" : config.border
               }`}
             >
@@ -300,7 +300,7 @@ export default function SellerAdsClient() {
               </div>
 
               {/* Features */}
-              <div className="p-5 space-y-3">
+              <div className="p-5 space-y-3 flex flex-col flex-1">
                 <div className="flex items-center gap-2 bg-gray-50 rounded-xl p-3">
                   <Eye className="w-4 h-4 text-gray-500" />
                   <span className="text-sm font-semibold text-gray-900">
@@ -309,7 +309,7 @@ export default function SellerAdsClient() {
                   <span className="text-xs text-gray-500">visitors/day</span>
                 </div>
 
-                <ul className="space-y-2">
+                <ul className="space-y-2 flex-1">
                   {plan.features.map((f, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
                       <Check className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
@@ -322,7 +322,7 @@ export default function SellerAdsClient() {
                 <button
                   onClick={() => canSubscribe && setSelectedPlan(plan)}
                   disabled={!canSubscribe}
-                  className={`w-full mt-3 py-3 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 ${
+                  className={`w-full mt-auto py-3 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 ${
                     isCurrentPlan
                       ? currentSub?.status === "ACTIVE"
                         ? "bg-green-50 text-green-700 cursor-default"

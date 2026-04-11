@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   ShoppingBag,
@@ -81,6 +82,7 @@ const STATUS_CONFIG: Record<
 };
 
 export default function SellerOrdersList({ orders: initialOrders }: { orders: SerializedOrder[] }) {
+  const router = useRouter();
   const [orders, setOrders] = useState(initialOrders);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | OrderStatus>("all");
@@ -113,23 +115,64 @@ export default function SellerOrdersList({ orders: initialOrders }: { orders: Se
     .filter((o) => o.status === "COMPLETED")
     .reduce((sum, o) => sum + o.profit, 0);
 
-  const handleContactAdmin = async (orderId: string) => {
-    setContactingId(orderId);
+  const handleContactAdmin = async (order: SerializedOrder) => {
+    setContactingId(order.id);
     try {
+      // 1. Mark order as CONTACTED_ADMIN
       const res = await fetch("/api/orders/seller", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId }),
+        body: JSON.stringify({ orderId: order.id }),
       });
       if (res.ok) {
         setOrders((prev) =>
           prev.map((o) =>
-            o.id === orderId
+            o.id === order.id
               ? { ...o, status: "CONTACTED_ADMIN" as OrderStatus, contactedAt: new Date().toISOString() }
               : o
           )
         );
       }
+
+      // 2. Get admin user ID
+      const adminRes = await fetch("/api/admin/info");
+      if (!adminRes.ok) return;
+      const admin = await adminRes.json();
+
+      // 3. Start a conversation linked to this order
+      const convRes = await fetch("/api/messages/conversations/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          targetUserId: admin.id,
+          subject: `Payment for Order #${order.orderNumber}`,
+          orderId: order.id,
+        }),
+      });
+      if (!convRes.ok) return;
+      const { conversationId } = await convRes.json();
+
+      // 4. Send pre-written message with order details
+      const itemsList = order.items
+        .map((it) => `• ${it.title} × ${it.quantity}`)
+        .join("\n");
+
+      const message =
+        `Hello, I would like to make payment for Order #${order.orderNumber}.\n\n` +
+        `Order Total: $${order.totalAmount.toFixed(2)}\n` +
+        `Amount Due (Base Cost): $${order.baseCost.toFixed(2)}\n` +
+        `Buyer: ${order.buyer.firstName} ${order.buyer.lastName}\n\n` +
+        `Items:\n${itemsList}\n\n` +
+        `Please share the payment details (Bank Transfer or Bitcoin) so I can complete the payment. Thank you!`;
+
+      await fetch(`/api/messages/conversations/${conversationId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: message, type: "TEXT" }),
+      });
+
+      // 5. Redirect to the conversation
+      router.push(`/messages?c=${conversationId}`);
     } catch {
       // silent
     } finally {
@@ -473,7 +516,7 @@ export default function SellerOrdersList({ orders: initialOrders }: { orders: Se
                             </div>
                             <p className="text-xs text-[#6B7280] mb-3">Contact customer support to arrange bank transfer or Bitcoin</p>
                             <button
-                              onClick={() => handleContactAdmin(order.id)}
+                              onClick={() => handleContactAdmin(order)}
                               disabled={contactingId === order.id}
                               className="w-full py-2 bg-[#E53935] text-white text-xs font-semibold rounded-lg hover:bg-[#C62828] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                             >

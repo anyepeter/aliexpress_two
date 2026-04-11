@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import DashboardLayout from "@/components/dashboard/shared/DashboardLayout";
-import AdminOrdersList from "@/components/orders/AdminOrdersList";
+import AdminOrdersWithPlaceOrder from "@/components/orders/AdminOrdersWithPlaceOrder";
 
 export default async function AdminOrdersPage() {
   const { userId } = await auth();
@@ -45,7 +45,7 @@ export default async function AdminOrdersPage() {
         avatarUrl: user.avatarUrl,
       }}
     >
-      <AdminOrdersList orders={serialized} />
+      <AdminOrdersWithPlaceOrder orders={serialized} />
     </DashboardLayout>
   );
 }

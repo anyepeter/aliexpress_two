@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useSignIn } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
 import {
   Users,
   Store,
@@ -80,7 +80,7 @@ type FilterTab = "ALL" | Role;
 type StatusFilter = "ALL" | AccountStatus;
 
 export default function AdminUsersClient({ initialUsers }: Props) {
-  const { signIn, setActive } = useSignIn();
+  const clerk = useClerk();
   const [users, setUsers] = useState<UserData[]>(initialUsers);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<FilterTab>("ALL");
@@ -151,11 +151,11 @@ export default function AdminUsersClient({ initialUsers }: Props) {
   };
 
   const handleLoginAs = async (userId: string, userName: string) => {
-    if (!signIn || !setActive) return;
-    if (!confirm(`You will be logged in as "${userName}". Your current session will end. Continue?`)) return;
+    if (!confirm(`You will be logged in as "${userName}". You can return to admin by logging out and signing back in. Continue?`)) return;
 
     setLoadingAction(`login-${userId}`);
     try {
+      // 1. Get the sign-in token while still authenticated as admin
       const res = await fetch("/api/admin/login-as", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -168,18 +168,26 @@ export default function AdminUsersClient({ initialUsers }: Props) {
       }
       const { signInToken, dashboardUrl } = await res.json();
 
-      // Use the sign-in token to create a session
-      const result = await signIn.create({
+      // 2. Sign out the admin session
+      await clerk.signOut();
+
+      // 3. Sign in as the target user with the ticket token
+      const signInResult = await clerk.client.signIn.create({
         strategy: "ticket",
         ticket: signInToken,
       });
 
-      if (result.status === "complete") {
-        await setActive({ session: result.createdSessionId });
+      if (signInResult.status === "complete" && signInResult.createdSessionId) {
+        await clerk.setActive({ session: signInResult.createdSessionId });
         window.location.href = dashboardUrl;
+      } else {
+        alert("Sign-in did not complete. Please try logging in manually.");
+        window.location.href = "/auth/login";
       }
-    } catch {
-      alert("Failed to login as user");
+    } catch (err) {
+      console.error("Login-as error:", err);
+      // If sign-out succeeded but sign-in failed, redirect to login
+      window.location.href = "/auth/login";
     } finally {
       setLoadingAction(null);
     }

@@ -6,6 +6,7 @@ import DashboardLayout from "@/components/dashboard/shared/DashboardLayout";
 import UnderReviewBanner from "@/components/dashboard/shared/UnderReviewBanner";
 import DashboardClient from "@/components/seller/dashboard/DashboardClient";
 import LoanReminderBanner from "@/components/seller/loans/LoanReminderBanner";
+import ActiveAdPlanBanner from "@/components/seller/advertisements/ActiveAdPlanBanner";
 import { Plus, RefreshCw, WifiOff } from "lucide-react";
 
 export default async function SellerDashboard() {
@@ -74,6 +75,13 @@ export default async function SellerDashboard() {
   let todayOrderCountResult = 0;
   let totalWithdrawnResult: { _sum: { amount: number | null } } = { _sum: { amount: null } };
   let pendingWithdrawalResult: { _sum: { amount: number | null } } = { _sum: { amount: null } };
+  let activeAdSubscription: {
+    id: string;
+    status: string;
+    startDate: Date | null;
+    endDate: Date | null;
+    plan: { name: string; price: number; durationDays: number; tier: string };
+  } | null = null;
 
   if (storeId) {
     try {
@@ -111,7 +119,7 @@ export default async function SellerDashboard() {
         }),
       ]);
 
-      [totalWithdrawnResult, pendingWithdrawalResult] = await Promise.all([
+      [totalWithdrawnResult, pendingWithdrawalResult, activeAdSubscription] = await Promise.all([
         prisma.withdrawal.aggregate({
           where: { storeId, status: "APPROVED" },
           _sum: { amount: true },
@@ -119,6 +127,13 @@ export default async function SellerDashboard() {
         prisma.withdrawal.aggregate({
           where: { storeId, status: "PENDING" },
           _sum: { amount: true },
+        }),
+        prisma.adSubscription.findFirst({
+          where: { storeId, status: "ACTIVE" },
+          include: {
+            plan: { select: { name: true, price: true, durationDays: true, tier: true } },
+          },
+          orderBy: { startDate: "desc" },
         }),
       ]);
     } catch (error) {
@@ -162,6 +177,18 @@ export default async function SellerDashboard() {
       <div className="p-6 min-h-screen bg-[#F5F6FA]">
         {/* Loan Reminder */}
         <LoanReminderBanner />
+
+        {/* Active Ad Plan Banner */}
+        {activeAdSubscription && (
+          <ActiveAdPlanBanner
+            planName={activeAdSubscription.plan.name}
+            tier={activeAdSubscription.plan.tier}
+            price={activeAdSubscription.plan.price}
+            durationDays={activeAdSubscription.plan.durationDays}
+            startDate={activeAdSubscription.startDate?.toISOString() ?? null}
+            endDate={activeAdSubscription.endDate?.toISOString() ?? null}
+          />
+        )}
         {/* Welcome */}
         <div className="flex items-start justify-between flex-wrap gap-3 mb-8">
           <div>
