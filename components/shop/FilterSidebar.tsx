@@ -139,9 +139,6 @@ export default function FilterSidebar({
                   <span className="text-sm text-gray-700 group-hover:text-[#E53935] transition-colors flex-1 leading-snug">
                     {brand}
                   </span>
-                  <span className="text-[10px] text-gray-400 bg-gray-100 rounded-full px-1.5 py-0.5 tabular-nums">
-                    {brandCounts[brand] ?? 0}
-                  </span>
                 </label>
               ))}
               {brands.length > 8 && (

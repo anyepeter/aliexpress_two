@@ -1,4 +1,6 @@
-export const dynamic = "force-dynamic";
+// Revalidate every 60 seconds — cached responses make category navigation
+// nearly instant since we don't re-query the entire marketplace on every click.
+export const revalidate = 60;
 
 import type { Metadata } from "next";
 import Navbar from "@/components/layout/Navbar";

@@ -124,7 +124,6 @@ export default function CategoryFilter({
   const [expanded, setExpanded] = useState<string | null>(category);
 
   const entries = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]);
-  const totalCount = Object.values(categoryCounts).reduce((a, b) => a + b, 0);
 
   // Build subcategory counts per category from allProducts
   const subcatsByCategory: Record<string, Record<string, number>> = {};
@@ -180,12 +179,9 @@ export default function CategoryFilter({
         }`}
       >
         <span className="flex-1">All Categories</span>
-        <span className="text-[10px] text-gray-400 bg-gray-100 rounded-full px-1.5 py-0.5 tabular-nums">
-          {totalCount}
-        </span>
       </button>
 
-      {entries.map(([slug, count]) => {
+      {entries.map(([slug]) => {
         const isActive = category === slug;
         const isExpanded = expanded === slug;
         const subcats = subcatsByCategory[slug];
@@ -222,9 +218,6 @@ export default function CategoryFilter({
                 <span className="flex-1 leading-snug">
                   {CATEGORY_LABELS[slug] ?? slug.replace(/-/g, " ")}
                 </span>
-                <span className="text-[10px] text-gray-400 bg-gray-100 rounded-full px-1.5 py-0.5 tabular-nums">
-                  {count}
-                </span>
               </button>
             </div>
 
@@ -233,7 +226,7 @@ export default function CategoryFilter({
               <div className="ml-6 pl-3 border-l-2 border-gray-100 flex flex-col gap-0.5 mt-0.5 mb-1">
                 {Object.entries(subcats)
                   .sort((a, b) => b[1] - a[1])
-                  .map(([subSlug, subCount]) => (
+                  .map(([subSlug]) => (
                     <button
                       key={subSlug}
                       onClick={() => handleSubcategoryClick(slug, subSlug)}
@@ -245,9 +238,6 @@ export default function CategoryFilter({
                     >
                       <span className="flex-1 leading-snug">
                         {SUBCATEGORY_LABELS[subSlug] ?? subSlug.replace(/-/g, " ")}
-                      </span>
-                      <span className="text-[10px] text-gray-400 bg-gray-50 rounded-full px-1.5 py-0.5 tabular-nums">
-                        {subCount}
                       </span>
                     </button>
                   ))}

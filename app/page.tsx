@@ -21,6 +21,7 @@ import PromoBanners from "@/components/home/PromoBanners";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import { ProductCardSkeleton } from "@/components/home/ProductCard";
 import SponsoredProducts from "@/components/home/SponsoredProducts";
+import PremiumSellerStrip from "@/components/home/PremiumSellerStrip";
 
 import { getCategories } from "@/lib/api/products";
 import {
@@ -135,20 +136,21 @@ export default async function HomePage() {
         {/* 3. Auto-sliding hero carousel */}
         <HeroCarousel />
 
-        {/* 4. Trust badges strip */}
-        <TrustBadges />
+        {/* 4. Premium verified sellers strip — directly under the hero */}
+        
 
-        {/* 5. Sponsored Products from advertisers */}
+        {/* 5. Trust badges strip */}
+        <TrustBadges />
+        <PremiumSellerStrip stores={verifiedStores} />
+
+        {/* 6. Sponsored Products from advertisers */}
         <SponsoredProducts />
 
         <PromoBanners />
 
         {/* 8. Featured marketplace products grid with load more */}
         <Suspense fallback={<FeaturedSkeleton />}>
-          <FeaturedProducts
-            initialProducts={featuredProducts}
-            verifiedStores={verifiedStores}
-          />
+          <FeaturedProducts initialProducts={featuredProducts} />
         </Suspense>
       </main>
 

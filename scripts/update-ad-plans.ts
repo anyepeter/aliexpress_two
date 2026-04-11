@@ -8,7 +8,7 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("🔄 Updating Ad Plans...\n");
 
-  // 1 Month Plan — $500
+  // 1 Month Plan — $699
   const oneMonthFeatures = [
     "500–1,000 daily visitors",
     "Featured in Sponsored section",
@@ -19,7 +19,7 @@ async function main() {
     where: { tier: "BASIC" },
     update: {
       name: "1 Month",
-      price: 500,
+      price: 699,
       durationDays: 30,
       minVisitorsDay: 500,
       maxVisitorsDay: 1000,
@@ -31,7 +31,7 @@ async function main() {
     create: {
       tier: "BASIC",
       name: "1 Month",
-      price: 500,
+      price: 699,
       durationDays: 30,
       minVisitorsDay: 500,
       maxVisitorsDay: 1000,
@@ -41,9 +41,9 @@ async function main() {
       isActive: true,
     },
   });
-  console.log("✅ 1 Month Plan — $500");
+  console.log("✅ 1 Month Plan — $699");
 
-  // 3 Months Plan — $1,000
+  // 3 Months Plan — $1,799
   const threeMonthFeatures = [
     "1,500–3,000 daily visitors",
     "Priority product placement",
@@ -55,7 +55,7 @@ async function main() {
     where: { tier: "STANDARD" },
     update: {
       name: "3 Months",
-      price: 1000,
+      price: 1799,
       durationDays: 90,
       minVisitorsDay: 1500,
       maxVisitorsDay: 3000,
@@ -67,7 +67,7 @@ async function main() {
     create: {
       tier: "STANDARD",
       name: "3 Months",
-      price: 1000,
+      price: 1799,
       durationDays: 90,
       minVisitorsDay: 1500,
       maxVisitorsDay: 3000,
@@ -77,9 +77,9 @@ async function main() {
       isActive: true,
     },
   });
-  console.log("✅ 3 Months Plan — $1,000");
+  console.log("✅ 3 Months Plan — $1,799");
 
-  // 12 Months Plan — $1,500
+  // 12 Months Plan — $5,199
   const twelveMonthFeatures = [
     "5,000–10,000 daily visitors",
     "Top placement on homepage",
@@ -92,7 +92,7 @@ async function main() {
     where: { tier: "PREMIUM" },
     update: {
       name: "12 Months",
-      price: 1500,
+      price: 5199,
       durationDays: 365,
       minVisitorsDay: 5000,
       maxVisitorsDay: 10000,
@@ -104,7 +104,7 @@ async function main() {
     create: {
       tier: "PREMIUM",
       name: "12 Months",
-      price: 1500,
+      price: 5199,
       durationDays: 365,
       minVisitorsDay: 5000,
       maxVisitorsDay: 10000,
@@ -114,7 +114,7 @@ async function main() {
       isActive: true,
     },
   });
-  console.log("✅ 12 Months Plan — $1,500");
+  console.log("✅ 12 Months Plan — $5,199");
 
   console.log("\n🎉 All ad plans updated!");
 }

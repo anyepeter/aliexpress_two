@@ -12,8 +12,10 @@ interface PremiumSellerStripProps {
 export default function PremiumSellerStrip({ stores }: PremiumSellerStripProps) {
   if (stores.length === 0) return null;
 
-  // Triple the list so we have enough content to loop seamlessly
-  const display = [...stores];
+  // Only triple the list when there are enough stores to need looping.
+  // With few stores, repeating them looks like a bug.
+  const shouldLoop = stores.length >= 6;
+  const display = shouldLoop ? [...stores, ...stores, ...stores] : stores;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const isHovered = useRef(false);
@@ -38,6 +40,7 @@ export default function PremiumSellerStrip({ stores }: PremiumSellerStripProps) 
   }, []);
 
   useEffect(() => {
+    if (!shouldLoop) return;
     // Start scrolled to the middle copy so we can scroll left too
     const el = containerRef.current;
     if (el) {
@@ -45,7 +48,7 @@ export default function PremiumSellerStrip({ stores }: PremiumSellerStripProps) 
     }
     rafId.current = requestAnimationFrame(autoScroll);
     return () => cancelAnimationFrame(rafId.current);
-  }, [autoScroll]);
+  }, [autoScroll, shouldLoop]);
 
   const handleMouseEnter = useCallback(() => {
     isHovered.current = true;
@@ -102,17 +105,17 @@ export default function PremiumSellerStrip({ stores }: PremiumSellerStripProps) 
   }, []);
 
   return (
-    <div className="mb-6">
+    <section className="max-w-[1440px] mx-auto px-4 lg:px-6 py-6">
       <div className="flex items-center gap-3 mb-3">
         <span className="text-xs font-bold text-[#E53935] uppercase tracking-widest">
-          Premium Verified Sellers
+          Featured Stores of the day
         </span>
         <span className="h-px flex-1 bg-gradient-to-r from-[#E53935]/30 to-transparent" />
       </div>
 
       <div
         ref={containerRef}
-        className="overflow-hidden cursor-grab px-4 py-4"
+        className="overflow-hidden cursor-grab py-2"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -162,6 +165,6 @@ export default function PremiumSellerStrip({ stores }: PremiumSellerStripProps) 
           display: none;
         }
       `}</style>
-    </div>
+    </section>
   );
 }

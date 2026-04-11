@@ -6,6 +6,11 @@ export default function ShopLoading() {
     <>
       <Navbar />
       <main className="min-h-screen bg-[#F5F6FA]">
+        {/* Top progress bar — instant visual feedback while the page loads */}
+        <div className="fixed top-0 left-0 right-0 z-[100] h-0.5 bg-[#E53935]/15 overflow-hidden">
+          <div className="h-full w-1/3 bg-[#E53935] animate-shop-progress" />
+        </div>
+
         <div className="max-w-[1440px] mx-auto px-4 py-6">
           <div className="flex gap-6">
             {/* Sidebar skeleton */}
@@ -41,6 +46,15 @@ export default function ShopLoading() {
           </div>
         </div>
       </main>
+      <style>{`
+        @keyframes shop-progress {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(400%); }
+        }
+        .animate-shop-progress {
+          animation: shop-progress 1.1s ease-in-out infinite;
+        }
+      `}</style>
     </>
   );
 }

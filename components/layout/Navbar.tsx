@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -43,9 +43,9 @@ const SUB_IMAGES: Record<string, Record<string, string>> = {
   electronics: {
     "phone-accessories": "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=120&h=120&fit=crop",
     "chargers-cables": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=120&h=120&fit=crop",
-    earbuds: "https://images.unsplash.com/photo-1590658268037-6bf12f032f55?w=120&h=120&fit=crop",
-    "screen-protectors": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&h=120&fit=crop",
-    "smart-gadgets": "https://images.unsplash.com/photo-1546868871-af0de0ae72be?w=120&h=120&fit=crop",
+    earbuds: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=120&h=120&fit=crop",
+    "screen-protectors": "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=120&h=120&fit=crop",
+    "smart-gadgets": "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=120&h=120&fit=crop",
   },
   "womens-apparel": {
     dresses: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=120&h=120&fit=crop",
@@ -64,8 +64,8 @@ const SUB_IMAGES: Record<string, Record<string, string>> = {
   "home-living": {
     "pillows-bedding": "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=120&h=120&fit=crop",
     curtains: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=120&h=120&fit=crop",
-    lighting: "https://images.unsplash.com/photo-1507473885765-e6ed057ab6fe?w=120&h=120&fit=crop",
-    storage: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=120&h=120&fit=crop",
+    lighting: "./lights.jpeg",
+    storage: "./storage.jpeg",
     decor: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?w=120&h=120&fit=crop",
   },
   jewelry: {
@@ -279,18 +279,18 @@ const NAV_CATEGORIES: {
       { name: "Outdoor", slug: "outdoor" },
     ],
   },
-  {
-    name: "TikTok Trending",
-    slug: "tiktok-trending",
-    icon: Flame,
-    subs: [
-      { name: "LED Lights", slug: "led-lights" },
-      { name: "Aesthetic Room", slug: "aesthetic-room" },
-      { name: "Mini Gadgets", slug: "mini-gadgets" },
-      { name: "Phone Accessories", slug: "phone-accessories" },
-      { name: "Fun Items", slug: "fun-items" },
-    ],
-  },
+  // {
+  //   name: "TikTok Trending",
+  //   slug: "tiktok-trending",
+  //   icon: Flame,
+  //   subs: [
+  //     { name: "LED Lights", slug: "led-lights" },
+  //     { name: "Aesthetic Room", slug: "aesthetic-room" },
+  //     { name: "Mini Gadgets", slug: "mini-gadgets" },
+  //     { name: "Phone Accessories", slug: "phone-accessories" },
+  //     { name: "Fun Items", slug: "fun-items" },
+  //   ],
+  // },
   {
     name: "Pet Supplies",
     slug: "pet-supplies",
@@ -384,6 +384,16 @@ function AliExpressLogo({ className = "" }: { className?: string }) {
 
 export default function Navbar() {
   const router = useRouter();
+  const [isNavigating, startNavTransition] = useTransition();
+
+  /** Navigate to a URL with an instant loading indicator. */
+  const navigateTo = (href: string) => {
+    setCatOpen(false);
+    setMenuOpen(false);
+    startNavTransition(() => {
+      router.push(href);
+    });
+  };
   const { user: clerkUser, isSignedIn, isLoaded } = useUser();
   const { signOut } = useClerk();
   const { dbUser, isLoading: dbLoading } = useCurrentUser();
@@ -462,6 +472,65 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Global navigation overlay — shows immediately on any in-app navigation */}
+      {isNavigating && (
+        <div
+          className="fixed inset-0 z-[100] bg-white/85 backdrop-blur-sm flex flex-col items-center justify-center animate-nav-fade"
+          aria-live="polite"
+          aria-busy="true"
+        >
+          {/* Top progress bar */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#E53935]/15 overflow-hidden">
+            <div className="h-full w-1/3 bg-[#E53935] animate-nav-progress" />
+          </div>
+
+          {/* Centered spinner card */}
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 px-10 py-8 flex flex-col items-center max-w-sm mx-4">
+            {/* Spinner */}
+            <div className="relative w-14 h-14 mb-4">
+              <div className="absolute inset-0 rounded-full border-4 border-[#E53935]/15" />
+              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#E53935] animate-spin" />
+            </div>
+
+            <p className="text-base font-bold text-[#1A1A1A]">Loading...</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Please wait while we fetch your products
+            </p>
+
+            {/* Animated dots */}
+            <div className="flex items-center gap-1 mt-4">
+              <span className="w-1.5 h-1.5 bg-[#E53935] rounded-full animate-nav-dot" style={{ animationDelay: "0ms" }} />
+              <span className="w-1.5 h-1.5 bg-[#E53935] rounded-full animate-nav-dot" style={{ animationDelay: "150ms" }} />
+              <span className="w-1.5 h-1.5 bg-[#E53935] rounded-full animate-nav-dot" style={{ animationDelay: "300ms" }} />
+            </div>
+          </div>
+
+          <style>{`
+            @keyframes nav-progress {
+              0% { transform: translateX(-100%); }
+              100% { transform: translateX(400%); }
+            }
+            @keyframes nav-fade {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            @keyframes nav-dot {
+              0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+              40% { transform: scale(1); opacity: 1; }
+            }
+            .animate-nav-progress {
+              animation: nav-progress 1.1s ease-in-out infinite;
+            }
+            .animate-nav-fade {
+              animation: nav-fade 0.15s ease-out;
+            }
+            .animate-nav-dot {
+              animation: nav-dot 1.2s ease-in-out infinite;
+            }
+          `}</style>
+        </div>
+      )}
+
       <nav className="sticky top-0 z-40 bg-white border-b border-gray-100 shadow-sm">
         {/* ───── Main Row ───── */}
         <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center gap-3">
@@ -539,11 +608,13 @@ export default function Navbar() {
                               {activeCat.subs.map((sub) => {
                                 const imgUrl = catImages[sub.slug];
                                 return (
-                                  <Link
+                                  <button
                                     key={sub.slug}
-                                    href={`/shop?category=${activeCat.slug}&subcategory=${sub.slug}`}
+                                    type="button"
+                                    onClick={() =>
+                                      navigateTo(`/shop?category=${activeCat.slug}&subcategory=${sub.slug}`)
+                                    }
                                     className="flex-shrink-0 group/rec text-center"
-                                    onClick={() => setCatOpen(false)}
                                   >
                                     <div className="w-[100px] h-[100px] rounded-xl bg-gray-50 border border-gray-100 overflow-hidden mb-2 group-hover/rec:border-[#E53935]/40 group-hover/rec:shadow-md transition-all">
                                       {imgUrl ? (
@@ -564,7 +635,7 @@ export default function Navbar() {
                                     <p className="text-[12px] text-gray-600 group-hover/rec:text-[#E53935] font-medium transition-colors w-[100px] leading-tight">
                                       {sub.name}
                                     </p>
-                                  </Link>
+                                  </button>
                                 );
                               })}
                             </div>
@@ -573,35 +644,43 @@ export default function Navbar() {
                             <div className="grid grid-cols-5 gap-x-8 gap-y-5">
                               {activeCat.subs.map((sub) => (
                                 <div key={sub.slug}>
-                                  <Link
-                                    href={`/shop?category=${activeCat.slug}&subcategory=${sub.slug}`}
-                                    className="text-[13px] font-bold text-gray-900 hover:text-[#E53935] transition-colors block mb-2"
-                                    onClick={() => setCatOpen(false)}
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      navigateTo(`/shop?category=${activeCat.slug}&subcategory=${sub.slug}`)
+                                    }
+                                    className="text-[13px] font-bold text-gray-900 hover:text-[#E53935] transition-colors block mb-2 text-left w-full"
                                   >
                                     {sub.name}
-                                  </Link>
+                                  </button>
                                   <div className="space-y-1.5">
-                                    <Link
-                                      href={`/shop?category=${activeCat.slug}&subcategory=${sub.slug}`}
-                                      className="block text-[13px] text-gray-500 hover:text-[#E53935] transition-colors"
-                                      onClick={() => setCatOpen(false)}
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        navigateTo(`/shop?category=${activeCat.slug}&subcategory=${sub.slug}`)
+                                      }
+                                      className="block text-[13px] text-gray-500 hover:text-[#E53935] transition-colors text-left w-full"
                                     >
                                       All {sub.name}
-                                    </Link>
-                                    <Link
-                                      href={`/shop?category=${activeCat.slug}&subcategory=${sub.slug}&sort=newest`}
-                                      className="block text-[13px] text-gray-500 hover:text-[#E53935] transition-colors"
-                                      onClick={() => setCatOpen(false)}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        navigateTo(`/shop?category=${activeCat.slug}&subcategory=${sub.slug}&sort=newest`)
+                                      }
+                                      className="block text-[13px] text-gray-500 hover:text-[#E53935] transition-colors text-left w-full"
                                     >
                                       New Arrivals
-                                    </Link>
-                                    <Link
-                                      href={`/shop?category=${activeCat.slug}&subcategory=${sub.slug}&sort=rating`}
-                                      className="block text-[13px] text-gray-500 hover:text-[#E53935] transition-colors"
-                                      onClick={() => setCatOpen(false)}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        navigateTo(`/shop?category=${activeCat.slug}&subcategory=${sub.slug}&sort=rating`)
+                                      }
+                                      className="block text-[13px] text-gray-500 hover:text-[#E53935] transition-colors text-left w-full"
                                     >
                                       Top Rated
-                                    </Link>
+                                    </button>
                                   </div>
                                 </div>
                               ))}
@@ -920,14 +999,14 @@ export default function Navbar() {
                   const Icon = cat.icon;
                   return (
                     <div key={cat.slug}>
-                      <Link
-                        href={`/shop?category=${cat.slug}`}
-                        className="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-[#E53935] py-2.5 px-3 rounded-lg hover:bg-gray-50 transition-colors"
-                        onClick={() => setMenuOpen(false)}
+                      <button
+                        type="button"
+                        onClick={() => navigateTo(`/shop?category=${cat.slug}`)}
+                        className="w-full flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-[#E53935] py-2.5 px-3 rounded-lg hover:bg-gray-50 transition-colors text-left"
                       >
                         <Icon className="w-4 h-4 text-gray-400" />
                         {cat.name}
-                      </Link>
+                      </button>
                     </div>
                   );
                 })}

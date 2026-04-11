@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import ProductCard, { ProductCardSkeleton } from "./ProductCard";
-import PremiumSellerStrip from "./PremiumSellerStrip";
 import SectionHeader from "./SectionHeader";
 import type { Product } from "@/lib/types/product";
-import type { MarketplaceProduct, StoreInfo } from "@/lib/types/marketplace";
+import type { MarketplaceProduct } from "@/lib/types/marketplace";
 
 const PAGE_SIZE = 10;
 
@@ -28,12 +27,10 @@ function toProduct(p: MarketplaceProduct): Product {
 
 interface FeaturedProductsProps {
   initialProducts: MarketplaceProduct[];
-  verifiedStores: StoreInfo[];
 }
 
 export default function FeaturedProducts({
   initialProducts,
-  verifiedStores,
 }: FeaturedProductsProps) {
   const [products, setProducts] = useState<MarketplaceProduct[]>(initialProducts);
   const [loading, setLoading] = useState(false);
@@ -67,8 +64,6 @@ export default function FeaturedProducts({
 
   return (
     <section className="max-w-[1440px] mx-auto px-4 lg:px-6 py-6">
-      <PremiumSellerStrip stores={verifiedStores} />
-
       <SectionHeader
         title="Featured Products"
         subtitle="Handpicked deals from verified sellers"

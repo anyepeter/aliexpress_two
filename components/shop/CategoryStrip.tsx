@@ -31,7 +31,6 @@ export default function CategoryStrip({ categoryCounts }: CategoryStripProps) {
   const category = useShopStore((s) => s.filters.category);
   const setFilter = useShopStore((s) => s.setFilter);
 
-  const total = Object.values(categoryCounts).reduce((a, b) => a + b, 0);
   const categories = Object.entries(categoryCounts).sort((a, b) => b[1] - a[1]);
 
   if (categories.length === 0) return null;
@@ -57,16 +56,9 @@ export default function CategoryStrip({ categoryCounts }: CategoryStripProps) {
           }`}
         >
           All
-          <span
-            className={`text-[10px] tabular-nums leading-none ${
-              category === null ? "text-white/70" : "text-gray-400"
-            }`}
-          >
-            {total}
-          </span>
         </button>
 
-        {categories.map(([slug, count]) => (
+        {categories.map(([slug]) => (
           <button
             key={slug}
             onClick={() => handleClick(slug)}
@@ -77,13 +69,6 @@ export default function CategoryStrip({ categoryCounts }: CategoryStripProps) {
             }`}
           >
             {CATEGORY_LABELS[slug] ?? slug.replace(/-/g, " ")}
-            <span
-              className={`text-[10px] tabular-nums leading-none ${
-                category === slug ? "text-white/70" : "text-gray-400"
-              }`}
-            >
-              {count}
-            </span>
           </button>
         ))}
       </div>
