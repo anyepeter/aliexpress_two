@@ -141,15 +141,6 @@ export default async function HomePage() {
         {/* 5. Sponsored Products from advertisers */}
         <SponsoredProducts />
 
-        {/* 6. Today's Deals — Dollar Express + SuperDeals */}
-        {/* <Suspense fallback={<TodaysDealsSkeleton />}>
-          <TodaysDeals
-            dollarExpress={todaysDeals.dollarExpress}
-            superDeals={todaysDeals.superDeals}
-          />
-        </Suspense> */}
-
-        {/* 7. 3-column promotional banners */}
         <PromoBanners />
 
         {/* 8. Featured marketplace products grid with load more */}

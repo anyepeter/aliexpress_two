@@ -115,9 +115,14 @@ export default function DashboardLayout({ role, user, children }: DashboardLayou
       {/* Logo */}
       <div className="flex items-center gap-2 px-5 py-5 border-b border-white/10">
         <ShieldCheck className="w-6 h-6 text-white" />
-        <span className="font-bold text-lg">
-          Ali<span className="text-white/80">Express</span>
-        </span>
+        <div className="flex flex-col leading-none">
+          <span className="font-bold text-lg">
+            Ali<span className="text-white/80">Express</span>
+          </span>
+          <span className="text-[10px] font-semibold tracking-wide text-white/70 mt-0.5">
+            Wholesalers
+          </span>
+        </div>
       </div>
 
       {/* Nav */}
@@ -204,9 +209,14 @@ export default function DashboardLayout({ role, user, children }: DashboardLayou
           </button>
 
           {/* Title */}
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-[#E53935] lg:hidden" />
-            <span className="font-bold text-[#E53935] lg:hidden">AliExpress</span>
+          <div className="flex items-center gap-2 lg:hidden">
+            <ShieldCheck className="w-5 h-5 text-[#E53935]" />
+            <div className="flex flex-col leading-none">
+              <span className="font-bold text-[#E53935]">AliExpress</span>
+              <span className="text-[9px] font-semibold tracking-wide text-gray-500 mt-0.5">
+                Wholesalers
+              </span>
+            </div>
           </div>
 
           <div className="flex-1" />

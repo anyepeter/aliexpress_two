@@ -205,6 +205,27 @@ export default function SellerOrdersList({ orders: initialOrders }: { orders: Se
 
   return (
     <div className="space-y-6">
+      {/* ── Full-screen contacting overlay ── */}
+      {contactingId && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center"
+          aria-live="polite"
+          aria-busy="true"
+        >
+          <div className="bg-white rounded-2xl shadow-2xl px-8 py-7 max-w-sm mx-4 text-center">
+            <div className="w-14 h-14 rounded-full bg-[#E53935]/10 flex items-center justify-center mx-auto mb-4">
+              <Loader2 className="w-7 h-7 text-[#E53935] animate-spin" />
+            </div>
+            <h3 className="text-base font-bold text-gray-900 mb-1">
+              Contacting Support...
+            </h3>
+            <p className="text-sm text-gray-500">
+              Preparing your payment request and opening the conversation. Please wait.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
         <p className="text-gray-500 mt-1 text-sm">
