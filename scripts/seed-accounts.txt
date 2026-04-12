@@ -1,0 +1,183 @@
+════════════════════════════════════════════════════════════════
+  MARKETHUB EXPRESS — SEEDED ACCOUNTS
+  Generated: 2026-04-11T16:44:49.195Z
+  Default password for ALL accounts: MhX!2026Seed#Pass
+════════════════════════════════════════════════════════════════
+
+─── 20 SELLERS ──────────────────────────────────────────────────
+ 1. liam.hayes@gmail.com
+    Name:        Liam Hayes
+    Store:       Aurora Tech Hub
+    Registered:  2023-07-02
+    Clerk ID:    user_3CDgF1WSVjrOK4Vm5Eawoq5qZ0E
+
+ 2. sophia.lindqvist@gmail.com
+    Name:        Sophia Lindqvist
+    Store:       Nordic Goods Co
+    Registered:  2024-04-18
+    Clerk ID:    user_3CDgFAaIXgafvRQL20yMYyvYp77
+
+ 3. isabella.marino@gmail.com
+    Name:        Isabella Marino
+    Store:       Sunset Boutique
+    Registered:  2024-07-11
+    Clerk ID:    user_3CDgFNXgxTCI3SRvdwdiLzKnAnZ
+
+ 4. olivia.chen@gmail.com
+    Name:        Olivia Chen
+    Store:       Velvet Atelier
+    Registered:  2024-01-06
+    Clerk ID:    user_3CDgFVGVfa00q7H1XeaXwCXAJxO
+
+ 5. marcus.steele@gmail.com
+    Name:        Marcus Steele
+    Store:       Ironclad Gear
+    Registered:  2019-11-15
+    Clerk ID:    user_3CDgFkkNBaHaVz8M2TGIq1FPI5J
+
+ 6. amelia.brookes@gmail.com
+    Name:        Amelia Brookes
+    Store:       Bloom and Bark
+    Registered:  2023-09-24
+    Clerk ID:    user_3CDgFsOS86kGJ7uY6xXxF2K5FPb
+
+ 7. ethan.walsh@gmail.com
+    Name:        Ethan Walsh
+    Store:       Harbor Supply
+    Registered:  2020-08-16
+    Clerk ID:    user_3CDgG8cX5LOW1Loh7M87Bv6Ozc7
+
+ 8. noah.reinhardt@gmail.com
+    Name:        Noah Reinhardt
+    Store:       Evergreen Outfitters
+    Registered:  2022-05-31
+    Clerk ID:    user_3CDgGDGbWbw1mcHfWyMSmo9gRga
+
+ 9. ava.tanaka@gmail.com
+    Name:        Ava Tanaka
+    Store:       Kyoto Beauty Lab
+    Registered:  2023-10-18
+    Clerk ID:    user_3CDgGWxbbrP7cr0UTj4T2jhvv6i
+
+10. lucas.mueller@gmail.com
+    Name:        Lucas Mueller
+    Store:       Blackforest Workshop
+    Registered:  2022-09-15
+    Clerk ID:    user_3CDgGbXEDVuO9twWk74WgKjXgWY
+
+11. mia.romero@gmail.com
+    Name:        Mia Romero
+    Store:       Casa Solana
+    Registered:  2023-03-14
+    Clerk ID:    user_3CDgGfSEYUFw3O00O2ShsLY1Jte
+
+12. james.oconnor@gmail.com
+    Name:        James O'Connor
+    Store:       Highland Trading Co
+    Registered:  2025-10-05
+    Clerk ID:    user_3CDgGoKN8L3Zj9y7GLPUGS1l14S
+
+13. charlotte.dubois@gmail.com
+    Name:        Charlotte Dubois
+    Store:       Petit Paris Closet
+    Registered:  2021-12-07
+    Clerk ID:    user_3CDgH7Ow6R1Zv9r8YYhygme6VDU
+
+14. benjamin.park@gmail.com
+    Name:        Benjamin Park
+    Store:       Seoul Style Studio
+    Registered:  2022-03-24
+    Clerk ID:    user_3CDgHBnJinzjOSqq7ZMaXiEVAkZ
+
+15. harper.wilson@gmail.com
+    Name:        Harper Wilson
+    Store:       Wildflower Market
+    Registered:  2020-02-02
+    Clerk ID:    user_3CDgHKybtFTkQy3EbTDhrLQDOyB
+
+16. henry.vandijk@gmail.com
+    Name:        Henry Van Dijk
+    Store:       Amsterdam Trade House
+    Registered:  2019-08-02
+    Clerk ID:    user_3CDgHeWkB0b8snPOzcHBFV2g1C7
+
+17. evelyn.carter@gmail.com
+    Name:        Evelyn Carter
+    Store:       Copperleaf Kitchen
+    Registered:  2019-08-25
+    Clerk ID:    user_3CDgHgmciFd9dPzbPRM3Bws7Dmd
+
+18. daniel.akinwande@gmail.com
+    Name:        Daniel Akinwande
+    Store:       Urban Forge Apparel
+    Registered:  2020-04-22
+    Clerk ID:    user_3CDgHo4KCrDQwNzRp9OqS6xmGIW
+
+19. grace.whitfield@gmail.com
+    Name:        Grace Whitfield
+    Store:       Pawsome Pantry
+    Registered:  2024-10-10
+    Clerk ID:    user_3CDgI8jYgrhIKV6nXF3TzbZeJIz
+
+20. theodore.klein@gmail.com
+    Name:        Theodore Klein
+    Store:       Summit Sports Hub
+    Registered:  2024-09-08
+    Clerk ID:    user_3CDgIEZfCNPLfRxa0RtodTmsf3Z
+
+
+─── 10 BUYERS ───────────────────────────────────────────────────
+ 1. emma.johnson@gmail.com
+    Name:        Emma Johnson
+    Registered:  2024-12-17
+    Clerk ID:    user_3CDgIKPsE3Bh8dA0mvW6rNIxYhO
+
+ 2. oliver.smith@gmail.com
+    Name:        Oliver Smith
+    Registered:  2020-09-19
+    Clerk ID:    user_3CDgIVwaO9ZTHJ4Ou38YHFPP3ZI
+
+ 3. ava.williams@gmail.com
+    Name:        Ava Williams
+    Registered:  2021-06-13
+    Clerk ID:    user_3CDgIhUws2y0HA02kjohK8RdQN0
+
+ 4. lucas.garcia@gmail.com
+    Name:        Lucas Garcia
+    Registered:  2023-06-23
+    Clerk ID:    user_3CDgIvX7csaWE03QTAdt5d8VDe7
+
+ 5. mia.rodriguez@gmail.com
+    Name:        Mia Rodriguez
+    Registered:  2019-11-12
+    Clerk ID:    user_3CDgIy3YfRFD3zB7hoYoLQZPiCj
+
+ 6. ethan.bennett@gmail.com
+    Name:        Ethan Bennett
+    Registered:  2020-10-14
+    Clerk ID:    user_3CDgJHxNdSpBXUtnfQfNwvSUV4a
+
+ 7. sophia.meier@gmail.com
+    Name:        Sophia Meier
+    Registered:  2025-11-08
+    Clerk ID:    user_3CDgJN6IT8AuUDRM8uSSO82i2dw
+
+ 8. noah.anderson@gmail.com
+    Name:        Noah Anderson
+    Registered:  2025-04-23
+    Clerk ID:    user_3CDgJWNTCUvymv33mIhoREaLU3I
+
+ 9. isabella.lefevre@gmail.com
+    Name:        Isabella Lefevre
+    Registered:  2020-08-04
+    Clerk ID:    user_3CDgJdqrcAwYL8HQS5uGvpLtuP8
+
+10. liam.brown@gmail.com
+    Name:        Liam Brown
+    Registered:  2021-11-12
+    Clerk ID:    user_3CDgJtK2RYhYLFEYfuoVnZrv6Xv
+
+════════════════════════════════════════════════════════════════
+  Total: 20 sellers + 10 buyers = 30 accounts
+  Login at: /auth/login   |   Password: MhX!2026Seed#Pass
+════════════════════════════════════════════════════════════════

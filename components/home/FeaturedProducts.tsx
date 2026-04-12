@@ -34,7 +34,11 @@ export default function FeaturedProducts({
 }: FeaturedProductsProps) {
   const [products, setProducts] = useState<MarketplaceProduct[]>(initialProducts);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  // Initial load size may differ from PAGE_SIZE — start the next page after
+  // however many products are already on screen to avoid pagination overlap.
+  const [page, setPage] = useState(
+    Math.ceil(initialProducts.length / PAGE_SIZE)
+  );
   const [hasMore, setHasMore] = useState(
     initialProducts.length >= PAGE_SIZE
   );
@@ -51,7 +55,11 @@ export default function FeaturedProducts({
           products: MarketplaceProduct[];
           hasMore: boolean;
         };
-        setProducts((prev) => [...prev, ...data.products]);
+        setProducts((prev) => {
+          const existingIds = new Set(prev.map((p) => p.id));
+          const newProducts = data.products.filter((p) => !existingIds.has(p.id));
+          return [...prev, ...newProducts];
+        });
         setHasMore(data.hasMore);
         setPage(nextPage);
       }

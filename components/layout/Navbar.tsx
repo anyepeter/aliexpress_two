@@ -740,7 +740,6 @@ export default function Navbar() {
             {/* Wishlist */}
             <button className="hidden md:flex items-center gap-1.5 p-2 rounded-lg text-gray-600 hover:text-[#E53935] hover:bg-gray-50 transition-colors">
               <Heart className="w-5 h-5" />
-              <span className="text-xs font-medium">Wishlist</span>
             </button>
 
             {/* Cart */}

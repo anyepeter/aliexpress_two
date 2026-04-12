@@ -605,8 +605,8 @@ export default function AiAnalysisClient() {
                 <div className="flex items-center gap-4">
                   <input
                     type="range"
-                    min="10"
-                    max="15"
+                    min="8"
+                    max="25"
                     step="1"
                     value={margin}
                     onChange={(e) => setMargin(parseInt(e.target.value))}
@@ -617,8 +617,8 @@ export default function AiAnalysisClient() {
                   </span>
                 </div>
                 <div className="flex justify-between text-[10px] text-gray-400 mt-1 px-1">
-                  <span>10%</span>
-                  <span>15%</span>
+                  <span>8%</span>
+                  <span>25%</span>
                 </div>
               </div>
 
