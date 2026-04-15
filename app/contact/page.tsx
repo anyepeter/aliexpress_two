@@ -32,7 +32,7 @@ const contactCards = [
   {
     icon: MapPin,
     title: "Headquarters",
-    detail: "Miami, FL, United States",
+    detail: "Singapore",
   },
 ];
 
