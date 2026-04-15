@@ -35,24 +35,26 @@ export async function POST(req: NextRequest) {
   const storeProductIds = new Set(storeProducts.map((p) => p.id));
   const validIds = productIds.filter((id) => storeProductIds.has(id));
 
-  await prisma.$transaction([
-    // Publish selected products with order
-    ...validIds.map((id, idx) =>
-      prisma.sellerProduct.update({
-        where: { id },
-        data: {
-          status: "PUBLISHED",
-          sortOrder: order.indexOf(id) !== -1 ? order.indexOf(id) : idx,
-          publishedAt: new Date(),
-        },
-      })
-    ),
-    // Archive all other products in the store
-    prisma.sellerProduct.updateMany({
-      where: { storeId, id: { notIn: validIds } },
-      data: { status: "ARCHIVED" },
-    }),
-  ]);
+  // Get the highest current sortOrder so new products are appended after existing ones
+  const maxOrder = await prisma.sellerProduct.aggregate({
+    where: { storeId, status: "PUBLISHED" },
+    _max: { sortOrder: true },
+  });
+  const startOrder = (maxOrder._max.sortOrder ?? -1) + 1;
+
+  // Publish the selected products (additive — does NOT archive existing products)
+  const now = new Date();
+  for (const id of validIds) {
+    const idx = order.indexOf(id);
+    await prisma.sellerProduct.update({
+      where: { id },
+      data: {
+        status: "PUBLISHED",
+        sortOrder: startOrder + (idx !== -1 ? idx : validIds.indexOf(id)),
+        publishedAt: now,
+      },
+    });
+  }
 
   const published = await prisma.sellerProduct.findMany({
     where: { storeId, status: "PUBLISHED" },
@@ -63,6 +65,8 @@ export async function POST(req: NextRequest) {
   revalidatePath("/");
   revalidatePath("/shop");
   revalidatePath(`/store/${user.store.storeSlug}`);
+  revalidatePath("/seller/dashboard");
+  revalidatePath("/seller/products");
 
   return NextResponse.json({ published });
 }

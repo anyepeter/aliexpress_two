@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { StoreInfo } from "@/lib/types/marketplace";
 
 interface PremiumSellerStripProps {
@@ -12,97 +13,35 @@ interface PremiumSellerStripProps {
 export default function PremiumSellerStrip({ stores }: PremiumSellerStripProps) {
   if (stores.length === 0) return null;
 
-  // Only triple the list when there are enough stores to need looping.
-  // With few stores, repeating them looks like a bug.
-  const shouldLoop = stores.length >= 6;
-  const display = shouldLoop ? [...stores, ...stores, ...stores] : stores;
+  // Deduplicate stores by id
+  const uniqueStores = stores.filter(
+    (store, idx, arr) => arr.findIndex((s) => s.id === store.id) === idx
+  );
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isHovered = useRef(false);
-  const isDragging = useRef(false);
-  const didDrag = useRef(false);
-  const dragStartX = useRef(0);
-  const dragScrollLeft = useRef(0);
-  const rafId = useRef<number>(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // Auto-scroll loop: advances scrollLeft by ~0.5px per frame
-  const autoScroll = useCallback(() => {
-    const el = containerRef.current;
-    if (el && !isHovered.current) {
-      el.scrollLeft += 0.5;
-      // When we've scrolled past the first copy, jump back seamlessly
-      const oneSetWidth = el.scrollWidth / 3;
-      if (el.scrollLeft >= oneSetWidth * 2) {
-        el.scrollLeft -= oneSetWidth;
-      }
-    }
-    rafId.current = requestAnimationFrame(autoScroll);
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
   }, []);
 
   useEffect(() => {
-    if (!shouldLoop) return;
-    // Start scrolled to the middle copy so we can scroll left too
-    const el = containerRef.current;
-    if (el) {
-      el.scrollLeft = el.scrollWidth / 3;
-    }
-    rafId.current = requestAnimationFrame(autoScroll);
-    return () => cancelAnimationFrame(rafId.current);
-  }, [autoScroll, shouldLoop]);
+    checkScroll();
+    const el = scrollRef.current;
+    if (el) el.addEventListener("scroll", checkScroll, { passive: true });
+    return () => el?.removeEventListener("scroll", checkScroll);
+  }, [checkScroll]);
 
-  const handleMouseEnter = useCallback(() => {
-    isHovered.current = true;
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    isHovered.current = false;
-    isDragging.current = false;
-    const el = containerRef.current;
-    if (el) el.style.cursor = "";
-  }, []);
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    const el = containerRef.current;
-    if (!el) return;
-    isDragging.current = true;
-    didDrag.current = false;
-    dragStartX.current = e.pageX;
-    dragScrollLeft.current = el.scrollLeft;
-    el.style.cursor = "grabbing";
-  }, []);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isDragging.current) return;
-    const el = containerRef.current;
-    if (!el) return;
-    e.preventDefault();
-    const walk = e.pageX - dragStartX.current;
-    if (Math.abs(walk) > 4) didDrag.current = true;
-    el.scrollLeft = dragScrollLeft.current - walk;
-
-    // Wrap around during drag too
-    const oneSetWidth = el.scrollWidth / 3;
-    if (el.scrollLeft >= oneSetWidth * 2) {
-      el.scrollLeft -= oneSetWidth;
-      dragScrollLeft.current -= oneSetWidth;
-    } else if (el.scrollLeft < oneSetWidth * 0.1) {
-      el.scrollLeft += oneSetWidth;
-      dragScrollLeft.current += oneSetWidth;
-    }
-  }, []);
-
-  const handleMouseUp = useCallback(() => {
-    isDragging.current = false;
-    const el = containerRef.current;
-    if (el) el.style.cursor = "";
-  }, []);
-
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    if (didDrag.current) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  }, []);
+  const scroll = (dir: "left" | "right") => {
+    scrollRef.current?.scrollBy({
+      left: dir === "left" ? -300 : 300,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <section className="max-w-[1440px] mx-auto px-4 lg:px-6 py-6">
@@ -113,24 +52,38 @@ export default function PremiumSellerStrip({ stores }: PremiumSellerStripProps) 
         <span className="h-px flex-1 bg-gradient-to-r from-[#E53935]/30 to-transparent" />
       </div>
 
-      <div
-        ref={containerRef}
-        className="overflow-hidden cursor-grab py-2"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-      >
-        <div className="flex gap-3 w-max">
-          {display.map((store, i) => (
+      <div className="relative group">
+        {/* Left arrow */}
+        {canScrollLeft && (
+          <button
+            onClick={() => scroll("left")}
+            className="absolute -left-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center hover:shadow-lg transition-shadow opacity-0 group-hover:opacity-100"
+          >
+            <ChevronLeft className="w-4 h-4 text-gray-600" />
+          </button>
+        )}
+
+        {/* Right arrow */}
+        {canScrollRight && (
+          <button
+            onClick={() => scroll("right")}
+            className="absolute -right-2 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center hover:shadow-lg transition-shadow opacity-0 group-hover:opacity-100"
+          >
+            <ChevronRight className="w-4 h-4 text-gray-600" />
+          </button>
+        )}
+
+        {/* Scrollable store list */}
+        <div
+          ref={scrollRef}
+          className="flex gap-3 overflow-x-auto py-2 scroll-smooth"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          {uniqueStores.map((store) => (
             <Link
-              key={`${store.id}-${i}`}
+              key={store.id}
               href={`/store/${store.storeSlug}`}
-              onClick={handleClick}
-              draggable={false}
-              className="flex flex-col items-center gap-1.5 w-[110px] p-3 bg-white rounded-lg border border-gray-100 hover:border-gray-200 hover:scale-105 transition-all duration-200 flex-shrink-0 select-none"
+              className="flex flex-col items-center gap-1.5 w-[110px] min-w-[110px] p-3 bg-white rounded-lg border border-gray-100 hover:border-gray-200 hover:scale-105 transition-all duration-200 select-none"
             >
               {store.logoUrl ? (
                 <Image
@@ -138,10 +91,10 @@ export default function PremiumSellerStrip({ stores }: PremiumSellerStripProps) 
                   alt={store.storeName}
                   width={48}
                   height={48}
-                  className="rounded-full object-cover ring-2 ring-[#E53935]/30 flex-shrink-0 pointer-events-none"
+                  className="rounded-full object-cover ring-2 ring-[#E53935]/30 pointer-events-none"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-[#E53935] flex items-center justify-center ring-2 ring-[#E53935]/30 flex-shrink-0">
+                <div className="w-12 h-12 rounded-full bg-[#E53935] flex items-center justify-center ring-2 ring-[#E53935]/30">
                   <span className="text-white text-lg font-bold">
                     {store.storeName[0].toUpperCase()}
                   </span>
@@ -158,13 +111,13 @@ export default function PremiumSellerStrip({ stores }: PremiumSellerStripProps) 
             </Link>
           ))}
         </div>
-      </div>
 
-      <style>{`
-        .overflow-hidden::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+        <style>{`
+          div[style*="scrollbar-width"]::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
+      </div>
     </section>
   );
 }

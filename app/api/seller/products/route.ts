@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import type { SellerProductForm } from "@/lib/types/sellerProduct";
 
@@ -90,6 +91,12 @@ export async function POST(req: NextRequest) {
       })
     )
   );
+
+  // Revalidate seller pages so new products appear immediately
+  revalidatePath("/seller/dashboard");
+  revalidatePath("/seller/products");
+  revalidatePath("/");
+  revalidatePath("/shop");
 
   return NextResponse.json({ products: upserted });
 }
